@@ -1,0 +1,110 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+		<h:form id="empresa" styleClass="edit">
+			
+				<h3 align="center">#{messages['label.titulo.empresa']}</h3>
+				<rich:tabPanel selectedTab="#{empresaBO.tabSelect}">
+				
+						<rich:tab label="#{messages['label.crear']}" id="tabNueva">
+						
+							<s:decorate id="codigoEmpresaNueva" template="layout/display.xhtml">
+					            <ui:define name="label">#{messages['label.codigo']}</ui:define>
+				                <h:inputText id="codigoEmpresaNueva"
+				                       required="false"
+				                          value="#{empresaBO.codigoEmpresaNueva}" maxlength="3">
+				                </h:inputText>
+					        </s:decorate>		
+				        						
+				           <s:decorate id="nombreEmpresaNueva" template="layout/edit.xhtml">
+				                <ui:define name="label">#{messages['label.nombre']}</ui:define>
+				                <h:inputText id="nombreEmpresaNueva"
+				                       required="false"
+				                          value="#{empresaBO.nombreEmpresaNueva}" maxlength="50">
+				                </h:inputText>
+				            </s:decorate>						
+								
+								<h:commandButton id="crear" value="Crear"
+										action="#{empresaBO.crearEmpresa()}" />
+
+
+						</rich:tab>				
+				
+						<rich:tab label="#{messages['label.modificar']}" id="tabModificar">
+						
+							<s:decorate id="codigoEmpresa" template="layout/display.xhtml">
+					            <ui:define name="label">#{messages['label.codigo']}</ui:define>
+					            <h:outputText value="#{empresaBO.sdmEmpresaSelect.codigo}"/>
+					        </s:decorate>		
+				        						
+				           <s:decorate id="nombreEmpresa" template="layout/edit.xhtml">
+				                <ui:define name="label">#{messages['label.nombre']}</ui:define>
+				                <h:inputText id="nombre"
+				                       required="false"
+				                          value="#{empresaBO.sdmEmpresaSelect.nombre}" maxlength="50">
+				                </h:inputText>
+				            </s:decorate>						
+							
+							<div style="clear:both"/>
+								
+								<h:commandButton id="modificar" value="Modificar"
+										action="#{empresaBO.modificarEmpresa()}" />
+
+								<h:commandButton id="eliminar" value="Eliminar"
+										action="#{empresaBO.eliminarEmpresa()}" />
+
+						</rich:tab>
+
+
+
+		
+				</rich:tabPanel>	
+		
+		
+					<h:panelGrid>
+					<rich:dataTable value="#{empresaBO.arrayListSdmEmpresa()}"
+						rendered="#{empresaBO.arrayListSdmEmpresa().size() >0}" var="sdmEmpresa"
+						id="table">
+
+						<f:facet name="header">
+							<h:outputText value="#{messages['label.empresa']}" />
+						</f:facet>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.codigo']}" />
+							</f:facet>
+							<h:outputText value="#{sdmEmpresa.codigo}" />
+						</rich:column>
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.nombre']}" />
+							</f:facet>
+							<h:outputText value="#{sdmEmpresa.nombre}" />
+						</rich:column>
+												
+						<rich:column >
+								
+							<h:commandButton value="#{messages['label.selecionar']}"
+								action="#{empresaBO.selecionar(sdmEmpresa.codigo)}"  />
+						</rich:column>
+						
+					</rich:dataTable>
+					
+					<div style="clear:both"/>
+					
+				</h:panelGrid>
+		
+		
+		</h:form>
+	</ui:define>
+</ui:composition>		

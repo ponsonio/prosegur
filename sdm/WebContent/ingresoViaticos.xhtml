@@ -1,0 +1,260 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="ingresoViatico" styleClass="edit">
+		
+		
+			<script type="text/javascript">
+			  //<![CDATA[
+					function validarMonto(xxxxx) 
+					{
+						var numval = xxxxx.value;
+					    curphonevar = numval.replace(/[\\A-Za-z!"£$%^&\-\)\(*+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+					    xxxxx.value = curphonevar;
+					    //xxxxx.focus;
+					}
+			  // ]]>
+			  </script>
+
+			<f:facet name="header"></f:facet>			 				
+					<h3 align="center">#{messages['label.titulo.pago']}</h3>
+					
+					<rich:panel>
+				        <s:decorate id="id" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.usuario']}</ui:define>
+				            <h:outputText value="#{sdmEmpleado.nombre}"/>
+				        </s:decorate>
+				        <s:decorate id="codigo" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.codigo']}</ui:define>
+				            <h:outputText value="#{sdmEmpleado.codigo}"/>
+				        </s:decorate>
+				        <s:decorate id="fecha" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.fecha']}</ui:define>
+				            <h:outputText value="#{currentDate}">
+				            	<f:convertDateTime pattern="d/M/yyyy" />
+				           </h:outputText>
+				        </s:decorate>
+				        <s:decorate id="idlabelingreso" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.totalPago']}</ui:define>
+				            <h:outputText value="#{ingresoViaticoBO.bigDecimalTotal}" >
+									<f:convertNumber groupingUsed="true" minFractionDigits="2" />
+							</h:outputText>						            
+				        </s:decorate>
+			        <div style="clear:both"/>
+    			</rich:panel>
+				
+
+				<rich:tabPanel selectedTab="#{ingresoViaticoBO.tabSelect}">
+					<rich:tab label="#{messages['label.codigo']}" id="tabCodigo">
+			           <s:decorate id="codigoEmpleadoBuscar" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.ingreseCodigoEmpleado']}</ui:define>
+			                <h:inputText id="codigoEmpleadoBuscar"
+			                       required="false"
+			                          value="#{ingresoViaticoBO.codigoBuscar}" maxlength="7">
+			                    <a:support event="onblur" reRender="codigoEmpleadoBuscar" bypassUpdates="true" ajaxSingle="true"/>
+			                </h:inputText>
+			            </s:decorate>						
+							
+							<h:commandButton id="buscar" value="Cargar Datos"
+									action="#{ingresoViaticoBO.buscarSdmEmpleado()}" />
+					</rich:tab>
+					
+					
+					<rich:tab id="tabNombre" label="#{messages['label.nombre']}" >
+					
+				           <s:decorate id="nombreEmpleadoBuscar" template="layout/edit.xhtml">
+				                <ui:define name="label">#{messages['label.ingreseNombreEmpleado']}</ui:define>
+				                <h:inputText id="nombreEmpleadoBuscar"
+				                       required="false"
+				                          value="#{ingresoViaticoBO.nombreBuscar}" >
+				                </h:inputText>
+				                </s:decorate>
+
+							<h:commandButton id="buscarNombre" value="Buscar"
+									action="#{ingresoViaticoBO.buscarSdmEmpleadoActivoPorNombre}" />
+									
+						<rich:dataTable value="#{arraylistSdmEmpleado}"
+							rendered="#{arraylistSdmEmpleado.rowCount>0}" var="sdmEmpleado"
+									id="tableResultado">
+
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.resultado']}" />
+									</f:facet>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.codigoEmpleado']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.codigo}" id="codigoemp" />
+									</rich:column>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.nombre']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.nombre}" id="nombreemp" />
+									</rich:column>
+																					
+									<rich:column>
+										<h:commandButton value="#{messages['label.agregar']}"
+											action="#{ingresoViaticoBO.cargarEmpleadoSelect}" />
+									</rich:column>
+
+						</rich:dataTable>
+					</rich:tab>
+				</rich:tabPanel>	
+    			<rich:panel>			
+								
+						<s:decorate id="codigoEmpleado" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.codigo']}</ui:define>
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.codigo}"/>
+				        </s:decorate>									
+								
+						<s:decorate id="nombreEmpleado" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.nombre']}</ui:define>
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.nombre}"/>
+				        </s:decorate>		
+														
+						<s:decorate id="empresaEmplead" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.empresa']}</ui:define>
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.sdmEmpresa.codigo}"/> - 
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.sdmEmpresa.nombre}"/>
+				            
+				        </s:decorate>		
+
+						<s:decorate id="ccEmpleadp" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.centroCosto']}</ui:define>
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.sdmCentroCosto.codigo}"/> - 
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.sdmCentroCosto.nombre}"/>
+				        </s:decorate>		
+
+						<s:decorate id="delegacionEmpleadp" template="layout/display.xhtml">
+				            <ui:define name="label">#{messages['label.delegacion']}</ui:define>
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.sdmDelegacion.codigo}"/> - 
+				            <h:outputText value="#{ingresoViaticoBO.sdmEmpleadoSelect.sdmDelegacion.nombre}"/>
+				        </s:decorate>	
+						
+			        <div style="clear:both"/>
+
+    			</rich:panel>
+    			
+    			<rich:panel>
+		           <s:decorate id="adelantoTipoServicio" template="layout/edit.xhtml">
+		                <ui:define name="label">#{messages['label.selecioneTipoServicio']}</ui:define>
+		                	<h:selectOneMenu id="sdmTipoServicio" require="true"
+								value="#{ingresoViaticoBO.sdmTipoServicioSelect.id}">
+								<s:selectItems value="#{arrayListSdmTipoServicio}"
+									var="sdmTipoServicio" label="#{sdmTipoServicio.descripcion}"
+									itemValue="#{sdmTipoServicio.id}" />
+							</h:selectOneMenu>
+		            </s:decorate>	
+		            
+		           <s:decorate id="adelantoMonto" template="layout/edit.xhtml">
+		                <ui:define name="label">#{messages['label.monto']}</ui:define>
+		                <h:inputText id="codigoEmpleado"
+		                       required="true"
+		                          value="#{ingresoViaticoBO.adelantoNuevo.monto}"  onkeyup="validarMonto(this)" >
+		                    
+		                </h:inputText>
+		            </s:decorate>	
+
+		           <s:decorate id="adelantoDescripcion" template="layout/edit.xhtml">
+		                <ui:define name="label">#{messages['label.observaciones']}</ui:define>
+		                <h:inputText id="adelantoDescripcion"
+		                       required="false"
+		                          value="#{ingresoViaticoBO.adelantoNuevo.descripcion}" maxlength="200">
+
+		                </h:inputText>
+		            </s:decorate>
+		        <div style="clear:both"/>
+		    </rich:panel>
+
+		     
+		     <rich:panel>
+				<h:commandButton id="agregar" value="#{messages['label.ok']}" 
+					action="#{ingresoViaticoBO.agregarAdelanto()}" />						
+
+		    </rich:panel>
+
+		
+		<div class="dialog">
+			<h:panelGrid>
+					<rich:dataTable value="#{arraylistAdelanto}"
+						rendered="#{arraylistAdelanto.rowCount>0}" var="adelanto"
+						id="table">
+
+						<f:facet name="header">
+							<h:outputText value="#{messages['label.adelantos']}" />
+						</f:facet>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.fecha']}" />
+							</f:facet>
+							<h:outputText value="#{adelanto.dateFechaAdelanto}" id="fecha">
+								<f:convertDateTime pattern="d/M/yyyy" />
+						    </h:outputText>
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.codigoEmpleado']}" />
+							</f:facet>
+							<h:outputText value="#{adelanto.sdmEmpleado.codigo}" id="codigo" />
+						</rich:column>
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.nombre']}" />
+							</f:facet>
+							<h:outputText value="#{adelanto.sdmEmpleado.nombre}" id="nombre" />
+						</rich:column>
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.tipoServicio']}" />
+							</f:facet>
+							<h:outputText value="#{adelanto.sdmTipoServicio.descripcion}"
+								id="price" />
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.monto']}" />
+							</f:facet>
+							<h:outputText value="#{adelanto.monto}" />
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.observaciones']}" />
+							</f:facet>
+							<h:outputText value="#{adelanto.descripcion}" />
+						</rich:column>
+						<rich:column>
+							<h:commandButton value="#{messages['label.eliminar']}"
+								action="#{ingresoViaticoBO.delete()}" />
+						</rich:column>
+
+					</rich:dataTable>
+				</h:panelGrid>
+			</div>
+
+			<div class="actionButtons">
+				<h:commandButton id="grabar" value="#{messages['label.imprimir']}"
+					action="#{ingresoViaticoBO.grabarInforme()}" />
+			</div>
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

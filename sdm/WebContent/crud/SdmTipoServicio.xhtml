@@ -1,0 +1,118 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Sdm tipo servicio Details</f:facet>
+
+        <s:decorate id="id" template="layout/display.xhtml">
+            <ui:define name="label">Id</ui:define>
+            <h:outputText value="#{sdmTipoServicioHome.instance.id}"/>
+        </s:decorate>
+
+        <s:decorate id="descripcion" template="layout/display.xhtml">
+            <ui:define name="label">Descripcion</ui:define>
+            <h:outputText value="#{sdmTipoServicioHome.instance.descripcion}"/>
+        </s:decorate>
+
+        <s:decorate id="activo" template="layout/display.xhtml">
+            <ui:define name="label">Activo</ui:define>
+            <h:outputText value="#{sdmTipoServicioHome.instance.activo}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/SdmTipoServicioEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty sdmTipoServicioFrom ? 'SdmTipoServicioList' : sdmTipoServicioFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm informe viatico detalles</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="sdmInformeViaticoDetallesChildren">
+
+        <h:outputText value="There are no sdmInformeViaticoDetalles associated with this sdmTipoServicio."
+                   rendered="#{empty sdmTipoServicioHome.sdmInformeViaticoDetalles}"/>
+
+        <rich:dataTable value="#{sdmTipoServicioHome.sdmInformeViaticoDetalles}"
+                       var="_sdmInformeViaticoDetalle"
+                  rendered="#{not empty sdmTipoServicioHome.sdmInformeViaticoDetalles}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="sdmInformeViaticoDetallesTable">
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.fecha}">
+                <f:facet name="header">Fecha</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.fecha}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.monto}">
+                <f:facet name="header">Monto</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.monto}">
+                    <f:convertNumber/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.descripcion}">
+                <f:facet name="header">Descripcion</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.descripcion}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.destino}">
+                <f:facet name="header">Destino</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.destino}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.correlativoInforme}">
+                <f:facet name="header">Correlativo informe</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.correlativoInforme}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectsdmInformeViaticoDetalle"
+                     value="Select"
+                      view="/SdmInformeViaticoDetalle.xhtml">
+                    <f:param name="sdmInformeViaticoDetalleId"
+                            value="#{_sdmInformeViaticoDetalle.id}"/>
+                    <f:param name="sdmInformeViaticoDetalleFrom" value="SdmTipoServicio"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add sdmInformeViaticoDetalle"
+                view="/SdmInformeViaticoDetalleEdit.xhtml">
+            <f:param name="sdmTipoServicioId"
+                    value="#{sdmTipoServicioHome.instance.id}"/>
+            <f:param name="sdmInformeViaticoDetalleFrom" value="SdmTipoServicio"/>
+        </s:button>
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

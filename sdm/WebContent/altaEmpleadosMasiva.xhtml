@@ -1,0 +1,221 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+    	
+    <h:form id="cambioContrasenaForm" enctype="multipart/form-data">
+		<h3 align="center">#{messages['label.titulo.altaMasiva']}</h3>
+        <rich:panel>
+            <f:facet name="header">#{messages['label.matenimientoMasivo']}</f:facet>
+		          <div class="dialog">
+		                <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
+							<s:fileUpload id="picture" 
+							              accept="application/vnd.ms-excel"
+							              data="#{empleadoMasivoBO.file}" />
+							<div class="actionButtons">
+		           		 		<h:commandButton id="enviar" value="Procesar" action="#{empleadoMasivoBO.procesarArchivo()}"  />    
+		           		 	</div>          
+		                </h:panelGrid>
+		
+		            </div>
+          </rich:panel>
+	      <rich:panel>
+						<rich:dataTable value="#{empleadoMasivoBO.arrayListEmpleadosCargar}"
+							rendered="#{empleadoMasivoBO.arrayListEmpleadosCargar.size()>0}" var="sdmEmpleado"
+									id="tableEmpCrear">
+
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.empleadosCrear']}" />
+									</f:facet>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.codigoEmpleado']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.codigo}" id="codigoemp" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.nombre']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.nombre}" id="nombreempleado" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.empresa']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmEmpresa.codigo}" id="empresa" />
+									</rich:column>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.delegacion']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmDelegacion.codigo}" id="delegacion" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.divicion']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmDivicion.codigo}" id="divicion" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.centroCosto']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmCentroCosto.codigo}" id="ccosto" />
+									</rich:column>									
+						</rich:dataTable>
+						<div class="actionButtons">
+						 	<h:commandButton id="limp1" rendered="#{empleadoMasivoBO.arrayListEmpleadosCargar.size()>0}" value="Limpiar" action="#{empleadoMasivoBO.limpiarNuevos()}"  /> 
+						 </div>	       
+          </rich:panel>
+	      <rich:panel>
+						<rich:dataTable value="#{empleadoMasivoBO.arrayListEmpleadosActualizar}"
+							rendered="#{empleadoMasivoBO.arrayListEmpleadosActualizar.size()>0}" var="sdmEmpleado"
+									id="tableEmpActualizar">
+
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.empleadosActualizar']}" />
+									</f:facet>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.codigoEmpleado']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.codigo}" id="codigoemp1" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.nombre']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.nombre}" id="nombreempleado1" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.empresa']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmEmpresa.codigo}" id="empresa1" />
+									</rich:column>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.delegacion']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmDelegacion.codigo}" id="delegacion1" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.divicion']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmDivicion.codigo}" id="divicion1" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.centroCosto']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmCentroCosto.codigo}" id="ccosto1" />
+									</rich:column>									
+						</rich:dataTable>
+						<div class="actionButtons">
+							<h:commandButton id="limpiar3" rendered="#{empleadoMasivoBO.arrayListEmpleadosActualizar.size()>0}" value="Limpiar" action="#{empleadoMasivoBO.limpiarActualizacion()}"  />   
+						 </div>       
+          </rich:panel>
+          <!-- Empleados a desactivar -->
+                <rich:panel>
+						<rich:dataTable value="#{empleadoMasivoBO.arrayListEmpleadosDesactivar}"
+							rendered="#{empleadoMasivoBO.arrayListEmpleadosDesactivar.size()>0}" var="sdmEmpleado"
+									id="tableEmpDesactivar">
+
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.empleadosDesactivar']}" />
+									</f:facet>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.codigoEmpleado']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.codigo}" id="codigoemp2" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.nombre']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.nombre}" id="nombreempleado2" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.empresa']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmEmpresa.codigo}" id="empresa2" />
+									</rich:column>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.delegacion']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmDelegacion.codigo}" id="delegacion2" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.divicion']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmDivicion.codigo}" id="divicion2" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.centroCosto']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.sdmCentroCosto.codigo}" id="ccosto2" />
+									</rich:column>									
+						</rich:dataTable>
+						<div class="actionButtons">
+							<h:commandButton id="limpiar2" rendered="#{empleadoMasivoBO.arrayListEmpleadosDesactivar.size()>0}" value="Limpiar" action="#{empleadoMasivoBO.limpiarDesactivacion()}"  />   
+						 </div>       
+          </rich:panel>
+          
+	      <rich:panel>
+
+						<rich:dataTable value="#{empleadoMasivoBO.erroresCarga}"
+							rendered="#{empleadoMasivoBO.erroresCarga.size()>0}" var="mensaje"
+									id="tableErrores">
+
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.errorArchivo']}" />
+									</f:facet>
+									<rich:column>
+										<h:outputText value="#{mensaje}" id="mensaje" />
+									</rich:column>
+
+						</rich:dataTable>        
+
+          </rich:panel>
+  	      <rich:panel>
+
+						<rich:dataTable value="#{empleadoMasivoBO.resultado}"
+							rendered="#{empleadoMasivoBO.resultado.size()>0}" var="mensaje"
+									id="tableResultado">
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.resultado']}" />
+									</f:facet>
+									<rich:column>
+										<h:outputText value="#{mensaje}" id="mensaje2" />
+									</rich:column>
+
+						</rich:dataTable>        
+
+          </rich:panel>
+          
+        <div class="actionButtons">
+             <h:commandButton id="continuar" rendered="#{( (empleadoMasivoBO.arrayListEmpleadosCargar.size()>0) or (empleadoMasivoBO.arrayListEmpleadosActualizar.size()>0) or (empleadoMasivoBO.arrayListEmpleadosDesactivar.size() > 0) ) }" value="Grabar" action="#{empleadoMasivoBO.grabarEmpleados()}"  />
+           <h:commandButton id="cancelar" rendered="#{( (empleadoMasivoBO.arrayListEmpleadosCargar.size()>0) or (empleadoMasivoBO.arrayListEmpleadosActualizar.size()>0) or (empleadoMasivoBO.arrayListEmpleadosDesactivar.size() > 0) ) }" value="Cancelar" action="#{empleadoMasivoBO.cancelar()}"  />
+        </div>
+        
+    </h:form>
+
+ </ui:define>
+</ui:composition>

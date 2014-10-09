@@ -1,0 +1,243 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="sdmEmpresa" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{sdmEmpresaHome.managed ? 'Edit' : 'Add'} Sdm empresa</f:facet>
+
+
+            <s:decorate id="codigoField" template="layout/edit.xhtml">
+                <ui:define name="label">Codigo</ui:define>
+                <h:inputText id="codigo"
+                       disabled="#{sdmEmpresaHome.managed}"
+                       required="true"
+                           size="3"
+                      maxlength="3"
+                          value="#{sdmEmpresaHome.instance.codigo}">
+                    <a:support event="onblur" reRender="codigoField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="nombreField" template="layout/edit.xhtml">
+                <ui:define name="label">Nombre</ui:define>
+                <h:inputText id="nombre"
+                       required="true"
+                           size="50"
+                      maxlength="50"
+                          value="#{sdmEmpresaHome.instance.nombre}">
+                    <a:support event="onblur" reRender="nombreField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{sdmEmpresaHome.persist}"
+                       disabled="#{!sdmEmpresaHome.wired}"
+                       rendered="#{!sdmEmpresaHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{sdmEmpresaHome.update}"
+                       rendered="#{sdmEmpresaHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{sdmEmpresaHome.remove}"
+                      immediate="true"
+                       rendered="#{sdmEmpresaHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                    view="/SdmEmpresa.xhtml"
+                rendered="#{sdmEmpresaHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty sdmEmpresaFrom ? 'SdmEmpresaList' : sdmEmpresaFrom}.xhtml"
+                rendered="#{!sdmEmpresaHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+    <rich:tab label="Sdm informe viaticoses">
+        <h:form styleClass="association" id="sdmInformeViaticosesChildren">
+
+            <h:outputText value="There are no sdmInformeViaticoses associated with this sdmEmpresa."
+                       rendered="#{empty sdmEmpresaHome.sdmInformeViaticoses}"/>
+
+            <rich:dataTable value="#{sdmEmpresaHome.sdmInformeViaticoses}"
+                           var="_sdmInformeViaticos"
+                      rendered="#{not empty sdmEmpresaHome.sdmInformeViaticoses}"
+                    rowClasses="rvgRowOne,rvgRowTwo"
+                            id="sdmInformeViaticosesTable">
+                <rich:column sortBy="#{_sdmInformeViaticos.id}">
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticos.id}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticos.fecha}">
+                    <f:facet name="header">Fecha</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticos.fecha}">
+                        <s:convertDateTime type="date" dateStyle="short"/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticos.montoTotal}">
+                    <f:facet name="header">Monto total</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticos.montoTotal}">
+                        <f:convertNumber/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticos.anulado}">
+                    <f:facet name="header">Anulado</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticos.anulado}"/>
+                </rich:column>
+            </rich:dataTable>
+
+        </h:form>
+
+        <f:subview rendered="#{sdmEmpresaHome.managed}" id="sdmInformeViaticoses">
+        <div class="actionButtons">
+            <s:button id="addsdmInformeViaticos"
+                   value="Add sdmInformeViaticos"
+                    view="/SdmInformeViaticosEdit.xhtml"
+             propagation="none">
+                 <f:param name="sdmEmpresaCodigo"
+                         value="#{sdmEmpresaHome.instance.codigo}"/>
+                 <f:param name="sdmInformeViaticosFrom" value="SdmEmpresa"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+
+    <rich:tab label="Sdm informe viatico detalles">
+        <h:form styleClass="association" id="sdmInformeViaticoDetallesChildren">
+
+            <h:outputText value="There are no sdmInformeViaticoDetalles associated with this sdmEmpresa."
+                       rendered="#{empty sdmEmpresaHome.sdmInformeViaticoDetalles}"/>
+
+            <rich:dataTable value="#{sdmEmpresaHome.sdmInformeViaticoDetalles}"
+                           var="_sdmInformeViaticoDetalle"
+                      rendered="#{not empty sdmEmpresaHome.sdmInformeViaticoDetalles}"
+                    rowClasses="rvgRowOne,rvgRowTwo"
+                            id="sdmInformeViaticoDetallesTable">
+                <rich:column sortBy="#{_sdmInformeViaticoDetalle.id}">
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticoDetalle.id}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticoDetalle.fecha}">
+                    <f:facet name="header">Fecha</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticoDetalle.fecha}">
+                        <s:convertDateTime type="date" dateStyle="short"/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticoDetalle.monto}">
+                    <f:facet name="header">Monto</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticoDetalle.monto}">
+                        <f:convertNumber/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticoDetalle.descripcion}">
+                    <f:facet name="header">Descripcion</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticoDetalle.descripcion}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticoDetalle.destino}">
+                    <f:facet name="header">Destino</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticoDetalle.destino}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmInformeViaticoDetalle.correlativoInforme}">
+                    <f:facet name="header">Correlativo informe</f:facet>
+                    <h:outputText value="#{_sdmInformeViaticoDetalle.correlativoInforme}"/>
+                </rich:column>
+            </rich:dataTable>
+
+        </h:form>
+
+        <f:subview rendered="#{sdmEmpresaHome.managed}" id="sdmInformeViaticoDetalles">
+        <div class="actionButtons">
+            <s:button id="addsdmInformeViaticoDetalle"
+                   value="Add sdmInformeViaticoDetalle"
+                    view="/SdmInformeViaticoDetalleEdit.xhtml"
+             propagation="none">
+                 <f:param name="sdmEmpresaCodigo"
+                         value="#{sdmEmpresaHome.instance.codigo}"/>
+                 <f:param name="sdmInformeViaticoDetalleFrom" value="SdmEmpresa"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+
+    <rich:tab label="Sdm empleados">
+        <h:form styleClass="association" id="sdmEmpleadosChildren">
+
+            <h:outputText value="There are no sdmEmpleados associated with this sdmEmpresa."
+                       rendered="#{empty sdmEmpresaHome.sdmEmpleados}"/>
+
+            <rich:dataTable value="#{sdmEmpresaHome.sdmEmpleados}"
+                           var="_sdmEmpleado"
+                      rendered="#{not empty sdmEmpresaHome.sdmEmpleados}"
+                    rowClasses="rvgRowOne,rvgRowTwo"
+                            id="sdmEmpleadosTable">
+                <rich:column sortBy="#{_sdmEmpleado.id}">
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{_sdmEmpleado.id}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmEmpleado.nombre}">
+                    <f:facet name="header">Nombre</f:facet>
+                    <h:outputText value="#{_sdmEmpleado.nombre}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmEmpleado.codigo}">
+                    <f:facet name="header">Codigo</f:facet>
+                    <h:outputText value="#{_sdmEmpleado.codigo}"/>
+                </rich:column>
+                <rich:column sortBy="#{_sdmEmpleado.activo}">
+                    <f:facet name="header">Activo</f:facet>
+                    <h:outputText value="#{_sdmEmpleado.activo}"/>
+                </rich:column>
+            </rich:dataTable>
+
+        </h:form>
+
+        <f:subview rendered="#{sdmEmpresaHome.managed}" id="sdmEmpleados">
+        <div class="actionButtons">
+            <s:button id="addsdmEmpleado"
+                   value="Add sdmEmpleado"
+                    view="/SdmEmpleadoEdit.xhtml"
+             propagation="none">
+                 <f:param name="sdmEmpresaCodigo"
+                         value="#{sdmEmpresaHome.instance.codigo}"/>
+                 <f:param name="sdmEmpleadoFrom" value="SdmEmpresa"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

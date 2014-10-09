@@ -1,0 +1,129 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Sdm rol x usuario Details</f:facet>
+
+        <s:decorate id="idRol" template="layout/display.xhtml">
+            <ui:define name="label">Id rol</ui:define>
+            <h:outputText value="#{sdmRolXUsuarioHome.instance.id.idRol}"/>
+        </s:decorate>
+        <s:decorate id="idUsuario" template="layout/display.xhtml">
+            <ui:define name="label">Id usuario</ui:define>
+            <h:outputText value="#{sdmRolXUsuarioHome.instance.id.idUsuario}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/SdmRolXUsuarioEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty sdmRolXUsuarioFrom ? 'SdmRolXUsuarioList' : sdmRolXUsuarioFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm usuario</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmUsuarioParent">
+
+        <h:outputText value="There is no sdmUsuario associated with this sdmRolXUsuario."
+                   rendered="#{sdmRolXUsuarioHome.instance.sdmUsuario == null}"/>
+
+        <rich:dataTable var="_sdmUsuario"
+                   value="#{sdmRolXUsuarioHome.instance.sdmUsuario}"
+                rendered="#{sdmRolXUsuarioHome.instance.sdmUsuario != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmUsuarioTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmUsuario.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empleado id</f:facet>
+                <h:outputText value="#{_sdmUsuario.sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Contrasena</f:facet>
+                <h:outputText value="#{_sdmUsuario.contrasena}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Correo</f:facet>
+                <h:outputText value="#{_sdmUsuario.correo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmUsuario.activo}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmUsuario"
+                     value="View"
+                      view="/SdmUsuario.xhtml">
+                    <f:param name="sdmUsuarioId"
+                           value="#{_sdmUsuario.id}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm rol</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmRolParent">
+
+        <h:outputText value="There is no sdmRol associated with this sdmRolXUsuario."
+                   rendered="#{sdmRolXUsuarioHome.instance.sdmRol == null}"/>
+
+        <rich:dataTable var="_sdmRol"
+                   value="#{sdmRolXUsuarioHome.instance.sdmRol}"
+                rendered="#{sdmRolXUsuarioHome.instance.sdmRol != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmRolTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmRol.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Etiqueta</f:facet>
+                <h:outputText value="#{_sdmRol.etiqueta}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmRol"
+                     value="View"
+                      view="/SdmRol.xhtml">
+                    <f:param name="sdmRolId"
+                           value="#{_sdmRol.id}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

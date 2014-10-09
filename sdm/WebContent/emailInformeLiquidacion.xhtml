@@ -1,0 +1,14 @@
+<m:message xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:m="http://jboss.com/products/seam/mail"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+    <m:from name="sdm" address="sdm@prosegur.com.pe" />
+    <m:to name="#{sdmEmpleado.nombre}">#{sdmUsuario.correo}</m:to>
+    <m:subject>Informe de Liquidación nro : #{informeLiquidacionPDFBO.sdmInformeViaticos.id}</m:subject>
+    <m:body>
+		<m:attachment fileName="InformeLiquidacion.pdf" contentType="application/pdf">  
+		     <ui:include src="/informePDF.xhtml" />  
+		</m:attachment>  
+    </m:body>  
+</m:message>    

@@ -1,0 +1,133 @@
+<p:document xmlns:p="http://jboss.com/products/seam/pdf"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   title="Informe de Viaticos" pageSize="A4">
+   
+<f:facet name="header">
+  <p:font size="12">
+    <p:header borderWidthTop="0" borderWidthBottom="0.4" alignment="center">
+      <p:paragraph indentationLeft="50">#{messages['label.informeViaticos']}</p:paragraph>
+    </p:header>
+    <p:footer borderWidthTop="1" borderColorTop="black" borderWidthBottom="0" alignment="center">
+      #{messages['label.liquidacion']}:  #{informeLiquidacionPDFBO.sdmInformeViaticos.id} - #{messages['label.pagina']}: <p:pageNumber/>
+    </p:footer>
+  </p:font>
+</f:facet>
+
+
+<p:paragraph>
+<p:font size="7">
+   <p:table columns="3" borderWidth="0">
+         <p:cell borderWidth="0"></p:cell>
+		 <p:cell borderWidth="0"></p:cell>
+		 <p:cell horizontalAlignment="right" >#{messages['label.numero']} : #{informeLiquidacionPDFBO.sdmInformeViaticos.id}</p:cell>
+		 <p:cell horizontalAlignment="left" borderWidth="0">#{messages['label.usuario']} : #{informeLiquidacionPDFBO.sdmInformeViaticos.sdmEmpleado.nombre}</p:cell>
+         <p:cell borderWidth="0"></p:cell>
+		<p:cell horizontalAlignment="right" borderWidth="0">#{messages['label.fecha']} : #{informeLiquidacionPDFBO.sdmInformeViaticos.fecha} </p:cell>
+		
+		<p:cell borderWidth="0"></p:cell>
+		<p:cell borderWidth="0"></p:cell>
+		<p:cell borderWidth="0"></p:cell>
+   </p:table>
+</p:font>
+</p:paragraph>
+
+<p:paragraph> 
+  <p:font size="7">
+   <p:table columns="7" headerRows="1" widths="1 1.5 2 1.5 0.8 2 3">
+
+		 <p:cell>#{messages['label.codigo']}</p:cell>
+		 <p:cell>#{messages['label.empleado']}</p:cell>
+		 <p:cell>#{messages['label.tipoServicio']}</p:cell>
+		 <p:cell>#{messages['label.centroCosto']}</p:cell>
+		 <p:cell>#{messages['label.monto']}</p:cell>
+		 <p:cell>#{messages['label.descripcion']}</p:cell>
+		 <p:cell>#{messages['label.firma']}</p:cell>
+
+	      <ui:repeat value="#{informeLiquidacionPDFBO.listSdmInformeViaticoDetalle}" var="sdmInformeViaticoDetalle">
+
+			 <p:cell>#{sdmInformeViaticoDetalle.sdmEmpleado.codigo}</p:cell>
+			 <p:cell>#{sdmInformeViaticoDetalle.sdmEmpleado.nombre}</p:cell>
+			 <p:cell>#{sdmInformeViaticoDetalle.sdmTipoServicio.descripcion}</p:cell>
+			 <p:cell>#{sdmInformeViaticoDetalle.sdmDelegacion.codigo}/#{sdmInformeViaticoDetalle.sdmDivicion.codigo}/#{sdmInformeViaticoDetalle.sdmCentroCosto.codigo}</p:cell>
+			 <p:cell>#{sdmInformeViaticoDetalle.monto}</p:cell>
+			 <p:cell>#{sdmInformeViaticoDetalle.descripcion}</p:cell>
+			 <p:cell></p:cell>
+	      </ui:repeat>
+
+		 <p:cell></p:cell>
+		 <p:cell></p:cell>
+		 <p:cell></p:cell>
+		 <p:cell>#{messages['label.total']} :</p:cell>
+		 <p:cell>#{informeLiquidacionPDFBO.sdmInformeViaticos.montoTotal}</p:cell>
+		 <p:cell></p:cell>
+		 <p:cell></p:cell>	   
+	</p:table>
+   	</p:font>
+</p:paragraph>
+
+<p:paragraph> 
+  <p:font size="7">
+	 <p:table columns="2">
+			<p:cell borderWidth="0"></p:cell>
+			<p:cell borderWidth="0"></p:cell>  
+			<p:cell borderWidth="0"></p:cell>
+			<p:cell borderWidth="0"></p:cell>  
+	</p:table>
+   	<p:table columns="6" headerRows="1" >
+   	     <p:cell borderWidth="0"></p:cell>
+   	     <p:cell borderWidth="0"></p:cell>
+   	     <p:cell borderWidth="0"></p:cell>
+   	     <p:cell borderWidth="0"></p:cell>
+   	     <p:cell>#{messages['label.resumenCC']}</p:cell>
+		 <p:cell></p:cell>
+	      <ui:repeat value="#{informeLiquidacionPDFBO.arrTotalCentroCostos}" var="vistaReporteTotalCentroCosto">
+	   	     <p:cell borderWidth="0"></p:cell>
+	   	     <p:cell borderWidth="0"></p:cell>
+	   	     <p:cell borderWidth="0"></p:cell>
+			 <p:cell borderWidth="0"></p:cell>
+	         <p:cell>#{vistaReporteTotalCentroCosto.delegacion_divicion_cc}</p:cell>
+			 <p:cell>#{vistaReporteTotalCentroCosto.totalCentroCosto}</p:cell>
+	      </ui:repeat>
+	   	     <p:cell borderWidth="0"></p:cell>
+	   	     <p:cell borderWidth="0"></p:cell>
+	   	     <p:cell borderWidth="0"></p:cell>
+			 <p:cell borderWidth="0"></p:cell>	      
+			 <p:cell>#{messages['label.total']} :</p:cell>
+			 <p:cell>#{informeLiquidacionPDFBO.sdmInformeViaticos.montoTotal}</p:cell>	      
+	</p:table>
+   </p:font>
+</p:paragraph>
+
+
+
+<p:paragraph> 
+	<p:font size="7">
+	   <p:table columns="2">
+			<p:cell borderWidth="0"></p:cell>
+			<p:cell borderWidth="0"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left">#{messages['label.preparadoPor']} :</p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="right">#{messages['label.aprobadoPor']} :</p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>		   
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>		   
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>		 		   
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>		 
+		   		   		   
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom">---------------------------------------</p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="right" verticalAlignment="bottom">---------------------------------------</p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom">#{informeLiquidacionPDFBO.sdmInformeViaticos.sdmEmpleado.nombre}</p:cell>
+		   <p:cell borderWidth="0" horizontalAlignment="left"  verticalAlignment="bottom"></p:cell>
+	   </p:table>	
+   </p:font>
+</p:paragraph> 
+
+</p:document>

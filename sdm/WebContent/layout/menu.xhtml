@@ -1,0 +1,121 @@
+<rich:toolBar
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:rich="http://richfaces.org/rich">
+    
+    <rich:toolBarGroup>
+        <h:outputText value="#{messages['label.nombreSistema']}"/>
+        <!--  
+        <s:link id="menuHomeId" view="/home.xhtml" value="Inicio" propagation="none"/>
+        -->
+    </rich:toolBarGroup>
+    
+    <rich:toolBarGroup>
+        <s:link id="liquidacion" view="/liquidacionInforme.xhtml" value="#{messages['label.liquidacionInformes']}" propagation="none" rendered="#{s:hasRole('Liquidador')}" />
+    </rich:toolBarGroup>
+    
+    <rich:toolBarGroup>
+        <s:link id="ingresoViaticos" view="/ingresoViaticos.xhtml" value="Pagos" propagation="none" rendered="#{s:hasRole('Emisor')}" />
+    </rich:toolBarGroup>
+    
+     <rich:toolBarGroup>
+        <s:link id="anularInforme" view="/anulacionInforme.xhtml" value="Anular Informe" propagation="none" rendered="#{s:hasRole('Anulador')}" />
+    </rich:toolBarGroup>
+
+     <rich:toolBarGroup>
+        <s:link id="cambioContrasena" view="/cambioContrasena.xhtml" value="Cambio Contraseña" propagation="none" rendered="#{identity.loggedIn}" />
+    </rich:toolBarGroup>
+
+     <rich:toolBarGroup>
+        <s:link id="busquedaInforme" view="/busquedaInforme.xhtml" value="Buscar Informe/Imprimir" propagation="none" rendered="#{s:hasRole('Administrador') or s:hasRole('Liquidador') }" />
+    </rich:toolBarGroup>
+    
+     <rich:toolBarGroup>
+        <s:link id="matenimientoEmpleados" view="/asignacionRoles.xhtml" value="Mantenimiento de Empleados" propagation="none" rendered="#{s:hasRole('Gestor de Empleados')}" />
+    </rich:toolBarGroup>
+    
+     <rich:toolBarGroup>
+        <s:link id="matenimientoMasivoEmpleados" view="/altaEmpleadosMasiva.xhtml" value="Mantenimiento Masivo de Empleados" propagation="none" rendered="#{s:hasRole('Gestor de Empleados')}" />
+    </rich:toolBarGroup>
+    
+    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none" rendered="#{s:hasRole('Reportes')}">
+        <f:facet name="label">Reportes :</f:facet>
+			<rich:menuItem>
+		    	<s:link view="/reporteInformes.xhtml"
+		           	value="Reporte Informes Emitidos"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     
+		     <rich:menuItem>
+		    	<s:link view="/reporteInformesCCTipoServicio.xhtml"
+		           	value="Reporte Acumulado Centro Costo Tipo Servicio"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+    
+    
+    </rich:dropDownMenu>
+    
+    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none" rendered="#{s:hasRole('Administrador')}">
+        <f:facet name="label">Mantenimientos :</f:facet>
+			<rich:menuItem>
+		    	<s:link view="/tipoServicio.xhtml"
+		           	value="Mantenimiento Tipo Servicio"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+
+			<rich:menuItem>
+		    	<s:link view="/empresa.xhtml"
+		           	value="Mantenimiento Empresa"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     
+		     <rich:menuItem>
+		    	<s:link view="/delegacion.xhtml"
+		           	value="Mantenimiento Delegación"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     
+		   <rich:menuItem>
+		    	<s:link view="/division.xhtml"
+		           	value="Mantenimiento División"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     
+		   <rich:menuItem>
+		    	<s:link view="/centroCosto.xhtml"
+		           	value="Mantenimiento Centro Costo"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     
+		     <rich:menuItem>
+		    	<s:link view="/altaEmpleadosMasiva.xhtml"
+		           	value="Mantenimiento Masivo Empleados"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+  		 
+			<rich:menuItem>
+		    	<s:link view="/asignacionRoles.xhtml"
+		           	value="Mantenimiento Empleados"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     		     
+    </rich:dropDownMenu>
+    <!-- @newMenuItem@ -->
+    <rich:toolBarGroup location="right">
+        <h:outputText id="menuWelcomeId" value="Usuario: #{credentials.username}" rendered="#{identity.loggedIn}"/>
+        <s:link id="menuLoginId" view="/login.xhtml" value="#{messages['label.ingresar']}" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout}" value="#{messages['label.salir']}" rendered="#{identity.loggedIn}" propagation="none"/>
+    </rich:toolBarGroup>
+</rich:toolBar>

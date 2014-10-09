@@ -1,0 +1,205 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="sdmEmpleadoSearch" styleClass="edit">
+
+        <rich:simpleTogglePanel label="SdmEmpleado Search Filter" switchType="ajax">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nombre</ui:define>
+                <h:inputText id="nombre" value="#{sdmEmpleadoList.sdmEmpleado.nombre}"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Codigo</ui:define>
+                <h:inputText id="codigo" value="#{sdmEmpleadoList.sdmEmpleado.codigo}"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Match</ui:define>
+                <h:selectOneRadio id="logic" value="#{sdmEmpleadoList.restrictionLogicOperator}" styleClass="radio">
+                    <f:selectItem itemLabel="All" itemValue="and"/>
+                    <f:selectItem itemLabel="Any" itemValue="or"/>
+                </h:selectOneRadio>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+
+        <div class="actionButtons">
+            <h:commandButton id="search" value="Search" action="/SdmEmpleadoList.xhtml"/>
+            <s:button id="reset" value="Reset" includePageParams="false"/>
+        </div>
+
+    </h:form>
+
+    <rich:panel>
+        <f:facet name="header">SdmEmpleado Search Results (#{empty sdmEmpleadoList.resultList ? 0 : (sdmEmpleadoList.paginated ? sdmEmpleadoList.resultCount : sdmEmpleadoList.resultList.size)})</f:facet>
+    <div class="results" id="sdmEmpleadoList">
+
+    <h:outputText value="The sdmEmpleado search returned no results."
+               rendered="#{empty sdmEmpleadoList.resultList}"/>
+
+    <rich:dataTable id="sdmEmpleadoList"
+                var="_sdmEmpleado"
+              value="#{sdmEmpleadoList.resultList}"
+           rendered="#{not empty sdmEmpleadoList.resultList}">
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Id"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.id}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Sdm empresa codigo"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.sdmEmpresa.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.sdmEmpresa.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Sdm divicion codigo"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.sdmDivicion.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.sdmDivicion.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Sdm centro costo codigo"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.sdmCentroCosto.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.sdmCentroCosto.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Sdm delegacion codigo"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.sdmDelegacion.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.sdmDelegacion.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Nombre"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.nombre"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.nombre}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Codigo"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmEmpleadoList}"/>
+                    <ui:param name="propertyLabel" value="Activo"/>
+                    <ui:param name="propertyPath" value="sdmEmpleado.activo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmEmpleado.activo}"/>
+        </h:column>
+        <rich:column styleClass="action">
+            <f:facet name="header">Action</f:facet>
+            <s:link view="/#{empty from ? 'SdmEmpleado' : from}.xhtml"
+                   value="#{empty from ? 'View' : 'Select'}"
+             propagation="#{empty from ? 'none' : 'default'}"
+                      id="sdmEmpleadoViewId">
+                <f:param name="sdmEmpleadoId"
+                        value="#{_sdmEmpleado.id}"/>
+            </s:link>
+            #{' '}
+            <s:link view="/SdmEmpleadoEdit.xhtml"
+                   value="Edit"
+             propagation="none"
+                      id="sdmEmpleadoEdit"
+                rendered="#{empty from}">
+                <f:param name="sdmEmpleadoId"
+                        value="#{_sdmEmpleado.id}"/>
+            </s:link>
+        </rich:column>
+    </rich:dataTable>
+
+    </div>
+    </rich:panel>
+
+    <div class="tableControl">
+
+        <s:link view="/SdmEmpleadoList.xhtml"
+            rendered="#{sdmEmpleadoList.previousExists}"
+               value="#{messages.left}#{messages.left} First Page"
+                  id="firstPage">
+          <f:param name="firstResult" value="0"/>
+        </s:link>
+
+        <s:link view="/SdmEmpleadoList.xhtml"
+            rendered="#{sdmEmpleadoList.previousExists}"
+               value="#{messages.left} Previous Page"
+                  id="previousPage">
+            <f:param name="firstResult"
+                    value="#{sdmEmpleadoList.previousFirstResult}"/>
+        </s:link>
+
+        <s:link view="/SdmEmpleadoList.xhtml"
+            rendered="#{sdmEmpleadoList.nextExists}"
+               value="Next Page #{messages.right}"
+                  id="nextPage">
+            <f:param name="firstResult"
+                    value="#{sdmEmpleadoList.nextFirstResult}"/>
+        </s:link>
+
+        <s:link view="/SdmEmpleadoList.xhtml"
+            rendered="#{sdmEmpleadoList.nextExists}"
+               value="Last Page #{messages.right}#{messages.right}"
+                  id="lastPage">
+            <f:param name="firstResult"
+                    value="#{sdmEmpleadoList.lastFirstResult}"/>
+        </s:link>
+
+    </div>
+
+    <s:div styleClass="actionButtons" rendered="#{empty from}">
+        <s:button view="/SdmEmpleadoEdit.xhtml"
+                    id="create"
+           propagation="none"
+                 value="Create sdmEmpleado">
+            <f:param name="sdmEmpleadoId"/>
+        </s:button>
+    </s:div>
+
+</ui:define>
+
+</ui:composition>

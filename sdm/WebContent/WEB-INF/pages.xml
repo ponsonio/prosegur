@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pages login-view-id="/login.xhtml"
+ no-conversation-view-id="/home.xhtml"
+ xmlns="http://jboss.com/products/seam/pages"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd">
+ <page view-id="/login.xhtml">
+  <navigation from-action="#{identity.login}">
+   <rule if="#{identity.loggedIn}">
+    <redirect view-id="/home.xhtml"/>
+   </rule>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/ingresoViaticos.xhtml">
+  <restrict>#{s:hasRole('Emisor')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/asignacionRoles.xhtml">
+  <restrict>#{ s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') }</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/anulacionInforme.xhtml">
+  <restrict>#{s:hasRole('Anulador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/busquedaInforme.xhtml">
+  <restrict>#{s:hasRole('Liquidador') or s:hasRole('Administrador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="false" view-id="/home.xhtml"/>
+ <page login-required="true" view-id="/impresionInforme.xhtml">
+  <restrict>#{s:hasRole('Emisor')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/tipoServicio.xhtml">
+  <restrict>#{s:hasRole('Administrador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/empresa.xhtml">
+  <restrict>#{s:hasRole('Administrador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/division.xhtml">
+  <restrict>#{s:hasRole('Administrador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/delegacion.xhtml">
+  <restrict>#{s:hasRole('Administrador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/centroCosto.xhtml">
+  <restrict>#{s:hasRole('Administrador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ 
+ <page login-required="true" view-id="/reporteInformes.xhtml">
+  <restrict>#{s:hasRole('Reportes')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ 
+ <page login-required="true" view-id="/reporteInformes_xls.xhtml">
+  <restrict>#{s:hasRole('Reportes')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ 
+ <page login-required="true" view-id="/reporteInformesCCTipoServicio.xhtml">
+  <restrict>#{s:hasRole('Reportes')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page action="#{informeLiquidacionPDFBO.generarReporte()}"
+  login-required="true" view-id="/informePDF.xhtml"/>
+ <page login-required="true" view-id="/liquidacionInforme.xhtml">
+  <restrict>#{s:hasRole('Liquidador')}</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/cambioContrasena.xhtml">
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <page login-required="true" view-id="/altaEmpleadosMasiva.xhtml">
+  <restrict>#{s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') }</restrict>
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+ <exception class="org.jboss.seam.framework.EntityNotFoundException">
+  <redirect view-id="/error.xhtml">
+   <message severity="warn">Record not found</message>
+  </redirect>
+ </exception>
+ <exception class="javax.persistence.EntityNotFoundException">
+  <redirect view-id="/error.xhtml">
+   <message severity="warn">Record not found</message>
+  </redirect>
+ </exception>
+ <exception class="javax.persistence.EntityExistsException">
+  <redirect view-id="/error.xhtml">
+   <message severity="warn">Duplicate record</message>
+  </redirect>
+ </exception>
+ <exception class="javax.persistence.OptimisticLockException">
+  <end-conversation/>
+  <redirect view-id="/error.xhtml">
+   <message severity="warn">Another user changed the same data, please try again</message>
+  </redirect>
+ </exception>
+ <exception class="org.jboss.seam.security.AuthorizationException">
+  <redirect view-id="/error.xhtml">
+   <message severity="error">You don't have permission to access this resource</message>
+  </redirect>
+ </exception>
+ <exception class="org.jboss.seam.security.NotLoggedInException">
+  <redirect view-id="/login.xhtml">
+   <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
+  </redirect>
+ </exception>
+ <exception class="javax.faces.application.ViewExpiredException">
+  <redirect view-id="/error.xhtml">
+   <message severity="warn">Your session has timed out, please try again</message>
+  </redirect>
+ </exception>
+ <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
+  <http-error error-code="503"/>
+ </exception>
+ <exception>
+  <redirect view-id="/error.xhtml">
+   <message severity="error">Unexpected error, please try again</message>
+  </redirect>
+ </exception>
+</pages>

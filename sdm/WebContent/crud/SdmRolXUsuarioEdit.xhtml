@@ -1,0 +1,161 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="sdmRolXUsuario" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{sdmRolXUsuarioHome.managed ? 'Edit' : 'Add'} Sdm rol x usuario</f:facet>
+
+
+            <s:decorate id="idRolField" template="layout/edit.xhtml">
+                <ui:define name="label">Id rol</ui:define>
+                <h:inputText id="idRol"
+                       required="true"
+                       disabled="#{sdmRolXUsuarioHome.managed}"
+                          value="#{sdmRolXUsuarioHome.instance.id.idRol}">
+                    <a:support event="onblur" reRender="idRolField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="idUsuarioField" template="layout/edit.xhtml">
+                <ui:define name="label">Id usuario</ui:define>
+                <h:inputText id="idUsuario"
+                       required="true"
+                       disabled="#{sdmRolXUsuarioHome.managed}"
+                          value="#{sdmRolXUsuarioHome.instance.id.idUsuario}">
+                    <a:support event="onblur" reRender="idUsuarioField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{sdmRolXUsuarioHome.persist}"
+                       disabled="#{!sdmRolXUsuarioHome.wired}"
+                       rendered="#{!sdmRolXUsuarioHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{sdmRolXUsuarioHome.update}"
+                       rendered="#{sdmRolXUsuarioHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{sdmRolXUsuarioHome.remove}"
+                      immediate="true"
+                       rendered="#{sdmRolXUsuarioHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                    view="/SdmRolXUsuario.xhtml"
+                rendered="#{sdmRolXUsuarioHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty sdmRolXUsuarioFrom ? 'SdmRolXUsuarioList' : sdmRolXUsuarioFrom}.xhtml"
+                rendered="#{!sdmRolXUsuarioHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+    <rich:tab label="Sdm usuario *" labelClass="required">
+    <div class="association" id="sdmUsuarioParent">
+
+        <h:outputText value="There is no sdmUsuario associated with this sdmRolXUsuario."
+                   rendered="#{sdmRolXUsuarioHome.instance.sdmUsuario == null}"/>
+
+        <rich:dataTable var="_sdmUsuario"
+                   value="#{sdmRolXUsuarioHome.instance.sdmUsuario}"
+                rendered="#{sdmRolXUsuarioHome.instance.sdmUsuario != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmUsuarioTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmUsuario.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empleado id</f:facet>
+                <h:outputText value="#{_sdmUsuario.sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Contrasena</f:facet>
+                <h:outputText value="#{_sdmUsuario.contrasena}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Correo</f:facet>
+                <h:outputText value="#{_sdmUsuario.correo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmUsuario.activo}"/>
+            </h:column>
+        </rich:dataTable>
+
+        <div class="actionButtons">
+            <s:button id="#{sdmRolXUsuarioHome.instance.sdmUsuario != null ? 'changeParent' : 'selectParent'}" value="#{sdmRolXUsuarioHome.instance.sdmUsuario != null ? 'Change' : 'Select'} sdmUsuario"
+                       view="/SdmUsuarioList.xhtml">
+                <f:param name="from" value="SdmRolXUsuarioEdit"/>
+            </s:button>
+        </div>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab label="Sdm rol *" labelClass="required">
+    <div class="association" id="sdmRolParent">
+
+        <h:outputText value="There is no sdmRol associated with this sdmRolXUsuario."
+                   rendered="#{sdmRolXUsuarioHome.instance.sdmRol == null}"/>
+
+        <rich:dataTable var="_sdmRol"
+                   value="#{sdmRolXUsuarioHome.instance.sdmRol}"
+                rendered="#{sdmRolXUsuarioHome.instance.sdmRol != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmRolTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmRol.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Etiqueta</f:facet>
+                <h:outputText value="#{_sdmRol.etiqueta}"/>
+            </h:column>
+        </rich:dataTable>
+
+        <div class="actionButtons">
+            <s:button id="#{sdmRolXUsuarioHome.instance.sdmRol != null ? 'changeParent' : 'selectParent'}" value="#{sdmRolXUsuarioHome.instance.sdmRol != null ? 'Change' : 'Select'} sdmRol"
+                       view="/SdmRolList.xhtml">
+                <f:param name="from" value="SdmRolXUsuarioEdit"/>
+            </s:button>
+        </div>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

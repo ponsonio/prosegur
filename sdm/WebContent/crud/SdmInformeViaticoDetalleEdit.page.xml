@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      no-conversation-view-id="/SdmInformeViaticoDetalleList.xhtml"
+      login-required="true">
+
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+
+   <action execute="#{sdmInformeViaticoDetalleHome.wire}"/>
+
+   <param name="sdmInformeViaticoDetalleFrom"/>
+   <param name="sdmInformeViaticoDetalleId" value="#{sdmInformeViaticoDetalleHome.sdmInformeViaticoDetalleId}"/>
+   <param name="sdmEmpresaFrom"/>
+   <param name="sdmEmpresaCodigo" value="#{sdmEmpresaHome.sdmEmpresaCodigo}"/>
+
+   <param name="sdmInformeViaticosFrom"/>
+   <param name="sdmInformeViaticosId" value="#{sdmInformeViaticosHome.sdmInformeViaticosId}"/>
+   <param name="sdmEmpleadoFrom"/>
+   <param name="sdmEmpleadoId" value="#{sdmEmpleadoHome.sdmEmpleadoId}"/>
+   <param name="sdmDivicionFrom"/>
+   <param name="sdmDivicionCodigo" value="#{sdmDivicionHome.sdmDivicionCodigo}"/>
+
+   <param name="sdmCentroCostoFrom"/>
+   <param name="sdmCentroCostoCodigo" value="#{sdmCentroCostoHome.sdmCentroCostoCodigo}"/>
+
+   <param name="sdmDelegacionFrom"/>
+   <param name="sdmDelegacionCodigo" value="#{sdmDelegacionHome.sdmDelegacionCodigo}"/>
+
+
+
+   <param name="sdmTipoServicioFrom"/>
+   <param name="sdmTipoServicioId" value="#{sdmTipoServicioHome.sdmTipoServicioId}"/>
+
+
+
+   <navigation from-action="#{sdmInformeViaticoDetalleHome.persist}">
+      <rule if-outcome="persisted">
+         <end-conversation/>
+         <redirect view-id="/SdmInformeViaticoDetalle.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{sdmInformeViaticoDetalleHome.update}">
+      <rule if-outcome="updated">
+         <end-conversation/>
+         <redirect view-id="/SdmInformeViaticoDetalle.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{sdmInformeViaticoDetalleHome.remove}">
+      <rule if-outcome="removed">
+         <end-conversation/>
+         <redirect view-id="/SdmInformeViaticoDetalleList.xhtml"/>
+      </rule>
+   </navigation>
+
+</page>

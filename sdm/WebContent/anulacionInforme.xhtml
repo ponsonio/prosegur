@@ -1,0 +1,133 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="liquidacionInforme">
+
+			<script type="text/javascript">
+			  //<![CDATA[
+					function validarMonto(xxxxx) 
+					{
+						var numval = xxxxx.value;
+					    curphonevar = numval.replace(/[\\A-Za-z!"£$%^&\-\)\(*+_={};:'@#~,.Š\/<>\" "\?|`¬\]\[]/g,'');
+					    xxxxx.value = curphonevar;
+					    //xxxxx.focus;
+					}
+			  // ]]>
+			  </script>
+			<f:facet name="header"><h:outputText value="#{messages['label.tituloAnulacion']}"/></f:facet>
+
+				<h3 align="center">#{messages['label.titulo.anulacion']}</h3>			
+				<rich:tabPanel selectedTab="#{anulacionInformeBO.tabSelect}">
+										
+					<rich:tab label="#{messages['label.codigo']}" id="tabCodigo">
+    			 												            
+			            <s:decorate id="numeroBusqueda" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.numeroInforme']}</ui:define>
+			                <h:inputText id="numeroBusqueda"
+			                       required="false"
+			                          value="#{anulacionInformeBO.codigoBusqueda}" onkeyup="validarMonto(this)">
+			                </h:inputText>
+			            </s:decorate>							
+						<h:commandButton id="buscarCorrelativo" value="Buscar"
+									action="#{anulacionInformeBO.buscarLiquidacionXCorrelativo()}" />	
+									
+						<div style="clear:both"/>
+	
+					</rich:tab>
+						<rich:tab id="tabNombre" label="#{messages['label.nombre']}" >
+							
+						           <s:decorate id="codigoEmpleadoBuscar" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.selecioneUsuario']}</ui:define>
+						                
+						                <h:selectOneMenu  id="empleado"  value="#{anulacionInformeBO.sdmEmpleadoSelect.id}">
+						                	<f:selectItem itemLabel="Todos" itemValue="-1" />
+						                	<s:selectItems value="#{arrayListSdmEmpleadoRolEmisor}" var="sdmEmpleado" 
+						                					label="#{sdmEmpleado.codigo} - #{sdmEmpleado.nombre}" itemValue="#{sdmEmpleado.id}"/>
+						                </h:selectOneMenu>
+							      </s:decorate>			                
+
+						           <s:decorate id="fechadesde" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.fechaDesde']}</ui:define>
+												<rich:calendar id="fechadesde" value="#{anulacionInformeBO.fechaDesde}"   />
+							      </s:decorate>			                
+							
+						           <s:decorate id="fechahasta" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.fechaHasta']}</ui:define>
+												<rich:calendar id="fechahasta" value="#{anulacionInformeBO.fechaHasta}"   />
+							      </s:decorate>			                
+
+						<h:commandButton id="buscarRango" value="Buscar"
+									action="#{anulacionInformeBO.buscarLiquidacionesXRango()}" />	
+									
+						<div style="clear:both"/>
+
+							
+	    				</rich:tab>
+					</rich:tabPanel>
+    			
+    			 			<rich:panel>			
+
+					<rich:dataTable value="#{listvistaSdmInformeViaticos}"
+						rendered="#{listvistaSdmInformeViaticos.rowCount>0}" var="vistaSdmInformeViaticos"
+						id="table">
+
+						<f:facet name="header">
+							<h:outputText value="#{messages['label.informesPendientes']}" />
+						</f:facet>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.numero']}" />
+							</f:facet>
+							<h:outputText value="#{vistaSdmInformeViaticos.correlativo}" id="correlativo" />
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.fecha']}" />
+							</f:facet>
+							<h:outputText value="#{vistaSdmInformeViaticos.fecha}" id="fecha" >
+									<f:convertDateTime pattern="d/M/yyyy" />
+						    </h:outputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.usuario']}" />
+							</f:facet>
+							<h:outputText value="#{vistaSdmInformeViaticos.sdmEmpleado.nombre}"
+								id="usuario" />
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.monto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaSdmInformeViaticos.montoTotal}" />
+						</rich:column>
+
+						<rich:column>
+						   <h:selectBooleanCheckbox value="#{vistaSdmInformeViaticos.selecionado}" /> 
+						  </rich:column> 
+
+					</rich:dataTable>
+					
+			        <div style="clear:both"/>
+
+    			</rich:panel>
+    			
+			<div class="actionButtons">
+						<h:commandButton id="liquidar" value="Anular"
+								action="#{anulacionInformeBO.anular()}" />		
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>    			

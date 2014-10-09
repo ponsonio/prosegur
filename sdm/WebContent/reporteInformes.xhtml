@@ -1,0 +1,206 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="formReporte">
+		
+			<f:facet name="header"><h:outputText value="#{messages['label.tituloAnulacion']}"/></f:facet>
+
+				<h3 align="center">#{messages['label.titulo.reporteInformes']}</h3>
+				<rich:tabPanel selectedTab="#{reporteInformesBO.tabSelect}">
+				
+						<rich:tab id="tabNombre" label="#{messages['label.rangoEmision']}" >
+							
+
+						           <s:decorate id="fechadesde" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.fechaDesde']}</ui:define>
+												<rich:calendar id="fechadesde" value="#{reporteInformesBO.fechaDesde}"   />
+							      </s:decorate>			                
+							
+						           <s:decorate id="fechahasta" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.fechaHasta']}</ui:define>
+												<rich:calendar id="fechahasta" value="#{reporteInformesBO.fechaHasta}"   />
+							      </s:decorate>			                
+
+						<h:commandButton id="buscarRango" value="Buscar"
+									action="#{reporteInformesBO.generarReporte()}" />	
+									
+						<div style="clear:both"/>
+
+							
+	    				</rich:tab>
+					</rich:tabPanel>
+    			
+    				<h:commandButton id="buscarCorrelativo" value="Excel" 
+    					rendered="#{reporteInformesBO.arrayVistaReporteLiquidaciones.size()>0}"
+				    		action="#{org.jboss.seam.excel.exporter.excelExporter.export('formReporte:reporte')}"/>
+		
+
+					<rich:dataTable value="#{reporteInformesBO.arrayVistaReporteLiquidaciones}"
+						rendered="#{reporteInformesBO.arrayVistaReporteLiquidaciones.size()>0}" var="vistaReporteLiquidaciones"
+						id="reporte">
+
+						<f:facet name="header">
+							<h:outputText value="#{messages['label.informesEmitidos']}" />
+						</f:facet>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.numero']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.id}" id="numeroInforme" />
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.correlativoInforme']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.correlativoInforme}" id="correlativo" />
+						</rich:column>
+ 
+ 						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.fechaInforme']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.fecha}" id="fechaInforme" >
+									<f:convertDateTime pattern="d/M/yyyy" />
+						    </h:outputText>
+						</rich:column>	
+						
+ 						<!-- Cabecera -->
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.empleadoEmisor']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpleado.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpleado.nombre}" id="codigoEmisor" />
+						</rich:column>
+
+
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.centroCosto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmCentroCosto.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticos.sdmCentroCosto.nombre}" id="CCCab" />
+						</rich:column>
+
+												
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.empresa']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpresa.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpresa.nombre}" id="cEmpCab" />
+						</rich:column>
+
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.divicion']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDivicion.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDivicion.nombre}" id="cDivCab" />
+						</rich:column>
+
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.delegacion']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDelegacion.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDelegacion.nombre}" id="cDelCab" />
+						</rich:column>
+
+						
+
+						<!-- Liquidacion -->
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.fechaLiquidacion']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.fechaLiquidacion}" id="fechaLiquidacion" >
+									<f:convertDateTime pattern="d/M/yyyy" />
+						    </h:outputText>
+						</rich:column>						
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.liquidador']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.codigoEmpleadoLiquidador} - #{vistaReporteLiquidaciones.nombreEmpleadoLiquidador}" id="nombreLiquidador" >
+						    </h:outputText>
+						</rich:column>		
+						<!-- Detalle -->
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.empleado']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpleado.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpleado.nombre}" id="codigoEmpLiquidado" />
+						</rich:column>
+
+ 						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.tipoServicio']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmTipoServicio.descripcion}" id="tipoServicio" />
+						</rich:column>
+ 
+  						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.observaciones']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.descripcion}" id="observacion" />
+						</rich:column>
+						
+ 						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.centroCosto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmCentroCosto.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmCentroCosto.nombre}" id="CCDet" />
+						</rich:column>
+
+												
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.empresa']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpresa.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpresa.nombre}" id="cEmpDet" />
+						</rich:column>
+
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.divicion']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDivicion.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDivicion.nombre}" id="cDivDet" />
+						</rich:column>
+
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.delegacion']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDelegacion.codigo} - #{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDelegacion.nombre}" id="cDelDet" />
+						</rich:column>
+
+ 
+ 						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.monto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.monto}" id="montoDetalle" />
+						</rich:column>
+					</rich:dataTable>		
+
+
+	
+		</h:form>
+	</ui:define>
+</ui:composition>    

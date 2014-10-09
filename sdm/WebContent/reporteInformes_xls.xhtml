@@ -1,0 +1,240 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:e="http://jboss.com/products/seam/excel"
+      xmlns:rich="http://richfaces.org/rich" >
+
+<e:workbook> 
+  <e:worksheet value="#{reporteInformesBO.arrayVistaReporteLiquidaciones}" var="vistaReporteLiquidaciones" > 
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.numero']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.id}"/>
+		</e:column>
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.correlativoInforme']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.correlativoInforme}"/>
+		</e:column>
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.fechaInforme']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.fecha}"/>
+		</e:column>
+		
+		<!--Cabecera   -->
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.fecha}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpleado.nombre}"/>
+		</e:column>
+
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoCCEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmCentroCosto.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreCCEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmCentroCosto.nombre}"/>
+		</e:column>
+
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoEmpresaEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpresa.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreEmpresaEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmEmpresa.nombre}"/>
+		</e:column>
+
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoDivicionEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDivicion.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreDivicionEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDivicion.nombre}"/>
+		</e:column>
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoDelegacionEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDelegacion.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreDelegacionEmpleadoEmisor']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticos.sdmDelegacion.nombre}"/>
+		</e:column>
+		
+		<!--Liquidacion   -->		
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.fechaLiquidacion']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.fechaLiquidacion}"/>
+		</e:column>
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoEmpleadoLiquidador']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.codigoEmpleadoLiquidador}"/>
+		</e:column>
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreEmpleadoLiquidador']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.nombreEmpleadoLiquidador}"/>
+		</e:column>		
+		
+		<!-- Detalle -->
+
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoEmpleado']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpleado.codigo}"/>
+		</e:column>
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreEmpleado']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpleado.nombre}"/>
+		</e:column>		
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.tipoServicio']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmTipoServicio.descripcion}"/>
+		</e:column>
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.observaciones']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.descripcion}"/>
+		</e:column>
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoCentroCosto']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmCentroCosto.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreCentroCosto']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmCentroCosto.nombre}"/>
+		</e:column>
+
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoEmpresa']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpresa.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreEmpresa']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmEmpresa.nombre}"/>
+		</e:column>
+
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoDivicion']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDivicion.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreDivicion']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDivicion.nombre}"/>
+		</e:column>
+
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.codigoDelegacion']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDelegacion.codigo}"/>
+		</e:column>
+		
+		
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.nombreDelegacion']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.sdmDelegacion.nombre}"/>
+		</e:column>
+				
+		<e:column>
+			<f:facet name="header">
+				<e:cell value="#{messages['label.monto']}"/>
+			</f:facet>
+			<e:cell value="#{vistaReporteLiquidaciones.sdmInformeViaticoDetalle.monto}"/>
+		</e:column>
+								
+  </e:worksheet> 
+</e:workbook>
+
+</html>  

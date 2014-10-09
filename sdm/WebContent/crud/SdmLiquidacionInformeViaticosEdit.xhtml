@@ -1,0 +1,222 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="sdmLiquidacionInformeViaticos" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{sdmLiquidacionInformeViaticosHome.managed ? 'Edit' : 'Add'} Sdm liquidacion informe viaticos</f:facet>
+
+
+            <s:decorate id="idField" template="layout/edit.xhtml">
+                <ui:define name="label">Id</ui:define>
+                <h:inputText id="id"
+                       required="true"
+                       disabled="#{sdmLiquidacionInformeViaticosHome.managed}"
+                          value="#{sdmLiquidacionInformeViaticosHome.instance.id}">
+                    <a:support event="onblur" reRender="idField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+
+
+            <s:decorate id="fechaField" template="layout/edit.xhtml">
+                <ui:define name="label">Fecha</ui:define>
+                <rich:calendar id="fecha"
+                       required="true"
+                          value="#{sdmLiquidacionInformeViaticosHome.instance.fecha}" datePattern="MM/dd/yyyy" />
+            </s:decorate>
+
+
+            <s:decorate id="montoField" template="layout/edit.xhtml">
+                <ui:define name="label">Monto</ui:define>
+                <h:inputText id="monto"
+                       required="true"
+                          value="#{sdmLiquidacionInformeViaticosHome.instance.monto}"
+                           size="15">
+                    <a:support event="onblur" reRender="montoField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="anuladoField" template="layout/edit.xhtml">
+                <ui:define name="label">Anulado</ui:define>
+                <h:selectBooleanCheckbox id="anulado"
+                                   required="true"
+                                      value="#{sdmLiquidacionInformeViaticosHome.instance.anulado}"/>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{sdmLiquidacionInformeViaticosHome.persist}"
+                       disabled="#{!sdmLiquidacionInformeViaticosHome.wired}"
+                       rendered="#{!sdmLiquidacionInformeViaticosHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{sdmLiquidacionInformeViaticosHome.update}"
+                       rendered="#{sdmLiquidacionInformeViaticosHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{sdmLiquidacionInformeViaticosHome.remove}"
+                      immediate="true"
+                       rendered="#{sdmLiquidacionInformeViaticosHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                    view="/SdmLiquidacionInformeViaticos.xhtml"
+                rendered="#{sdmLiquidacionInformeViaticosHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty sdmLiquidacionInformeViaticosFrom ? 'SdmLiquidacionInformeViaticosList' : sdmLiquidacionInformeViaticosFrom}.xhtml"
+                rendered="#{!sdmLiquidacionInformeViaticosHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+    <rich:tab label="Sdm informe viaticos *" labelClass="required">
+    <div class="association" id="sdmInformeViaticosParent">
+
+        <h:outputText value="There is no sdmInformeViaticos associated with this sdmLiquidacionInformeViaticos."
+                   rendered="#{sdmLiquidacionInformeViaticosHome.instance.sdmInformeViaticos == null}"/>
+
+        <rich:dataTable var="_sdmInformeViaticos"
+                   value="#{sdmLiquidacionInformeViaticosHome.instance.sdmInformeViaticos}"
+                rendered="#{sdmLiquidacionInformeViaticosHome.instance.sdmInformeViaticos != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmInformeViaticosTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empresa codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmEmpresa.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empleado id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm divicion codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmDivicion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm centro costo codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmCentroCosto.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm delegacion codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmDelegacion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Fecha</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.fecha}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Monto total</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.montoTotal}">
+                    <f:convertNumber/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Anulado</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.anulado}"/>
+            </h:column>
+        </rich:dataTable>
+
+        <div class="actionButtons">
+            <s:button id="#{sdmLiquidacionInformeViaticosHome.instance.sdmInformeViaticos != null ? 'changeParent' : 'selectParent'}" value="#{sdmLiquidacionInformeViaticosHome.instance.sdmInformeViaticos != null ? 'Change' : 'Select'} sdmInformeViaticos"
+                       view="/SdmInformeViaticosList.xhtml">
+                <f:param name="from" value="SdmLiquidacionInformeViaticosEdit"/>
+            </s:button>
+        </div>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab label="Sdm empleado *" labelClass="required">
+    <div class="association" id="sdmEmpleadoParent">
+
+        <h:outputText value="There is no sdmEmpleado associated with this sdmLiquidacionInformeViaticos."
+                   rendered="#{sdmLiquidacionInformeViaticosHome.instance.sdmEmpleado == null}"/>
+
+        <rich:dataTable var="_sdmEmpleado"
+                   value="#{sdmLiquidacionInformeViaticosHome.instance.sdmEmpleado}"
+                rendered="#{sdmLiquidacionInformeViaticosHome.instance.sdmEmpleado != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmEmpleadoTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empresa codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmEmpresa.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm divicion codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmDivicion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm centro costo codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmCentroCosto.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm delegacion codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmDelegacion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmEmpleado.nombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.activo}"/>
+            </h:column>
+        </rich:dataTable>
+
+        <div class="actionButtons">
+            <s:button id="#{sdmLiquidacionInformeViaticosHome.instance.sdmEmpleado != null ? 'changeParent' : 'selectParent'}" value="#{sdmLiquidacionInformeViaticosHome.instance.sdmEmpleado != null ? 'Change' : 'Select'} sdmEmpleado"
+                       view="/SdmEmpleadoList.xhtml">
+                <f:param name="from" value="SdmLiquidacionInformeViaticosEdit"/>
+            </s:button>
+        </div>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

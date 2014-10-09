@@ -1,0 +1,382 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Sdm informe viatico detalle Details</f:facet>
+
+        <s:decorate id="id" template="layout/display.xhtml">
+            <ui:define name="label">Id</ui:define>
+            <h:outputText value="#{sdmInformeViaticoDetalleHome.instance.id}"/>
+        </s:decorate>
+
+        <s:decorate id="fecha" template="layout/display.xhtml">
+            <ui:define name="label">Fecha</ui:define>
+            <h:outputText value="#{sdmInformeViaticoDetalleHome.instance.fecha}">
+                <s:convertDateTime type="date" dateStyle="short"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate id="monto" template="layout/display.xhtml">
+            <ui:define name="label">Monto</ui:define>
+            <h:outputText value="#{sdmInformeViaticoDetalleHome.instance.monto}">
+                <f:convertNumber/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate id="descripcion" template="layout/display.xhtml">
+            <ui:define name="label">Descripcion</ui:define>
+            <h:outputText value="#{sdmInformeViaticoDetalleHome.instance.descripcion}"/>
+        </s:decorate>
+
+        <s:decorate id="destino" template="layout/display.xhtml">
+            <ui:define name="label">Destino</ui:define>
+            <h:outputText value="#{sdmInformeViaticoDetalleHome.instance.destino}"/>
+        </s:decorate>
+
+        <s:decorate id="correlativoInforme" template="layout/display.xhtml">
+            <ui:define name="label">Correlativo informe</ui:define>
+            <h:outputText value="#{sdmInformeViaticoDetalleHome.instance.correlativoInforme}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/SdmInformeViaticoDetalleEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty sdmInformeViaticoDetalleFrom ? 'SdmInformeViaticoDetalleList' : sdmInformeViaticoDetalleFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm empresa</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmEmpresaParent">
+
+        <h:outputText value="There is no sdmEmpresa associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmEmpresa == null}"/>
+
+        <rich:dataTable var="_sdmEmpresa"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmEmpresa}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmEmpresa != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmEmpresaTable">
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmEmpresa.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmEmpresa.nombre}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmEmpresa"
+                     value="View"
+                      view="/SdmEmpresa.xhtml">
+                    <f:param name="sdmEmpresaCodigo"
+                           value="#{_sdmEmpresa.codigo}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm informe viaticos</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmInformeViaticosParent">
+
+        <h:outputText value="There is no sdmInformeViaticos associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmInformeViaticos == null}"/>
+
+        <rich:dataTable var="_sdmInformeViaticos"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmInformeViaticos}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmInformeViaticos != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmInformeViaticosTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empresa codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmEmpresa.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empleado id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm divicion codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmDivicion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm centro costo codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmCentroCosto.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm delegacion codigo</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.sdmDelegacion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Fecha</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.fecha}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Monto total</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.montoTotal}">
+                    <f:convertNumber/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Anulado</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.anulado}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmInformeViaticos"
+                     value="View"
+                      view="/SdmInformeViaticos.xhtml">
+                    <f:param name="sdmInformeViaticosId"
+                           value="#{_sdmInformeViaticos.id}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm tipo servicio</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmTipoServicioParent">
+
+        <h:outputText value="There is no sdmTipoServicio associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmTipoServicio == null}"/>
+
+        <rich:dataTable var="_sdmTipoServicio"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmTipoServicio}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmTipoServicio != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmTipoServicioTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmTipoServicio.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Descripcion</f:facet>
+                <h:outputText value="#{_sdmTipoServicio.descripcion}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmTipoServicio.activo}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmTipoServicio"
+                     value="View"
+                      view="/SdmTipoServicio.xhtml">
+                    <f:param name="sdmTipoServicioId"
+                           value="#{_sdmTipoServicio.id}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm empleado</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmEmpleadoParent">
+
+        <h:outputText value="There is no sdmEmpleado associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmEmpleado == null}"/>
+
+        <rich:dataTable var="_sdmEmpleado"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmEmpleado}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmEmpleado != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmEmpleadoTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empresa codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmEmpresa.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm divicion codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmDivicion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm centro costo codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmCentroCosto.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm delegacion codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmDelegacion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmEmpleado.nombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.activo}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmEmpleado"
+                     value="View"
+                      view="/SdmEmpleado.xhtml">
+                    <f:param name="sdmEmpleadoId"
+                           value="#{_sdmEmpleado.id}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm divicion</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmDivicionParent">
+
+        <h:outputText value="There is no sdmDivicion associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmDivicion == null}"/>
+
+        <rich:dataTable var="_sdmDivicion"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmDivicion}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmDivicion != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmDivicionTable">
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmDivicion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmDivicion.nombre}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmDivicion"
+                     value="View"
+                      view="/SdmDivicion.xhtml">
+                    <f:param name="sdmDivicionCodigo"
+                           value="#{_sdmDivicion.codigo}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm centro costo</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmCentroCostoParent">
+
+        <h:outputText value="There is no sdmCentroCosto associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmCentroCosto == null}"/>
+
+        <rich:dataTable var="_sdmCentroCosto"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmCentroCosto}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmCentroCosto != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmCentroCostoTable">
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmCentroCosto.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmCentroCosto.nombre}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmCentroCosto"
+                     value="View"
+                      view="/SdmCentroCosto.xhtml">
+                    <f:param name="sdmCentroCostoCodigo"
+                           value="#{_sdmCentroCosto.codigo}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm delegacion</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmDelegacionParent">
+
+        <h:outputText value="There is no sdmDelegacion associated with this sdmInformeViaticoDetalle."
+                   rendered="#{sdmInformeViaticoDetalleHome.instance.sdmDelegacion == null}"/>
+
+        <rich:dataTable var="_sdmDelegacion"
+                   value="#{sdmInformeViaticoDetalleHome.instance.sdmDelegacion}"
+                rendered="#{sdmInformeViaticoDetalleHome.instance.sdmDelegacion != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmDelegacionTable">
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmDelegacion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmDelegacion.nombre}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmDelegacion"
+                     value="View"
+                      view="/SdmDelegacion.xhtml">
+                    <f:param name="sdmDelegacionCodigo"
+                           value="#{_sdmDelegacion.codigo}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+<table-filter match-name="SDM_centro_costo" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_delegacion" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_divicion" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_empleado" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_empresa" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_informe_viatico_detalle" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_informe_viaticos" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_liquidacion_informe_viaticos" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_rol" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_rol_x_usuario" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_tipo_servicio" match-schema="dbo" match-catalog="prosegur"></table-filter>
+<table-filter match-name="SDM_usuario" match-schema="dbo" match-catalog="prosegur"></table-filter>
+</hibernate-reverse-engineering>

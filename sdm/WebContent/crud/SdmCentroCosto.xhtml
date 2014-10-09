@@ -1,0 +1,227 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Sdm centro costo Details</f:facet>
+
+        <s:decorate id="codigo" template="layout/display.xhtml">
+            <ui:define name="label">Codigo</ui:define>
+            <h:outputText value="#{sdmCentroCostoHome.instance.codigo}"/>
+        </s:decorate>
+
+        <s:decorate id="nombre" template="layout/display.xhtml">
+            <ui:define name="label">Nombre</ui:define>
+            <h:outputText value="#{sdmCentroCostoHome.instance.nombre}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/SdmCentroCostoEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty sdmCentroCostoFrom ? 'SdmCentroCostoList' : sdmCentroCostoFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm empleados</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="sdmEmpleadosChildren">
+
+        <h:outputText value="There are no sdmEmpleados associated with this sdmCentroCosto."
+                   rendered="#{empty sdmCentroCostoHome.sdmEmpleados}"/>
+
+        <rich:dataTable value="#{sdmCentroCostoHome.sdmEmpleados}"
+                       var="_sdmEmpleado"
+                  rendered="#{not empty sdmCentroCostoHome.sdmEmpleados}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="sdmEmpleadosTable">
+            <rich:column sortBy="#{_sdmEmpleado.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmEmpleado.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmEmpleado.nombre}">
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmEmpleado.nombre}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmEmpleado.codigo}">
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.codigo}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmEmpleado.activo}">
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.activo}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectsdmEmpleado"
+                     value="Select"
+                      view="/SdmEmpleado.xhtml">
+                    <f:param name="sdmEmpleadoId"
+                            value="#{_sdmEmpleado.id}"/>
+                    <f:param name="sdmEmpleadoFrom" value="SdmCentroCosto"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add sdmEmpleado"
+                view="/SdmEmpleadoEdit.xhtml">
+            <f:param name="sdmCentroCostoCodigo"
+                    value="#{sdmCentroCostoHome.instance.codigo}"/>
+            <f:param name="sdmEmpleadoFrom" value="SdmCentroCosto"/>
+        </s:button>
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm informe viaticoses</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="sdmInformeViaticosesChildren">
+
+        <h:outputText value="There are no sdmInformeViaticoses associated with this sdmCentroCosto."
+                   rendered="#{empty sdmCentroCostoHome.sdmInformeViaticoses}"/>
+
+        <rich:dataTable value="#{sdmCentroCostoHome.sdmInformeViaticoses}"
+                       var="_sdmInformeViaticos"
+                  rendered="#{not empty sdmCentroCostoHome.sdmInformeViaticoses}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="sdmInformeViaticosesTable">
+            <rich:column sortBy="#{_sdmInformeViaticos.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticos.fecha}">
+                <f:facet name="header">Fecha</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.fecha}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticos.montoTotal}">
+                <f:facet name="header">Monto total</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.montoTotal}">
+                    <f:convertNumber/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticos.anulado}">
+                <f:facet name="header">Anulado</f:facet>
+                <h:outputText value="#{_sdmInformeViaticos.anulado}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectsdmInformeViaticos"
+                     value="Select"
+                      view="/SdmInformeViaticos.xhtml">
+                    <f:param name="sdmInformeViaticosId"
+                            value="#{_sdmInformeViaticos.id}"/>
+                    <f:param name="sdmInformeViaticosFrom" value="SdmCentroCosto"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add sdmInformeViaticos"
+                view="/SdmInformeViaticosEdit.xhtml">
+            <f:param name="sdmCentroCostoCodigo"
+                    value="#{sdmCentroCostoHome.instance.codigo}"/>
+            <f:param name="sdmInformeViaticosFrom" value="SdmCentroCosto"/>
+        </s:button>
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm informe viatico detalles</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="sdmInformeViaticoDetallesChildren">
+
+        <h:outputText value="There are no sdmInformeViaticoDetalles associated with this sdmCentroCosto."
+                   rendered="#{empty sdmCentroCostoHome.sdmInformeViaticoDetalles}"/>
+
+        <rich:dataTable value="#{sdmCentroCostoHome.sdmInformeViaticoDetalles}"
+                       var="_sdmInformeViaticoDetalle"
+                  rendered="#{not empty sdmCentroCostoHome.sdmInformeViaticoDetalles}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="sdmInformeViaticoDetallesTable">
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.fecha}">
+                <f:facet name="header">Fecha</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.fecha}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.monto}">
+                <f:facet name="header">Monto</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.monto}">
+                    <f:convertNumber/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.descripcion}">
+                <f:facet name="header">Descripcion</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.descripcion}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.destino}">
+                <f:facet name="header">Destino</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.destino}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmInformeViaticoDetalle.correlativoInforme}">
+                <f:facet name="header">Correlativo informe</f:facet>
+                <h:outputText value="#{_sdmInformeViaticoDetalle.correlativoInforme}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectsdmInformeViaticoDetalle"
+                     value="Select"
+                      view="/SdmInformeViaticoDetalle.xhtml">
+                    <f:param name="sdmInformeViaticoDetalleId"
+                            value="#{_sdmInformeViaticoDetalle.id}"/>
+                    <f:param name="sdmInformeViaticoDetalleFrom" value="SdmCentroCosto"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add sdmInformeViaticoDetalle"
+                view="/SdmInformeViaticoDetalleEdit.xhtml">
+            <f:param name="sdmCentroCostoCodigo"
+                    value="#{sdmCentroCostoHome.instance.codigo}"/>
+            <f:param name="sdmInformeViaticoDetalleFrom" value="SdmCentroCosto"/>
+        </s:button>
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

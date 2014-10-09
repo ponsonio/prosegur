@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+ -->
+ 
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+
+	<persistence-unit name="sdm" transaction-type="JTA">
+	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+	<jta-data-source>java:/sdmDatasource</jta-data-source>
+	<class>org.domain.sdm.entity.SdmEmpleado</class>
+	<class>org.domain.sdm.entity.SdmInformeViaticoDetalle</class>
+	<class>org.domain.sdm.entity.SdmInformeViaticos</class>
+	<class>org.domain.sdm.entity.SdmLiquidacionInformeViaticos</class>
+	<class>org.domain.sdm.entity.SdmRol</class>
+	<class>org.domain.sdm.entity.SdmRolXUsuario</class>
+	<class>org.domain.sdm.entity.SdmRolXUsuarioId</class>
+	<class>org.domain.sdm.entity.SdmTipoServicio</class>
+	<class>org.domain.sdm.entity.SdmUsuario</class>
+	<class>org.domain.sdm.entity.SdmLog</class>
+		<properties>
+			<property name="jboss.entity.manager.factory.jndi.name" value="java:/sdmEntityManagerFactory"/>
+			<property name="hibernate.connection.username" value="sa"/>
+			<property name="hibernate.connection.password" value="passw0rd"/>
+			<property name="hibernate.connection.url" value="jdbc:sqlserver://192.168.1.43:1433;databaseName=prosegur"/>
+			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
+			<property name="hibernate.default_schema" value="dbo"/>
+			<property name="hibernate.default_catalog" value="prosegur"/>
+	        <property name="hibernate.hbm2ddl.auto" value="validate"/>
+	        <!-- borrar en produccion -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>

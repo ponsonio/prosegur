@@ -1,0 +1,285 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="tipoEmpleado" styleClass="edit">
+		<h3 align="center">#{messages['label.titulo.empleadoRoles']}</h3>
+			<script type="text/javascript">
+			  //<![CDATA[
+					function validarMonto(xxxxx) 
+					{
+						var numval = xxxxx.value;
+					    curphonevar = numval.replace(/[\\A-Za-z!"£$%^&\-\)\(*+_={};:'@#~,.Š\/<>\" "\?|`¬\]\[]/g,'');
+					    xxxxx.value = curphonevar;
+					    //xxxxx.focus;
+					}
+			  // ]]>
+			  </script>
+			  
+				<rich:tabPanel selectedTab="#{asignacionRolesBO.tabSelect}">
+
+					<rich:tab id="tabNombre" label="#{messages['label.nuevoEmpleado']}" >
+	
+				       <s:decorate id="codigoEmpleado" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.ingreseCodigoEmpleado']}</ui:define>
+			                <h:inputText id="codigoEmpleado"
+			                       required="false"
+			                          value="#{empleadoBO.sdmEmpleadoNuevo.codigo}" maxlength="7" onkeyup="validarMonto(this)" >
+			                </h:inputText>
+			            </s:decorate>
+			            				
+			           <s:decorate id="nombreEmpleado" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.ingreseNombreEmpleado']}</ui:define>
+			                <h:inputText id="nombreEmpleado"
+			                       required="false"
+			                          value="#{empleadoBO.sdmEmpleadoNuevo.nombre}" maxlength="50">
+			                </h:inputText>
+			            </s:decorate>
+			            
+			            <s:decorate id="codigoempresa" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.empresa']}</ui:define>
+			                <h:selectOneMenu  id="empresa"  value="#{empleadoBO.sdmEmpresa.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmEmpresas()}" var="sdmEmpresa" 
+			                					label="#{sdmEmpresa.codigo}-#{sdmEmpresa.nombre} " itemValue="#{sdmEmpresa.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>	
+
+			            <s:decorate id="codigoCC" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.centroCosto']}</ui:define>
+			                <h:selectOneMenu  id="centrocosto"  value="#{empleadoBO.sdmCentroCosto.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmCentroCosto()}" var="sdmCentroCosto" 
+			                					label="#{sdmCentroCosto.codigo}-#{sdmCentroCosto.nombre} " itemValue="#{sdmCentroCosto.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>	
+
+
+			            <s:decorate id="codigoDelegacion" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.divicion']}</ui:define>
+			                <h:selectOneMenu  id="empresa"  value="#{empleadoBO.sdmDivicion.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmDiviciones()}" var="sdmDivicion" 
+			                					label="#{sdmDivicion.codigo}-#{sdmDivicion.nombre} " itemValue="#{sdmDivicion.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>	
+
+			            <s:decorate id="codigoDivicion" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.empresa']}</ui:define>
+			                <h:selectOneMenu  id="empresa"  value="#{empleadoBO.sdmDelegacion.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmDelegaciones()}" var="sdmDelegacion" 
+			                					label="#{sdmDelegacion.codigo}-#{sdmDelegacion.nombre} " itemValue="#{sdmDelegacion.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>
+
+						<s:decorate id="externi" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.externo']}</ui:define>
+							<h:selectBooleanCheckbox value="#{empleadoBO.sdmEmpleadoNuevo.externo}" /> 
+			            </s:decorate>   
+
+						<s:decorate id="activo" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.activo']}</ui:define>
+							<h:selectBooleanCheckbox value="#{empleadoBO.sdmEmpleadoNuevo.activo}"  /> 
+			            </s:decorate>   
+						<!-- Seccion Usuario -->						
+						<rich:panel rendered="#{empleadoBO.empleadoNuevoUsuario}">
+
+					           <s:decorate id="correo" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.correo']}</ui:define>
+					                <h:inputText id="correo"
+					                       required="false"
+					                          value="#{empleadoBO.sdmUsuarioNuevo.correo}" >
+					                </h:inputText>
+					            </s:decorate>
+					            
+					           <s:decorate id="contrasena" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.contrasena']}</ui:define>
+					                <h:inputText id="contrasena"
+					                       required="false"
+					                          value="#{empleadoBO.sdmUsuarioNuevo.contrasena}" >
+					                </h:inputText>
+					            </s:decorate>
+		
+								<s:decorate id="rolesempleado" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.roles']}</ui:define>
+											<h:selectManyCheckbox value="#{empleadoBO.longIdRolesSelecionados}">
+												<s:selectItems value="#{arrayListRol}" var="sdmRol" 
+									                					label="#{sdmRol.etiqueta}" itemValue="#{sdmRol.id}" />
+											</h:selectManyCheckbox>
+					            </s:decorate>	
+						
+						</rich:panel>
+			        	<div style="clear:both"/>
+							<h:commandButton  rendered="#{( (empleadoBO.empleadoNuevoUsuario) and s:hasRole('Administrador') )}" id="mostrarUsuario" value="Sin Usuario" action="#{empleadoBO.incluirUsuarioNuevo()}"  />    
+							<h:commandButton rendered="#{( (!empleadoBO.empleadoNuevoUsuario) and s:hasRole('Administrador') )}"  id="ocultarUsuario" value="Con Usuario" action="#{empleadoBO.incluirUsuarioNuevo()}"  />  
+							<h:commandButton id="enviar" value="Crear" action="#{empleadoBO.crearEmpleado()}"  />    
+		           		 				            			            
+						</rich:tab>
+					
+					
+					<!-- Editar Usuario -->
+					
+					
+					<rich:tab id="tabModificar" label="#{messages['label.editarEmpleado']}" >
+						
+
+							<s:decorate id="codigoBuscar" template="layout/edit.xhtml">
+				                <ui:define name="label">#{messages['label.ingreseCodigoEmpleado']}</ui:define>
+				                <h:inputText id="codigoBuscar"
+				                       required="false"
+				                          value="#{empleadoBO.codigoBuscar}" maxlength="7" onkeyup="validarMonto(this)" >
+				                </h:inputText>
+								<h:commandButton id="buscarCodigo" value="Buscar" action="#{empleadoBO.buscarEmpleadoXCodigo()}"  /> 
+				            </s:decorate>
+				            				
+				           <s:decorate id="nombreBuscar" template="layout/edit.xhtml">
+				                <ui:define name="label">#{messages['label.ingreseNombreEmpleado']}</ui:define>
+				                <h:inputText id="nombreBuscar"
+				                       required="false"
+				                          value="#{empleadoBO.nombreBuscar}" maxlength="50">
+				                </h:inputText>
+				                <h:commandButton id="buscarNombre" value="Buscar" action="#{empleadoBO.buscarEmpleadoXNombre()}"  />
+				            </s:decorate>
+						<div style="clear:both"/>
+					<!-- Lista -->	
+						<rich:panel rendered="#{arraylistSdmEmpleadoBusqueda.rowCount>0}">
+						
+							<rich:dataTable value="#{arraylistSdmEmpleadoBusqueda}"
+							rendered="#{arraylistSdmEmpleadoBusqueda.rowCount>0}" var="sdmEmpleado"	id="tableResultado">
+							
+									<f:facet name="header">
+										<h:outputText value="#{messages['label.resultado']}" />
+									</f:facet>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.codigoEmpleado']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.codigo}" id="c" />
+									</rich:column>
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="#{messages['label.nombre']}" />
+										</f:facet>
+										<h:outputText value="#{sdmEmpleado.nombre}" id="n" />
+									</rich:column>
+																					
+									<rich:column>
+										<h:commandButton value="#{messages['label.selecionar']}"
+											action="#{empleadoBO.seleccionarEmpleado()}" />
+									</rich:column>
+			
+							 </rich:dataTable>
+						</rich:panel>
+						<div style="clear:both"/>
+					<!-- Empleado Selecionado -->
+					<rich:panel rendered="#{(empleadoBO.sdmEmpleadoSelect != null)}">
+
+					   <s:decorate id="codigoEmpleadoE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.codigo']}</ui:define>
+			                <h:inputText id="codigoEmpleadoE"
+			                       required="false"
+			                          value="#{empleadoBO.sdmEmpleadoSelect.codigo}" disabled="true" maxlength="7" onkeyup="validarMonto(this)"  >
+			                </h:inputText>
+			            </s:decorate>
+			            				
+			           <s:decorate id="nombreEmpleadoE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.nombre']}</ui:define>
+			                <h:inputText id="nombreEmpleadoE"
+			                       required="false"
+			                          value="#{empleadoBO.sdmEmpleadoSelect.nombre}" maxlength="50">
+			                </h:inputText>
+			            </s:decorate>
+
+			            <s:decorate id="codigoempresaE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.empresa']}</ui:define>
+			                <h:selectOneMenu  id="empresaE"  value="#{empleadoBO.sdmEmpleadoSelect.sdmEmpresa.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmEmpresas()}" var="sdmEmpresa" 
+			                					label="#{sdmEmpresa.codigo}-#{sdmEmpresa.nombre} " itemValue="#{sdmEmpresa.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>	
+
+			            <s:decorate id="codigoCCE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.centroCosto']}</ui:define>
+			                <h:selectOneMenu  id="centrocostoE"  value="#{empleadoBO.sdmEmpleadoSelect.sdmCentroCosto.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmCentroCosto()}" var="sdmCentroCosto" 
+			                					label="#{sdmCentroCosto.codigo}-#{sdmCentroCosto.nombre} " itemValue="#{sdmCentroCosto.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>	
+
+
+			            <s:decorate id="codigoDelegacionE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.divicion']}</ui:define>
+			                <h:selectOneMenu  id="empresaE"  value="#{empleadoBO.sdmEmpleadoSelect.sdmDivicion.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmDiviciones()}" var="sdmDivicion" 
+			                					label="#{sdmDivicion.codigo}-#{sdmDivicion.nombre} " itemValue="#{sdmDivicion.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>	
+
+			            <s:decorate id="codigoDivicionE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.empresa']}</ui:define>
+			                <h:selectOneMenu  id="empresaE"  value="#{empleadoBO.sdmEmpleadoSelect.sdmDelegacion.codigo}">
+			                	<s:selectItems value="#{empleadoBO.obtenerSdmDelegaciones()}" var="sdmDelegacion" 
+			                					label="#{sdmDelegacion.codigo}-#{sdmDelegacion.nombre} " itemValue="#{sdmDelegacion.codigo}"/>
+			                </h:selectOneMenu>
+						</s:decorate>
+
+						<s:decorate id="externiE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.externo']}</ui:define>
+							<h:selectBooleanCheckbox value="#{empleadoBO.sdmEmpleadoSelect.externo}" /> 
+			            </s:decorate>   
+
+						<s:decorate id="activoE" template="layout/edit.xhtml">
+			                <ui:define name="label">#{messages['label.activo']}</ui:define>
+							<h:selectBooleanCheckbox value="#{empleadoBO.sdmEmpleadoSelect.activo}"  /> 
+			            </s:decorate>   
+
+						<div style="clear:both"/>
+						<!-- Sección del Usuario del empleado Selecionado -->
+						<rich:panel rendered="#{( (empleadoBO.empleadoSelectUsuario) and (s:hasRole('Administrador')) )}">
+
+					           <s:decorate id="correoE" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.correo']}</ui:define>
+					                <h:inputText id="correoE"
+					                       required="false"
+					                          value="#{empleadoBO.sdmUsuarioSelect.correo}" >
+					                </h:inputText>
+					            </s:decorate>
+					            
+					           <s:decorate id="contrasenaE" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.contrasena']}</ui:define>
+					                <h:inputText id="contrasenaE"
+					                       required="false"
+					                          value="#{empleadoBO.sdmUsuarioSelect.contrasena}" >
+					                </h:inputText>
+					            </s:decorate>
+		
+								<s:decorate id="rolesempleadoE" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.roles']}</ui:define>
+											<h:selectManyCheckbox value="#{empleadoBO.longRolesUsuarioSelect}">
+												<s:selectItems value="#{arrayListRol}" var="sdmRol" 
+									                					label="#{sdmRol.etiqueta}" itemValue="#{sdmRol.id}" />
+											</h:selectManyCheckbox>
+					            </s:decorate>							
+						</rich:panel>  
+							<div style="clear:both"/>
+								<h:commandButton  rendered="#{( (empleadoBO.empleadoSelectUsuario) and s:hasRole('Administrador') )}" id="mostrarUsuarioE" value="Sin Usuario" action="#{empleadoBO.incluirUsuarioSelect()}"  />    
+								<h:commandButton rendered="#{( (!empleadoBO.empleadoSelectUsuario) and s:hasRole('Administrador') )}"  id="ocultarUsuarioE" value="Con Usuario" action="#{empleadoBO.incluirUsuarioSelect()}"  />  
+								<h:commandButton id="modificar" value="Modificar" action="#{empleadoBO.modificarEmpleado()}"  />    
+					</rich:panel>
+									
+
+					
+			</rich:tab>
+
+		</rich:tabPanel>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,165 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Sdm usuario Details</f:facet>
+
+        <s:decorate id="id" template="layout/display.xhtml">
+            <ui:define name="label">Id</ui:define>
+            <h:outputText value="#{sdmUsuarioHome.instance.id}"/>
+        </s:decorate>
+
+        <s:decorate id="contrasena" template="layout/display.xhtml">
+            <ui:define name="label">Contrasena</ui:define>
+            <h:outputText value="#{sdmUsuarioHome.instance.contrasena}"/>
+        </s:decorate>
+
+        <s:decorate id="correo" template="layout/display.xhtml">
+            <ui:define name="label">Correo</ui:define>
+            <h:outputText value="#{sdmUsuarioHome.instance.correo}"/>
+        </s:decorate>
+
+        <s:decorate id="activo" template="layout/display.xhtml">
+            <ui:define name="label">Activo</ui:define>
+            <h:outputText value="#{sdmUsuarioHome.instance.activo}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/SdmUsuarioEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty sdmUsuarioFrom ? 'SdmUsuarioList' : sdmUsuarioFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm empleado</h:panelGroup>
+        </f:facet>
+    <div class="association" id="sdmEmpleadoParent">
+
+        <h:outputText value="There is no sdmEmpleado associated with this sdmUsuario."
+                   rendered="#{sdmUsuarioHome.instance.sdmEmpleado == null}"/>
+
+        <rich:dataTable var="_sdmEmpleado"
+                   value="#{sdmUsuarioHome.instance.sdmEmpleado}"
+                rendered="#{sdmUsuarioHome.instance.sdmEmpleado != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="sdmEmpleadoTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_sdmEmpleado.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm empresa codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmEmpresa.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm divicion codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmDivicion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm centro costo codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmCentroCosto.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Sdm delegacion codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.sdmDelegacion.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nombre</f:facet>
+                <h:outputText value="#{_sdmEmpleado.nombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Codigo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.codigo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Activo</f:facet>
+                <h:outputText value="#{_sdmEmpleado.activo}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsdmEmpleado"
+                     value="View"
+                      view="/SdmEmpleado.xhtml">
+                    <f:param name="sdmEmpleadoId"
+                           value="#{_sdmEmpleado.id}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Sdm rol x usuarios</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="sdmRolXUsuariosChildren">
+
+        <h:outputText value="There are no sdmRolXUsuarios associated with this sdmUsuario."
+                   rendered="#{empty sdmUsuarioHome.sdmRolXUsuarios}"/>
+
+        <rich:dataTable value="#{sdmUsuarioHome.sdmRolXUsuarios}"
+                       var="_sdmRolXUsuario"
+                  rendered="#{not empty sdmUsuarioHome.sdmRolXUsuarios}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="sdmRolXUsuariosTable">
+            <rich:column sortBy="#{_sdmRolXUsuario.id.idRol}">
+                <f:facet name="header">Id rol</f:facet>
+                <h:outputText value="#{_sdmRolXUsuario.id.idRol}"/>
+            </rich:column>
+            <rich:column sortBy="#{_sdmRolXUsuario.id.idUsuario}">
+                <f:facet name="header">Id usuario</f:facet>
+                <h:outputText value="#{_sdmRolXUsuario.id.idUsuario}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectsdmRolXUsuario"
+                     value="Select"
+                      view="/SdmRolXUsuario.xhtml">
+                    <f:param name="sdmRolXUsuarioIdRol"
+                            value="#{_sdmRolXUsuario.id.idRol}"/>
+                    <f:param name="sdmRolXUsuarioIdUsuario"
+                            value="#{_sdmRolXUsuario.id.idUsuario}"/>
+                    <f:param name="sdmRolXUsuarioFrom" value="SdmUsuario"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add sdmRolXUsuario"
+                view="/SdmRolXUsuarioEdit.xhtml">
+            <f:param name="sdmUsuarioId"
+                    value="#{sdmUsuarioHome.instance.id}"/>
+            <f:param name="sdmRolXUsuarioFrom" value="SdmUsuario"/>
+        </s:button>
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

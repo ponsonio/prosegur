@@ -1,0 +1,82 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="tipoServicio" styleClass="edit">
+
+
+			<h3 align="center">#{messages['label.titulo.tipoServicio']}</h3>
+  			<rich:panel >
+					<f:facet name="header"><h:outputText value="#{messages['label.nuevoTipoServicio']}"/></f:facet>
+		           <s:decorate id="nombreTipoServicioNuevo" template="layout/edit.xhtml"> 
+		                <ui:define name="label">#{messages['label.descripcion']}</ui:define>
+		                <h:inputText id="nombreTipoServicioNuevo"
+		                       required="false"
+		                          value="#{mantenimientoTipoServicioBO.sdmTipoServicioNuevo.descripcion}" maxlength="50" >
+		                </h:inputText>
+		            </s:decorate>	
+
+		        <div style="clear:both"/>
+		
+		    </rich:panel>
+				<h:commandButton id="grabar" value="#{messages['label.crear']}"
+					action="#{mantenimientoTipoServicioBO.crearTipoServicio()}" />
+					
+
+
+			<h:panelGrid>
+					<rich:dataTable value="#{arraylistSdmTipoServicioEdit}"
+						rendered="#{arraylistSdmTipoServicioEdit.rowCount>0}" var="sdmTipoServicio"
+						id="table">
+
+						<f:facet name="header">
+							<h:outputText value="#{messages['label.tipoServicio']}" />
+						</f:facet>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.id']}" />
+							</f:facet>
+							<h:outputText value="#{sdmTipoServicio.id}" />
+						</rich:column>
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.descripcion']}" />
+							</f:facet>
+							<h:outputText value="#{sdmTipoServicio.descripcion}" />
+						</rich:column>
+						
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.estado']}" />
+							</f:facet>
+							
+							<h:outputText value="#{sdmTipoServicio.activo? 'Activo':'Inactivo'}" />
+						</rich:column>
+												
+						<rich:column >
+							<h:commandButton value="#{messages['label.activar']}"
+								action="#{mantenimientoTipoServicioBO.activar}"  rendered="#{!sdmTipoServicio.activo}"/>
+								
+							<h:commandButton value="#{messages['label.desactivar']}"
+								action="#{mantenimientoTipoServicioBO.desactivar}"  rendered="#{sdmTipoServicio.activo}"/>
+						</rich:column>
+						
+					</rich:dataTable>
+					
+					<div style="clear:both"/>
+					
+				</h:panelGrid>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

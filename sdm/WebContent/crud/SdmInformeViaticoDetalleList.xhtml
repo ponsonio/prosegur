@@ -1,0 +1,259 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="sdmInformeViaticoDetalleSearch" styleClass="edit">
+
+        <rich:simpleTogglePanel label="SdmInformeViaticoDetalle Search Filter" switchType="ajax">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Descripcion</ui:define>
+                <h:inputText id="descripcion" value="#{sdmInformeViaticoDetalleList.sdmInformeViaticoDetalle.descripcion}"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Destino</ui:define>
+                <h:inputText id="destino" value="#{sdmInformeViaticoDetalleList.sdmInformeViaticoDetalle.destino}"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Match</ui:define>
+                <h:selectOneRadio id="logic" value="#{sdmInformeViaticoDetalleList.restrictionLogicOperator}" styleClass="radio">
+                    <f:selectItem itemLabel="All" itemValue="and"/>
+                    <f:selectItem itemLabel="Any" itemValue="or"/>
+                </h:selectOneRadio>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+
+        <div class="actionButtons">
+            <h:commandButton id="search" value="Search" action="/SdmInformeViaticoDetalleList.xhtml"/>
+            <s:button id="reset" value="Reset" includePageParams="false"/>
+        </div>
+
+    </h:form>
+
+    <rich:panel>
+        <f:facet name="header">SdmInformeViaticoDetalle Search Results (#{empty sdmInformeViaticoDetalleList.resultList ? 0 : (sdmInformeViaticoDetalleList.paginated ? sdmInformeViaticoDetalleList.resultCount : sdmInformeViaticoDetalleList.resultList.size)})</f:facet>
+    <div class="results" id="sdmInformeViaticoDetalleList">
+
+    <h:outputText value="The sdmInformeViaticoDetalle search returned no results."
+               rendered="#{empty sdmInformeViaticoDetalleList.resultList}"/>
+
+    <rich:dataTable id="sdmInformeViaticoDetalleList"
+                var="_sdmInformeViaticoDetalle"
+              value="#{sdmInformeViaticoDetalleList.resultList}"
+           rendered="#{not empty sdmInformeViaticoDetalleList.resultList}">
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Id"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.id}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm empresa codigo"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmEmpresa.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmEmpresa.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm informe viaticos id"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmInformeViaticos.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmInformeViaticos.id}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm tipo servicio id"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmTipoServicio.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmTipoServicio.id}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm empleado id"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmEmpleado.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmEmpleado.id}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm divicion codigo"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmDivicion.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmDivicion.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm centro costo codigo"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmCentroCosto.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmCentroCosto.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Sdm delegacion codigo"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.sdmDelegacion.codigo"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.sdmDelegacion.codigo}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Fecha"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.fecha"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.fecha}">
+                <s:convertDateTime type="date" dateStyle="short"/>
+            </h:outputText>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Monto"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.monto"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.monto}">
+                <f:convertNumber/>
+            </h:outputText>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Descripcion"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.descripcion"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.descripcion}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Destino"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.destino"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.destino}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <ui:include src="layout/sort.xhtml">
+                    <ui:param name="entityList" value="#{sdmInformeViaticoDetalleList}"/>
+                    <ui:param name="propertyLabel" value="Correlativo informe"/>
+                    <ui:param name="propertyPath" value="sdmInformeViaticoDetalle.correlativoInforme"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_sdmInformeViaticoDetalle.correlativoInforme}"/>
+        </h:column>
+        <rich:column styleClass="action">
+            <f:facet name="header">Action</f:facet>
+            <s:link view="/#{empty from ? 'SdmInformeViaticoDetalle' : from}.xhtml"
+                   value="#{empty from ? 'View' : 'Select'}"
+             propagation="#{empty from ? 'none' : 'default'}"
+                      id="sdmInformeViaticoDetalleViewId">
+                <f:param name="sdmInformeViaticoDetalleId"
+                        value="#{_sdmInformeViaticoDetalle.id}"/>
+            </s:link>
+            #{' '}
+            <s:link view="/SdmInformeViaticoDetalleEdit.xhtml"
+                   value="Edit"
+             propagation="none"
+                      id="sdmInformeViaticoDetalleEdit"
+                rendered="#{empty from}">
+                <f:param name="sdmInformeViaticoDetalleId"
+                        value="#{_sdmInformeViaticoDetalle.id}"/>
+            </s:link>
+        </rich:column>
+    </rich:dataTable>
+
+    </div>
+    </rich:panel>
+
+    <div class="tableControl">
+
+        <s:link view="/SdmInformeViaticoDetalleList.xhtml"
+            rendered="#{sdmInformeViaticoDetalleList.previousExists}"
+               value="#{messages.left}#{messages.left} First Page"
+                  id="firstPage">
+          <f:param name="firstResult" value="0"/>
+        </s:link>
+
+        <s:link view="/SdmInformeViaticoDetalleList.xhtml"
+            rendered="#{sdmInformeViaticoDetalleList.previousExists}"
+               value="#{messages.left} Previous Page"
+                  id="previousPage">
+            <f:param name="firstResult"
+                    value="#{sdmInformeViaticoDetalleList.previousFirstResult}"/>
+        </s:link>
+
+        <s:link view="/SdmInformeViaticoDetalleList.xhtml"
+            rendered="#{sdmInformeViaticoDetalleList.nextExists}"
+               value="Next Page #{messages.right}"
+                  id="nextPage">
+            <f:param name="firstResult"
+                    value="#{sdmInformeViaticoDetalleList.nextFirstResult}"/>
+        </s:link>
+
+        <s:link view="/SdmInformeViaticoDetalleList.xhtml"
+            rendered="#{sdmInformeViaticoDetalleList.nextExists}"
+               value="Last Page #{messages.right}#{messages.right}"
+                  id="lastPage">
+            <f:param name="firstResult"
+                    value="#{sdmInformeViaticoDetalleList.lastFirstResult}"/>
+        </s:link>
+
+    </div>
+
+    <s:div styleClass="actionButtons" rendered="#{empty from}">
+        <s:button view="/SdmInformeViaticoDetalleEdit.xhtml"
+                    id="create"
+           propagation="none"
+                 value="Create sdmInformeViaticoDetalle">
+            <f:param name="sdmInformeViaticoDetalleId"/>
+        </s:button>
+    </s:div>
+
+</ui:define>
+
+</ui:composition>

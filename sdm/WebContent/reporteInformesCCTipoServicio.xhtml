@@ -1,0 +1,89 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="formReporte">
+		
+				<h3 align="center">#{messages['label.titulo.reporteInformesCentroCosto']}</h3>
+			
+				<rich:tabPanel selectedTab="#{reporteInformesBO.tabSelect}">
+				
+						<rich:tab id="tabNombre" label="#{messages['label.rangoEmision']}" >
+							
+
+						           <s:decorate id="fechadesde" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.fechaDesde']}</ui:define>
+												<rich:calendar id="fechadesde" value="#{reporteInformesBO.fechaDesde}"   />
+							      </s:decorate>			                
+							
+						           <s:decorate id="fechahasta" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.fechaHasta']}</ui:define>
+												<rich:calendar id="fechahasta" value="#{reporteInformesBO.fechaHasta}"   />
+							      </s:decorate>			                
+
+						<h:commandButton id="buscarRango" value="Buscar"
+									action="#{reporteInformesBO.generarReporteCentroCostoTipoServicio()}" />	
+									
+						<div style="clear:both"/>
+						
+							<h:commandButton id="buscarCorrelativo" value="Excel" 
+								rendered="#{reporteInformesBO.arrayVistaReporteCCTipoServicio.size()>0}" 
+							    action="#{org.jboss.seam.excel.exporter.excelExporter.export('formReporte:reporteCCTipoServicio')}"/>
+
+							
+	    				</rich:tab>
+					</rich:tabPanel>
+    			
+		
+
+					<rich:dataTable value="#{reporteInformesBO.arrayVistaReporteCCTipoServicio}"
+						rendered="#{reporteInformesBO.arrayVistaReporteCCTipoServicio.size()>0}" var="vistaReporteCCTipoServicio"
+						id="reporteCCTipoServicio">
+
+						<f:facet name="header">
+							<h:outputText value="#{messages['label.informesEmitidos']}" />
+						</f:facet>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.centroCosto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteCCTipoServicio.sdmCentroCosto.codigo}" id="codigoCentroCosto" />
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.centroCosto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteCCTipoServicio.sdmCentroCosto.nombre}" id="nombreCentroCosto" />
+						</rich:column>
+						
+ 						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.tipoServicio']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteCCTipoServicio.sdmTipoServicio.descripcion}" id="tipoServicio" />
+						</rich:column>
+
+ 						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{messages['label.monto']}" />
+							</f:facet>
+							<h:outputText value="#{vistaReporteCCTipoServicio.bigDecimalTotal}" id="total" />
+						</rich:column>
+						
+ 	
+						</rich:dataTable>		
+
+	
+		</h:form>
+	</ui:define>
+</ui:composition>    
