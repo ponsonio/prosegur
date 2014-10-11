@@ -30,8 +30,8 @@ public class Authenticator implements Serializable {
 
 	private static final long serialVersionUID = 7573483855386410083L;
 
-	@Logger
-	private Log log;
+	String Login = "Login";
+	
 	
 	@In(create= true)
 	LoggerBO loggerBO ;
@@ -66,30 +66,36 @@ public class Authenticator implements Serializable {
 			// log.info("Usuario no encontrado");
 			statusMessages
 					.add(Severity.ERROR,
-							"No se encontro su usario, por favor comunicarse con el área de soporte");
+							"No se encontro su usuario, por favor comunicarse con el área de soporte");
+			
+			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+					"No se encontro su usuario", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
 			return false;
 		} catch (NonUniqueResultException nue) {
 			// TODO: handle exception
-			log.error("Mas de un registro de usuario"
-					+ credentials.getUsername());
+			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+					"No se encontro su usuario", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
 			throw nue;
 		}
 
+		
 		// Valido contraseña
 		if (usr != null
 				&& usr.getContrasena().equals(credentials.getPassword())) {
 
 			sdmEmpleado = usr.getSdmEmpleado(); //
-			log.info("usuario:" + credentials.getUsername()); //no quitar o se pudre todo!
-			log.info("sdmEmpleado"+ sdmEmpleado.getNombre()); //no quitar o se pudre todo!
+			System.out.println("usuario:" + credentials.getUsername()); //no quitar 
+			System.out.println("sdmEmpleado"+ sdmEmpleado.getNombre()); //no quitar 
 			Set<SdmRolXUsuario> lst_rol_x_usr = (Set<SdmRolXUsuario>) usr
 					.getSdmRolXUsuarios();
 			//Si no tiene roles
 			if (lst_rol_x_usr.size() == 0) {
-				log.info("Usuario sin rol" + credentials.getUsername());
+				loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+						"Usuario sin Rol Asignado", this.Login, credentials.getUsername(), LoggerBO.ERROR, credentials.getUsername());
+				//log.info("Usuario sin rol" + credentials.getUsername());
 				statusMessages
 						.add(Severity.ERROR,
-								"No se encontraron roles para su usario, por favor comunicarse con área de soporte");
+								"No se encontraron roles para su usuario, por favor comunicarse con área de soporte");
 				return false;
 			}
 			// cargo los roles
@@ -99,18 +105,16 @@ public class Authenticator implements Serializable {
 				sdmRol_x_usr = it.next();
 				identity.addRole(sdmRol_x_usr.getSdmRol().getEtiqueta());
 			}
-			SdmLog sdmLog = new SdmLog();
-			sdmLog.setMensaje("Ingreso al sistema");
-			sdmLog.setNombreClase(this.getClass().getCanonicalName());
-			sdmLog.setReferencia(credentials.getUsername());
-			sdmLog.setUsuario(credentials.getUsername());
-			sdmLog.setTipo("Evento");
-			sdmLog.setOperacion("Login");
-			loggerBO.ingresarLog(sdmLog);
+			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+					"Inicio Sesión", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
 			return true;
 		}
+		loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+				"Contraseña Errada", this.Login, credentials.getUsername(), LoggerBO.ERROR, credentials.getUsername());
 		statusMessages.add(Severity.ERROR, "Contraseña Errada");
 		return false;
 	}
+	
+
 
 }

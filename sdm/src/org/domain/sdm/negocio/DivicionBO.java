@@ -25,6 +25,12 @@ public class DivicionBO implements Serializable {
 	private static final long serialVersionUID = 787937008071175854L;
 	
 
+	String crearDivicion = "Crear División";
+	String modificarDivicion = "Modificar División";
+	String eliminarDivicion = "Eliminar División";
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
 
     @In 
     StatusMessages statusMessages;
@@ -57,7 +63,7 @@ public class DivicionBO implements Serializable {
 		return "/division.xhtml";
 	}
 	
-	public String  modificarDivicion(){
+	public String  modificarDivicion() throws Exception{
 		if (this.sdmDivicionSelect.getCodigo() == null 
 				|| this.sdmDivicionSelect.getCodigo().isEmpty()){
 			statusMessages.add(Severity.INFO,"Seleccione una división primero ");
@@ -69,9 +75,16 @@ public class DivicionBO implements Serializable {
 			statusMessages.add(Severity.INFO,"Ingrese un nombre válido");
 			return "/division.xhtml";
 		}
-		
-		sdmDivicionHome.modificarDivicion(this.sdmDivicionSelect);
-		statusMessages.add(Severity.INFO,"Se modificó la división ");
+		try{
+			sdmDivicionHome.modificarDivicion(this.sdmDivicionSelect);
+			statusMessages.add(Severity.INFO,"Se modificó la división ");
+			loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+					"Se modificó la división", this.modificarDivicion, this.sdmDivicionSelect.getCodigo());
+		}catch(Exception e){
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+					"Error Modificando la división", this.modificarDivicion, this.sdmDivicionSelect.getCodigo());
+			throw e;
+		}
 		this.sdmDivicionSelect = new SdmDivicion();
 		return "/division.xhtml";
 	}
