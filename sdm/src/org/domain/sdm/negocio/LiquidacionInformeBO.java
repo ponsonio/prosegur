@@ -40,7 +40,10 @@ public class LiquidacionInformeBO implements Serializable {
 	@In 
 	StatusMessages statusMessages;
 
+	@In(create= true)
+	LoggerBO loggerBO ;
 
+	String stringLiquidarInforme = "Liquidar Informe"; 
 
 	@Logger private Log log;
 
@@ -75,101 +78,142 @@ public class LiquidacionInformeBO implements Serializable {
 		this.sdmEmpleadoSelect = empleadoSelect;
 	}
 
+	/**
+	 * Busca informes activos por el empleado
+	 * @return
+	 * @throws Exception
+	 */
+	public String buscarXCodigoEmpleado() throws Exception{
+		try {
+			listvistaSdmInformeViaticos = new ArrayList<VistaSdmInformeViaticos>();
+			List <SdmInformeViaticos> listRSdmInformeViaticos;
+			try{
+				if (this.sdmEmpleadoSelect.getId() == -1){
+					listRSdmInformeViaticos = sdmInformeViaticosHome.buscarInformesActivosXLiquidarXFechas( this.fechaDesde, this.fechaHasta);
+				}else{
+					listRSdmInformeViaticos = sdmInformeViaticosHome.buscarInformesActivosXLiquidarXEmpleadoFechas(sdmEmpleadoSelect.getId(), this.fechaDesde, this.fechaHasta);
+				}
+	
+				if (listRSdmInformeViaticos.size() == 0) { statusMessages.add(Severity.ERROR , "No se encontraron resultados");};
+				mostrarResultados(listRSdmInformeViaticos);
+			}catch (NoResultException nre) {
+				statusMessages.add(Severity.ERROR , "No se encontraron datos de el empleado");
+			}catch (NonUniqueResultException e) {
+				statusMessages.add(Severity.ERROR , "Mas de un empleado con dicho código, por favor comunicarse con soporte");
+			}
+			return "/liquidacionInforme.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Busqueda empleado", null);
+			throw e;
+		}
+	}
 
-	public String buscarXCodigoEmpleado(){
+	/**
+	 * Busca una liquidación por correlativo
+	 * @return
+	 * @throws Exception
+	 */
+	public String buscarLiquidacionXCorrelativo() throws Exception{
 		
-		listvistaSdmInformeViaticos = new ArrayList<VistaSdmInformeViaticos>();
-		List <SdmInformeViaticos> listRSdmInformeViaticos;
-		try{
-			if (this.sdmEmpleadoSelect.getId() == -1){
-				listRSdmInformeViaticos = sdmInformeViaticosHome.buscarInformesActivosXLiquidarXFechas( this.fechaDesde, this.fechaHasta);
-			}else{
-				listRSdmInformeViaticos = sdmInformeViaticosHome.buscarInformesActivosXLiquidarXEmpleadoFechas(sdmEmpleadoSelect.getId(), this.fechaDesde, this.fechaHasta);
-			}
-
-			if (listRSdmInformeViaticos.size() == 0) { statusMessages.add(Severity.ERROR , "No se encontraron resultados");};
-			mostrarResultados(listRSdmInformeViaticos);
-		}catch (NoResultException nre) {
-			statusMessages.add(Severity.ERROR , "No se encontraron datos de el empleado");
-		}catch (NonUniqueResultException e) {
-			statusMessages.add(Severity.ERROR , "Mas de un empleado con dicho código, por favor comunicarse con soporte");
-		}
-		return "/liquidacionInforme.xhtml";
-	}
-
-
-	public String buscarLiquidacionXCorrelativo(){
-		listvistaSdmInformeViaticos = new ArrayList<VistaSdmInformeViaticos>();
-		List <SdmInformeViaticos> listRSdmInformeViaticos = new  ArrayList<SdmInformeViaticos>();
-		this.codigoBusqueda = this.codigoBusqueda.trim();
-		SdmInformeViaticos informe ;
-		sdmEmpleadoSelect = new SdmEmpleado();
 		try {
-			informe =   sdmInformeViaticosHome.buscarInformeXCorrelativo(Long.parseLong(this.codigoBusqueda)) ;
-			if (informe.isAnulado()){
-				statusMessages.add(Severity.ERROR ,"El informe se encuentra anulado");
-				return "/liquidacionInforme.xhtml";
-			}
-		}catch (NoResultException nre) {
-			log.info("Infome no encontrado"+ this.codigoBusqueda);
-			statusMessages.add(Severity.ERROR ,"No se encontro Informe");
-			return "/liquidacionInforme.xhtml";
-		}catch (NonUniqueResultException nue) {
-			statusMessages.add(Severity.ERROR ,"Se encontró más de un informe, por favor comunicarse con el área de soporte");
-			log.error("Mas de un registro de informe"+ this.codigoBusqueda);
-			return "/liquidacionInforme.xhtml";
-		}catch (NumberFormatException e) {
-			statusMessages.add(Severity.ERROR ,"Debe ingresar un número valido");
-			return "/liquidacionInforme.xhtml";
-			// TODO: handle exception
-		}
-
-
-		try {
-			SdmLiquidacionInformeViaticos liquidacion =  sdmLiquidacionInformeViaticosHome.buscarLiquidacionInforme(informe.getId());
-			if (liquidacion != null){
-				statusMessages.add(Severity.ERROR ,"La solicitud ya fue liquidada");
-				return "/liquidacionInforme.xhtml";
-			}
-			listRSdmInformeViaticos.add(informe);
-			mostrarResultados(listRSdmInformeViaticos);
-		}catch (NonUniqueResultException nue) {
-			statusMessages.add(Severity.ERROR ,"Se encontro más de una liquidación, por favor comunicarse con el área de soporte");
-			log.error("Mas de un registro de informe"+ this.codigoBusqueda);
-			return "/liquidacionInforme.xhtml";
-		}
-		return "/liquidacionInforme.xhtml";
-	}
-
-	public String liquidar(){
-		Iterator<VistaSdmInformeViaticos> it = listvistaSdmInformeViaticos.iterator();
-		VistaSdmInformeViaticos vista ;
-		while(it.hasNext()){
-			vista = it.next();
-			if (vista.selecionado){
-				log.info("vista.getSdmInformeViaticos().getId()"+vista.getSdmInformeViaticos().getId());
-				log.info("vista.getFechaLiquidacion()"+vista.getFechaLiquidacion());
-
-				if (vista.getFechaLiquidacion() == null){
-					statusMessages.add("Debe de ingresar una fecha de liquidación para los datos selecionados");
-					//obtenerInformesUsuario();
+			listvistaSdmInformeViaticos = new ArrayList<VistaSdmInformeViaticos>();
+			List <SdmInformeViaticos> listRSdmInformeViaticos = new  ArrayList<SdmInformeViaticos>();
+			this.codigoBusqueda = this.codigoBusqueda.trim();
+			SdmInformeViaticos informe ;
+			sdmEmpleadoSelect = new SdmEmpleado();
+			try {
+				informe =   sdmInformeViaticosHome.buscarInformeXCorrelativo(Long.parseLong(this.codigoBusqueda)) ;
+				if (informe.isAnulado()){
+					statusMessages.add(Severity.ERROR ,"El informe se encuentra anulado");
 					return "/liquidacionInforme.xhtml";
 				}
-
-				SdmLiquidacionInformeViaticos sdmLiquidacionInformeViaticos = new SdmLiquidacionInformeViaticos();
-				sdmLiquidacionInformeViaticos.setAnulado(false);
-				sdmLiquidacionInformeViaticos.setFecha(vista.getFechaLiquidacion());
-				sdmLiquidacionInformeViaticos.setSdmInformeViaticos(vista.getSdmInformeViaticos());
-				sdmLiquidacionInformeViaticos.setMonto(vista.getMontoTotal());
-				sdmLiquidacionInformeViaticos.setSdmEmpleado(sdmEmpleado);
-				sdmLiquidacionInformeViaticos.setSdmInformeViaticos(vista.getSdmInformeViaticos());
-				sdmLiquidacionInformeViaticosHome.grabarInforme(sdmLiquidacionInformeViaticos);
-				statusMessages.add("Se liquidó el informe : "+sdmLiquidacionInformeViaticos.getSdmInformeViaticos().getId());
+			}catch (NoResultException nre) {
+				log.info("Infome no encontrado"+ this.codigoBusqueda);
+				statusMessages.add(Severity.ERROR ,"No se encontro Informe");
+				return "/liquidacionInforme.xhtml";
+			}catch (NonUniqueResultException nue) {
+				statusMessages.add(Severity.ERROR ,"Se encontró más de un informe, por favor comunicarse con el área de soporte");
+				log.error("Mas de un registro de informe"+ this.codigoBusqueda);
+				return "/liquidacionInforme.xhtml";
+			}catch (NumberFormatException e) {
+				statusMessages.add(Severity.ERROR ,"Debe ingresar un número valido");
+				return "/liquidacionInforme.xhtml";
+				// TODO: handle exception
 			}
+
+
+			try {
+				SdmLiquidacionInformeViaticos liquidacion =  sdmLiquidacionInformeViaticosHome.buscarLiquidacionInforme(informe.getId());
+				if (liquidacion != null){
+					statusMessages.add(Severity.ERROR ,"La solicitud ya fue liquidada");
+					return "/liquidacionInforme.xhtml";
+				}
+				listRSdmInformeViaticos.add(informe);
+				mostrarResultados(listRSdmInformeViaticos);
+			}catch (NonUniqueResultException nue) {
+				statusMessages.add(Severity.ERROR ,"Se encontro más de una liquidación, por favor comunicarse con el área de soporte");
+				log.error("Mas de un registro de informe"+ this.codigoBusqueda);
+				return "/liquidacionInforme.xhtml";
+			}
+			return "/liquidacionInforme.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Busqueda liquidación por correlativo ", null);
+			throw e;
 		}
-		listvistaSdmInformeViaticos = new ArrayList<VistaSdmInformeViaticos>();
-		this.sdmEmpleadoSelect = new SdmEmpleado();
-		return "/liquidacionInforme.xhtml";
+	}
+	
+	/**
+	 * Liquida los informes
+	 * @return
+	 * @throws Exception
+	 */
+	public String liquidar() throws Exception{
+		try {
+			Iterator<VistaSdmInformeViaticos> it = listvistaSdmInformeViaticos.iterator();
+			VistaSdmInformeViaticos vista ;
+			while(it.hasNext()){
+				vista = it.next();
+				if (vista.selecionado){
+					//log.info("vista.getSdmInformeViaticos().getId()"+vista.getSdmInformeViaticos().getId());
+					//log.info("vista.getFechaLiquidacion()"+vista.getFechaLiquidacion());
+	
+					if (vista.getFechaLiquidacion() == null){
+						statusMessages.add("Debe de ingresar una fecha de liquidación para los datos selecionados");
+						//obtenerInformesUsuario();
+						return "/liquidacionInforme.xhtml";
+					}
+	
+					SdmLiquidacionInformeViaticos sdmLiquidacionInformeViaticos = new SdmLiquidacionInformeViaticos();
+					sdmLiquidacionInformeViaticos.setAnulado(false);
+					sdmLiquidacionInformeViaticos.setFecha(vista.getFechaLiquidacion());
+					sdmLiquidacionInformeViaticos.setSdmInformeViaticos(vista.getSdmInformeViaticos());
+					sdmLiquidacionInformeViaticos.setMonto(vista.getMontoTotal());
+					sdmLiquidacionInformeViaticos.setSdmEmpleado(sdmEmpleado);
+					sdmLiquidacionInformeViaticos.setSdmInformeViaticos(vista.getSdmInformeViaticos());
+					sdmLiquidacionInformeViaticosHome.grabarInforme(sdmLiquidacionInformeViaticos);
+					
+					 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+								"Se liquidó el informe " , this.stringLiquidarInforme , String.valueOf( sdmLiquidacionInformeViaticos.getId() ));		
+				
+					
+					
+					statusMessages.add("Se liquidó el informe : "+sdmLiquidacionInformeViaticos.getSdmInformeViaticos().getId());
+				}
+			}
+			listvistaSdmInformeViaticos = new ArrayList<VistaSdmInformeViaticos>();
+			this.sdmEmpleadoSelect = new SdmEmpleado();
+			return "/liquidacionInforme.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Liquidando informes ", null);
+			throw e;
+		}
+
 	}   
 
 
@@ -230,7 +274,5 @@ public class LiquidacionInformeBO implements Serializable {
 	public void setCodigoBusqueda(String codigoBusqueda) {
 		this.codigoBusqueda = codigoBusqueda;
 	}
-
-
 
 }

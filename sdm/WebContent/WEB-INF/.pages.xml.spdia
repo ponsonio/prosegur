@@ -152,4 +152,9 @@
   <output ID="/home.xhtml" NAME="output" PATH="/home.xhtml"
    TARGET="#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
  </item>
+ <item ID="#busquedaLog.xhtml" NAME="#xbusquedaLog.xhtml"
+  PATH="/busquedaLog.xhtml" SHAPE="152,2825,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/home.xhtml" NAME="output" PATH="/home.xhtml"
+   TARGET="#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
 </diagram>

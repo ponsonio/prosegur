@@ -68,8 +68,7 @@ public class SdmLog implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "fecha", nullable = false )
-	@NotNull
+	@Column(name = "fecha", nullable = true )
 	public Date getFecha() {
 		return this.fecha;
 	}
@@ -78,8 +77,7 @@ public class SdmLog implements java.io.Serializable {
 		this.fecha = fecha;
 	}
 
-	@Column(name = "ip", nullable = false, length = 50)
-	@NotNull
+	@Column(name = "ip", nullable = true, length = 50)
 	@Length(max = 50)
 	public String getIp() {
 		return this.ip;
@@ -89,8 +87,7 @@ public class SdmLog implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	@Column(name = "usuario", nullable = false, length = 50)
-	@NotNull
+	@Column(name = "usuario", nullable = true, length = 50)
 	@Length(max = 50)
 	public String getUsuario() {
 		return this.usuario;
@@ -100,8 +97,7 @@ public class SdmLog implements java.io.Serializable {
 		this.usuario = usuario;
 	}
 
-	@Column(name = "operacion", nullable = false, length = 100)
-	@NotNull
+	@Column(name = "operacion", nullable = true, length = 100)
 	@Length(max = 100)
 	public String getOperacion() {
 		return this.operacion;
@@ -111,8 +107,7 @@ public class SdmLog implements java.io.Serializable {
 		this.operacion = operacion;
 	}
 
-	@Column(name = "mensaje", nullable = false, length = 200)
-	@NotNull
+	@Column(name = "mensaje", nullable = true, length = 500)
 	@Length(max = 200)
 	public String getMensaje() {
 		return this.mensaje;
@@ -122,8 +117,7 @@ public class SdmLog implements java.io.Serializable {
 		this.mensaje = mensaje;
 	}
 
-	@Column(name = "tipo", nullable = false, length = 20)
-	@NotNull
+	@Column(name = "tipo", nullable = true, length = 20)
 	@Length(max = 20)
 	public String getTipo() {
 		return this.tipo;
@@ -133,8 +127,7 @@ public class SdmLog implements java.io.Serializable {
 		this.tipo = tipo;
 	}
 
-	@Column(name = "nombre_clase", nullable = false, length = 50)
-	@NotNull
+	@Column(name = "nombre_clase", nullable = true, length = 50)
 	@Length(max = 50)
 	public String getNombreClase() {
 		return this.nombreClase;
@@ -144,8 +137,7 @@ public class SdmLog implements java.io.Serializable {
 		this.nombreClase = nombreClase;
 	}
 
-	@Column(name = "referencia", nullable = false, length = 50)
-	@NotNull
+	@Column(name = "referencia", nullable = true, length = 50)
 	@Length(max = 50)
 	public String getReferencia() {
 		return this.referencia;

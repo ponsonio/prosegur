@@ -43,6 +43,12 @@ public class EmpleadoBO implements Serializable{
 	 */
 	private static final long serialVersionUID = 7276137792492138227L;
 
+	String crearEmpleado = "Crear Empleado";
+	String modificarEmpleado = "Modificar Empleado";
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
 	
     @In 
     StatusMessages statusMessages;
@@ -185,84 +191,138 @@ public class EmpleadoBO implements Serializable{
 		return flag;
 	}
 	
-	public String crearEmpleado(){
-		ArrayList<SdmRol> arraSdmRols = null;
-		if (this.validarEmpleado(this.sdmEmpleadoNuevo)){
-			if (this.empleadoNuevoUsuario){
-				if (this.validarUsuario(this.sdmUsuarioNuevo) == false)  return "/asignacionRoles.xhtml";
-				this.sdmUsuarioNuevo.setActivo(true);
-				arraSdmRols = new ArrayList<SdmRol>();
-				for (int i = 0 ; i < longIdRolesSelecionados.length ; i ++){
-					SdmRol sdmRol = new SdmRol();
-					sdmRol.setId(longIdRolesSelecionados[i]);
-					arraSdmRols.add(sdmRol);
+	/**
+	 * Crea un empleado
+	 * @return
+	 */
+	public String crearEmpleado() throws Exception{
+		String aux = "";
+
+		try {
+			ArrayList<SdmRol> arraSdmRols = null;
+			if (this.validarEmpleado(this.sdmEmpleadoNuevo)){
+				if (this.empleadoNuevoUsuario){
+					if (this.validarUsuario(this.sdmUsuarioNuevo) == false)  return "/asignacionRoles.xhtml";
+					this.sdmUsuarioNuevo.setActivo(true);
+					arraSdmRols = new ArrayList<SdmRol>();
+					for (int i = 0 ; i < longIdRolesSelecionados.length ; i ++){
+						SdmRol sdmRol = new SdmRol();
+						aux = aux + " " +longIdRolesSelecionados[i];	
+						
+						sdmRol.setId(longIdRolesSelecionados[i]);
+						arraSdmRols.add(sdmRol);
+					}
+				}else{
+					this.sdmUsuarioNuevo = null;
 				}
-			}else{
-				this.sdmUsuarioNuevo = null;
+				this.sdmEmpleadoNuevo.setSdmEmpresa(this.sdmEmpresa);
+				this.sdmEmpleadoNuevo.setSdmCentroCosto(this.sdmCentroCosto);
+				this.sdmEmpleadoNuevo.setSdmDelegacion(this.sdmDelegacion);
+				this.sdmEmpleadoNuevo.setSdmDivicion(this.sdmDivicion);
+				sdmEmpleadoHome.crearEmpleadoUsuario(this.sdmEmpleadoNuevo, this.sdmUsuarioNuevo,arraSdmRols);
+				statusMessages.add(Severity.INFO,"El usuario se creó correctamente");
+				
+				
+				 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+							"Se creó el empleado roles : "  + aux , this.crearEmpleado , String.valueOf( sdmEmpleadoNuevo.getCodigo()));
+	
+				this.sdmEmpleadoNuevo = new SdmEmpleado();
+				this.sdmUsuarioNuevo = new SdmUsuario();
 			}
-			this.sdmEmpleadoNuevo.setSdmEmpresa(this.sdmEmpresa);
-			this.sdmEmpleadoNuevo.setSdmCentroCosto(this.sdmCentroCosto);
-			this.sdmEmpleadoNuevo.setSdmDelegacion(this.sdmDelegacion);
-			this.sdmEmpleadoNuevo.setSdmDivicion(this.sdmDivicion);
-			sdmEmpleadoHome.crearEmpleadoUsuario(this.sdmEmpleadoNuevo, this.sdmUsuarioNuevo,arraSdmRols);
-			statusMessages.add(Severity.INFO,"El usuario se creó correctamente");
-			this.sdmEmpleadoNuevo = new SdmEmpleado();
-			this.sdmUsuarioNuevo = new SdmUsuario();
+			return "/asignacionRoles.xhtml";
+		} catch (Exception e) {
+
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.crearEmpleado, null);
+
+			throw e;
 		}
-		return "/asignacionRoles.xhtml";
+
 	}
 	
-	
-	public String seleccionarEmpleado(){
-		this.sdmEmpleadoSelect = sdmEmpleadoBusqueda;
-		this.sdmUsuarioSelect = sdmUsuarioHome.obtenerSdmUsuarioXCodigo(sdmEmpleadoSelect.getCodigo()) ;
-		//Cargo los roles 
-		if (this.sdmUsuarioSelect != null){
-			this.empleadoSelectUsuario = true;
-			Iterator<SdmRolXUsuario> it = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
-			this.longRolesUsuarioSelect = new long[sdmUsuarioSelect.getSdmRolXUsuarios().size()];
-			int i = 0;
-			while (it.hasNext()){
-				longRolesUsuarioSelect[i] = it.next().getId().getIdRol();
-				i++;
-			}
-					
-		}else{
-			this.empleadoSelectUsuario = false;
-			this.longRolesUsuarioSelect = null;
-		}
-		this.arraylistSdmEmpleadoBusqueda = new  ArrayList<SdmEmpleado>();
-		return "/asignacionRoles.xhtml";
-	}
-	
-	public String modificarEmpleado(){
-		ArrayList<SdmRol> arraSdmRols = null;
-		if (this.validarEmpleadoModificar(this.sdmEmpleadoSelect)){
-			
-			if (this.empleadoSelectUsuario) {
-				
-				if (this.validarUsuario(this.sdmUsuarioSelect) == false) return  "/asignacionRoles.xhtml";
-				this.sdmUsuarioSelect.setActivo(true);
-				arraSdmRols = new ArrayList<SdmRol>();
-				for (int i = 0 ; i < longRolesUsuarioSelect.length ; i ++){
-					SdmRol sdmRol = new SdmRol();
-					sdmRol.setId(longRolesUsuarioSelect[i]);
-					arraSdmRols.add(sdmRol);
+	/**
+	 * Seleciona un empleado
+	 * @return
+	 */
+	public String seleccionarEmpleado() throws Exception{
+		
+		try {
+			this.sdmEmpleadoSelect = sdmEmpleadoBusqueda;
+			this.sdmUsuarioSelect = sdmUsuarioHome.obtenerSdmUsuarioXCodigo(sdmEmpleadoSelect.getCodigo()) ;
+			//Cargo los roles 
+			if (this.sdmUsuarioSelect != null){
+				this.empleadoSelectUsuario = true;
+				Iterator<SdmRolXUsuario> it = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
+				this.longRolesUsuarioSelect = new long[sdmUsuarioSelect.getSdmRolXUsuarios().size()];
+				int i = 0;
+				while (it.hasNext()){
+					longRolesUsuarioSelect[i] = it.next().getId().getIdRol();
+					i++;
 				}
-				
+						
 			}else{
-				this.sdmUsuarioSelect = null;
+				this.empleadoSelectUsuario = false;
 				this.longRolesUsuarioSelect = null;
 			}
-			this.sdmEmpleadoHome.actualizarEmpleado(this.sdmEmpleadoSelect , this.sdmUsuarioSelect , arraSdmRols);
-			statusMessages.add(Severity.INFO,"Se modificó el empleado correctamente");
+			this.arraylistSdmEmpleadoBusqueda = new  ArrayList<SdmEmpleado>();
+			return "/asignacionRoles.xhtml";
+
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), sdmEmpleadoSelect.getCodigo(), null);
+			throw e;
 		}
-		//Si el flag es false no grabo el usuario
-		return "/asignacionRoles.xhtml";
+			
 	}
 	
+	/**
+	 * Modifica un empleado
+	 * @return
+	 */
+	public String modificarEmpleado() throws Exception{
+		try {
+			String aux = "";
+			ArrayList<SdmRol> arraSdmRols = null;
+			if (this.validarEmpleadoModificar(this.sdmEmpleadoSelect)){
+				
+				if (this.empleadoSelectUsuario) {
+					
+					if (this.validarUsuario(this.sdmUsuarioSelect) == false) return  "/asignacionRoles.xhtml";
+					this.sdmUsuarioSelect.setActivo(true);
+					arraSdmRols = new ArrayList<SdmRol>();
+					for (int i = 0 ; i < longRolesUsuarioSelect.length ; i ++){
+						SdmRol sdmRol = new SdmRol();
+						aux = aux + " " + longRolesUsuarioSelect[i];
+						sdmRol.setId(longRolesUsuarioSelect[i]);
+						arraSdmRols.add(sdmRol);
+					}
+					
+				}else{
+					this.sdmUsuarioSelect = null;
+					this.longRolesUsuarioSelect = null;
+				}
+				this.sdmEmpleadoHome.actualizarEmpleado(this.sdmEmpleadoSelect , this.sdmUsuarioSelect , arraSdmRols);
+				statusMessages.add(Severity.INFO,"Se modificó el empleado correctamente");
+
+				 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+							"Se modificó empleado , roles:" +aux , this.modificarEmpleado , String.valueOf( sdmEmpleadoSelect.getCodigo()));
 	
-	public String  buscarEmpleadoXCodigo(){
+			}
+			//Si el flag es false no grabo el usuario
+			return "/asignacionRoles.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), sdmEmpleadoSelect.getCodigo(), String.valueOf( sdmEmpleadoSelect.getCodigo()));
+			throw e;
+		}
+						
+	}
+	
+	/**
+	 * Buscar un empleado por código
+	 * @return
+	 */
+	public String  buscarEmpleadoXCodigo() throws Exception{
 		this.sdmEmpleadoSelect = new SdmEmpleado();
 		this.sdmUsuarioSelect = new SdmUsuario();
 		this.arraylistSdmEmpleadoBusqueda = new  ArrayList<SdmEmpleado>();
@@ -283,8 +343,7 @@ public class EmpleadoBO implements Serializable{
 			}else{
 				this.empleadoSelectUsuario = false;
 				this.longRolesUsuarioSelect = null;
-			}
-			
+			}	
 		}catch (NoResultException nre) {
 			log.info("Usuario no encontrado: "+this.codigoBuscar);
 			statusMessages.add(Severity.ERROR,"No se encontró su usuario, por favor comunicarse con el área de soporte");

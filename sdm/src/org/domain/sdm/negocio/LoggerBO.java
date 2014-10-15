@@ -92,7 +92,10 @@ public class LoggerBO implements Serializable{
 	public SdmLog ingresarLog(String nombreClase , String mensaje , String operacion , String referencia , String tipo){
 		SdmLog sdmLog = new SdmLog();
 		try{
+
+			 
 			sdmLog.setIp(this.obtenerIp());
+			sdmLog.setNombreClase(nombreClase);
 			sdmLog.setUsuario(sdmEmpleado.getCodigo());
 			Date d = new Date();
 			sdmLog.setFecha(new Timestamp(d.getTime()) );
@@ -100,6 +103,7 @@ public class LoggerBO implements Serializable{
 			sdmLog.setOperacion(operacion);
 			sdmLog.setMensaje(mensaje);
 			sdmLog.setReferencia(referencia);
+			sdmLog.setTipo(tipo);
 			sdmLogHome.crear(sdmLog);
 		}catch(Exception e){
 			log.error("Ocurrio un error al grabar el Log " + sdmLog.toString());
@@ -113,12 +117,14 @@ public class LoggerBO implements Serializable{
 	public SdmLog ingresarLogUsr(String nombreClase , String mensaje , String operacion , String referencia , String tipo, String usr){
 		SdmLog sdmLog = new SdmLog();
 		try{
+			sdmLog.setNombreClase(nombreClase);
 			sdmLog.setIp(this.obtenerIp());
 			sdmLog.setUsuario(usr);
 			Date d = new Date();
 			sdmLog.setFecha(new Timestamp(d.getTime()) );
 			sdmLog.setIp(this.obtenerIp());
 			sdmLog.setOperacion(operacion);
+			sdmLog.setTipo(tipo);
 			sdmLog.setMensaje(mensaje);
 			sdmLog.setReferencia(referencia);
 			sdmLogHome.crear(sdmLog);
@@ -126,7 +132,7 @@ public class LoggerBO implements Serializable{
 			log.error("Ocurrio un error al grabar el Log " + sdmLog.toString());
 			log.error(e.getLocalizedMessage());
 			statusMessages.add(Severity.ERROR,"Ocurrio un error al grabar el archivo de auditoría, por favor informar a Soporte");
-
+			System.out.println("aca toy");
 		}
 		return sdmLog;
 	}

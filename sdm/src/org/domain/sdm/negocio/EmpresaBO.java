@@ -26,11 +26,22 @@ public class EmpresaBO implements Serializable {
 	 */
 	private static final long serialVersionUID = 787937008071175854L;
 	
+	
+	
+	String modificarEmpresa = "Modficar Empresa ";
+	String eliminarEmpresa = "Eliminar Empresa ";
+	String crearEmpresa = "Crear Empresa  ";
+	
+	
 	@Logger private Log log;
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
 
     @In 
     StatusMessages statusMessages;
 	
+    
 	
 	String nombreEmpresaNueva ; 
 	
@@ -59,71 +70,117 @@ public class EmpresaBO implements Serializable {
 		return "/empresa.xhtml";
 	}
 	
-	public String  modificarEmpresa(){
-		if (this.sdmEmpresaSelect.getCodigo() == null 
-				|| this.sdmEmpresaSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione una empresa primero ");
-			return "/empresa.xhtml";
-		}
-		this.sdmEmpresaSelect.setNombre(this.sdmEmpresaSelect.getNombre().trim());
-		if (this.sdmEmpresaSelect.getNombre().isEmpty()){
-			statusMessages.add(Severity.INFO,"Ingrese nombre valido");
-			return "/empresa.xhtml";
-		}
-		
-		sdmEmpresaHome.modificarEmpresa(this.sdmEmpresaSelect);
-		statusMessages.add(Severity.INFO,"Se modificó la empresa ");
-		this.sdmEmpresaSelect = new SdmEmpresa();
-		return "/empresa.xhtml";
-	}
-	
-	public String eliminarEmpresa(){
-		
-		if (this.sdmEmpresaSelect.getCodigo() == null ||
-				this.sdmEmpresaSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione una empresa primero ");
-			return "/empresa.xhtml";
-		}	
-		if (sdmEmpleadoHome.buscarEmpleadosEmpresa(this.sdmEmpresaSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen empleados con dicha empresa asignada");
-			return "/empresa.xhtml";
-		}
-		
-		if (sdmInformeViaticosHome.buscarInformesXEmpresa(this.sdmEmpresaSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicha empresa asignada");
-			return "/empresa.xhtml";
-		}
-		sdmEmpresaHome.eliminarEmpresa(this.sdmEmpresaSelect);
-		statusMessages.add(Severity.INFO,"Se eliminó la empresa " + this.sdmEmpresaSelect.getNombre());
-		
-		this.sdmEmpresaSelect = new SdmEmpresa();
-		return "/empresa.xhtml";
-	}
-	
-	public String crearEmpresa(){
+	/**
+	 * Modifica una empresa
+	 * @return
+	 * @throws Exception
+	 */
+	public String  modificarEmpresa() throws Exception{
+		try {
+			if (this.sdmEmpresaSelect.getCodigo() == null 
+					|| this.sdmEmpresaSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione una empresa primero ");
+				return "/empresa.xhtml";
+			}
+			this.sdmEmpresaSelect.setNombre(this.sdmEmpresaSelect.getNombre().trim());
+			if (this.sdmEmpresaSelect.getNombre().isEmpty()){
+				statusMessages.add(Severity.INFO,"Ingrese nombre valido");
+				return "/empresa.xhtml";
+			}
+			
+			sdmEmpresaHome.modificarEmpresa(this.sdmEmpresaSelect);
+			statusMessages.add(Severity.INFO,"Se modificó la empresa ");
 
-		this.codigoEmpresaNueva = this.codigoEmpresaNueva.trim().toUpperCase();
-		
-		if (this.codigoEmpresaNueva.length() < 3){
-			statusMessages.add(Severity.ERROR, "Ingrese un código  válido");
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se modificó la Empresa " , this.modificarEmpresa ,String.valueOf(sdmEmpresaSelect.getCodigo() ));		
+			
+			this.sdmEmpresaSelect = new SdmEmpresa();
 			return "/empresa.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Modificar empresa ", this.sdmEmpresaSelect.getCodigo());
+			throw e;
 		}
-		
-		this.nombreEmpresaNueva = this.nombreEmpresaNueva.trim();
-		
-		if (this.nombreEmpresaNueva.isEmpty()){
-			statusMessages.add(Severity.ERROR, "Ingreso un nombre  válido");
+	}
+	
+	/**
+	 * Elimina una empresa
+	 * @return
+	 */
+	public String eliminarEmpresa() throws Exception{
+		try {
+			if (this.sdmEmpresaSelect.getCodigo() == null ||
+					this.sdmEmpresaSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione una empresa primero ");
+				return "/empresa.xhtml";
+			}	
+			if (sdmEmpleadoHome.buscarEmpleadosEmpresa(this.sdmEmpresaSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen empleados con dicha empresa asignada");
+				return "/empresa.xhtml";
+			}
+			
+			if (sdmInformeViaticosHome.buscarInformesXEmpresa(this.sdmEmpresaSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicha empresa asignada");
+				return "/empresa.xhtml";
+			}
+			sdmEmpresaHome.eliminarEmpresa(this.sdmEmpresaSelect);
+			statusMessages.add(Severity.INFO,"Se eliminó la empresa " + this.sdmEmpresaSelect.getNombre());
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se eliminó la Empresa " , this.eliminarEmpresa ,String.valueOf(sdmEmpresaSelect.getCodigo() ));		
+			
+			this.sdmEmpresaSelect = new SdmEmpresa();
 			return "/empresa.xhtml";
+
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Eliminar empresa ", this.sdmEmpresaSelect.getCodigo());
+			throw e;
 		}
-		
-		if ( sdmEmpresaHome.buscarSdmEmpresaXCodigo(this.codigoEmpresaNueva) != null){
-			statusMessages.add(Severity.ERROR, "Ya existe una empresa con dicho código");
+
+			
+	}
+	/**
+	 * Crea una empresa
+	 * @return
+	 * @throws Exception
+	 */
+	public String crearEmpresa() throws Exception{
+
+		try {
+			this.codigoEmpresaNueva = this.codigoEmpresaNueva.trim().toUpperCase();
+			
+			if (this.codigoEmpresaNueva.length() < 3){
+				statusMessages.add(Severity.ERROR, "Ingrese un código  válido");
+				return "/empresa.xhtml";
+			}
+			
+			this.nombreEmpresaNueva = this.nombreEmpresaNueva.trim();
+			
+			if (this.nombreEmpresaNueva.isEmpty()){
+				statusMessages.add(Severity.ERROR, "Ingreso un nombre  válido");
+				return "/empresa.xhtml";
+			}
+			
+			if ( sdmEmpresaHome.buscarSdmEmpresaXCodigo(this.codigoEmpresaNueva) != null){
+				statusMessages.add(Severity.ERROR, "Ya existe una empresa con dicho código");
+				return "/empresa.xhtml";
+			}
+			SdmEmpresa sdmEmpresa = new SdmEmpresa(this.codigoEmpresaNueva , this.nombreEmpresaNueva);
+			sdmEmpresaHome.crearEmpresa(sdmEmpresa);
+			statusMessages.add(Severity.INFO,"Se creó la nueva empresa");
+			
+			loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se creó la Empresa " , this.crearEmpresa ,String.valueOf(sdmEmpresa.getCodigo() ));		
+			
 			return "/empresa.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Crear empresa ", null);
+			throw e;
 		}
-		SdmEmpresa sdmEmpresa = new SdmEmpresa(this.codigoEmpresaNueva , this.nombreEmpresaNueva);
-		sdmEmpresaHome.crearEmpresa(sdmEmpresa);
-		statusMessages.add(Severity.INFO,"Se creó la nueva empresa");
-		return "/empresa.xhtml";
 	}
 
 
@@ -170,9 +227,5 @@ public class EmpresaBO implements Serializable {
 	}
 
 
-	
-	
-	
-	
 	
 }

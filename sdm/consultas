@@ -1,0 +1,12 @@
+select * from dbo.SDM_empleado
+
+select * from dbo.SDM_usuario
+
+select * from dbo.SDM_rol_x_usuario
+
+
+
+
+select * from dbo.SDM_rol
+
+select * from dbo.SDM_log

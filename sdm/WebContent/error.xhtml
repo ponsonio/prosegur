@@ -10,10 +10,18 @@
     <ui:param name="showGlobalMessages" value="false"/>
     <ui:define name="body">
 
-        <h1>Error</h1>
-        <p>Ups! , por favor intentelo nuevamente o comunicarse con soporte técnico</p>
+        <h1>Ocurrio un error Inesperado </h1>
+        <p>Por favor intentelo nuevamente o comuníquese con soporte técnico</p>
+	      
+	      #{ loggerBO.ingresarRegistroError("error.xhtml", org.jboss.seam.exception.class , "Error Inesperado", null) }
+	      #{ loggerBO.ingresarRegistroError("error.xhtml", org.jboss.seam.handledException.class , "Error Inesperado", null) }
+	      #{ loggerBO.ingresarRegistroError("error.xhtml", org.jboss.seam.exception.message , "Error Inesperado", null) }
+	       #{ loggerBO.ingresarRegistroError("error.xhtml", org.jboss.seam.handledException , "Error Inesperado", null) }
+	      #{ loggerBO.ingresarRegistroError("error.xhtml", org.jboss.seam.exception.rootCause , "Error Inesperado", null) }
+	       <ui:repeat var="ex" value="#{org.jboss.seam.exception.rootCause.stackTrace}">  
+	         #{ loggerBO.ingresarRegistroError("error.xhtml", ex.className + " "+ex.lineNumber + " " + ex.methodName, "Error Inesperado", null) }
+	       </ui:repeat>  
 
-        <h:messages id="errorMessage" styleClass="message"/>
 
     </ui:define>
 </ui:composition>

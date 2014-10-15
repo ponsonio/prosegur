@@ -60,8 +60,11 @@ public class Authenticator implements Serializable {
 		// obtengo el usuario
 		SdmUsuario usr;
 		try {
+
+
 			usr = sdmUsuarioHome.obtenerSdmUsuario(credentials.getUsername());
 			sdmUsuario = usr;
+
 		} catch (NoResultException nre) {
 			// log.info("Usuario no encontrado");
 			statusMessages
@@ -70,6 +73,7 @@ public class Authenticator implements Serializable {
 			
 			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
 					"No se encontro su usuario", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
+			
 			return false;
 		} catch (NonUniqueResultException nue) {
 			// TODO: handle exception

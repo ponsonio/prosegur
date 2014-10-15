@@ -69,10 +69,23 @@ public class ReporteInformesBO implements Serializable {
 	
 	@Logger private Log log;
 	
-	public String generarReporte(){
-		this.arrayInformeViaticos = sdmInformeViaticosHome.buscarInformesLiquidacionesActivosXFechas(this.fechaDesde, this.fechaHasta);
-		mostrarDetalle();
-		return "/reporteInformes_xls.xhtml";
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
+	/**
+	 * Genera el reporte
+	 * @return
+	 */
+	public String generarReporte() throws Exception{
+		try {
+			this.arrayInformeViaticos = sdmInformeViaticosHome.buscarInformesLiquidacionesActivosXFechas(this.fechaDesde, this.fechaHasta);
+			mostrarDetalle();
+			return "/reporteInformes_xls.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Generar reporte", null);
+			throw e;
+		}
 	}
 	
 	public void mostrarDetalle(){
@@ -93,36 +106,42 @@ public class ReporteInformesBO implements Serializable {
 		
 	}
 
-	public String generarReporteCentroCostoTipoServicio(){
-		
-		List<VistaReporteCCTipoServicio> arrayVistaReporteCCTipoServicio = new ArrayList<VistaReporteCCTipoServicio>();
-		ArrayList<SdmCentroCosto> arraySdmCentroCostos = this.sdmCentroCostoHome.listarCentroCostos();
-		ArrayList<SdmTipoServicio> arrayTipoServicios  = this.sdmTipoServicioHome.obtenerListaSDMTipoServicio();
-		
-		//log.error("centro de costos:"+arraySdmCentroCostos.size());
-		//log.error("centro de tipo serv:"+arrayTipoServicios.size());
-		
-		//Itero los centros de costo
-		Iterator<SdmCentroCosto> it1 = arraySdmCentroCostos.iterator();
-		while (it1.hasNext()){
-			SdmCentroCosto sdmCentroCosto = it1.next();
-			//Itero los tipos de serv
-			Iterator<SdmTipoServicio> it2 = arrayTipoServicios.iterator();
-			while (it2.hasNext()){
-				SdmTipoServicio sdmTipoServicio = it2.next();
-				VistaReporteCCTipoServicio vista = new VistaReporteCCTipoServicio();
-				vista.setSdmCentroCosto(sdmCentroCosto);
-				vista.setSdmTipoServicio(sdmTipoServicio);
-				vista.setBigDecimalTotal(
-						sdmInformeViaticoDetalleHome
-						.obtenerTotalDetalleXCCXTipoActivosFechas(sdmCentroCosto.getCodigo(), sdmTipoServicio.getId(), 
-								this.fechaDesde, this.fechaHasta));
-				this.arrayVistaReporteCCTipoServicio.add(vista);
+	public String generarReporteCentroCostoTipoServicio() throws Exception{
+		try {
+			List<VistaReporteCCTipoServicio> arrayVistaReporteCCTipoServicio = new ArrayList<VistaReporteCCTipoServicio>();
+			ArrayList<SdmCentroCosto> arraySdmCentroCostos = this.sdmCentroCostoHome.listarCentroCostos();
+			ArrayList<SdmTipoServicio> arrayTipoServicios  = this.sdmTipoServicioHome.obtenerListaSDMTipoServicio();
+			
+			//log.error("centro de costos:"+arraySdmCentroCostos.size());
+			//log.error("centro de tipo serv:"+arrayTipoServicios.size());
+			
+			//Itero los centros de costo
+			Iterator<SdmCentroCosto> it1 = arraySdmCentroCostos.iterator();
+			while (it1.hasNext()){
+				SdmCentroCosto sdmCentroCosto = it1.next();
+				//Itero los tipos de serv
+				Iterator<SdmTipoServicio> it2 = arrayTipoServicios.iterator();
+				while (it2.hasNext()){
+					SdmTipoServicio sdmTipoServicio = it2.next();
+					VistaReporteCCTipoServicio vista = new VistaReporteCCTipoServicio();
+					vista.setSdmCentroCosto(sdmCentroCosto);
+					vista.setSdmTipoServicio(sdmTipoServicio);
+					vista.setBigDecimalTotal(
+							sdmInformeViaticoDetalleHome
+							.obtenerTotalDetalleXCCXTipoActivosFechas(sdmCentroCosto.getCodigo(), sdmTipoServicio.getId(), 
+									this.fechaDesde, this.fechaHasta));
+					this.arrayVistaReporteCCTipoServicio.add(vista);
+				}
+				
 			}
 			
-		}
-		
-		return "reporteInformesCCTipoServicio.xhtml";
+			return "reporteInformesCCTipoServicio.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Generar reporte", null);
+			throw e;
+		}	
 	}
 	
 	public Date getFechaDesde() {

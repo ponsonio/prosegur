@@ -40,6 +40,8 @@ public class EmpleadoMasivoBO implements Serializable{
 	 */
 	private static final long serialVersionUID = 7276137792492138227L;
 
+	@In(create = true)
+	LoggerBO loggerBO;
 	
     @In 
     StatusMessages statusMessages;
@@ -138,7 +140,10 @@ public class EmpleadoMasivoBO implements Serializable{
 							if (actualizar)  this.arrayListEmpleadosActualizar.add(empleado) ; else this.arrayListEmpleadosCargar.add(empleado);
 						}
 		    		}catch(Exception e){
-		    			log.error(Severity.ERROR, "Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
+		    			//log.error(Severity.ERROR, "Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
+		    			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+		    					"Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1)+ e.getMessage(), "Carga masiva empleados", null);
+		    			
 		    			this.erroresCarga.add("Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
 		    			e.printStackTrace();
 		    		}
@@ -166,7 +171,11 @@ public class EmpleadoMasivoBO implements Serializable{
 					    		this.arrayListEmpleadosDesactivar.add(empleadoEliminar);
 					    	}
 			    		}catch(Exception e){
-			    			log.error(Severity.ERROR, "Ocurrio un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1));
+			    			//log.error(Severity.ERROR, "Ocurrio un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1));
+
+			    			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+			    					"Ocurrio un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1) +e.getMessage(),"Carga masiva empleados", null);
+			    			
 			    			this.erroresCarga.add("Ocurrio un error leyendo la hoja 2 , fila "+(row.getRowNum()+1));
 			    			e.printStackTrace();
 			    			
@@ -177,6 +186,11 @@ public class EmpleadoMasivoBO implements Serializable{
 		    }
 		}catch(Exception e){
 			statusMessages.add("Ocurrio un error al abrir el archivo, por favor verifique el formato");
+
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					"Ocurrio un error al abrir el archivo, por favor verifique el formato" +e.getMessage(),"Carga masiva empleados", null);
+
+		
 			e.printStackTrace();
 			log.error("ocurrio un error leyendo el archivo");
 			log.error(e.getMessage());
@@ -185,8 +199,10 @@ public class EmpleadoMasivoBO implements Serializable{
 				file.close();
 			}catch(Exception e){
 				log.error("Ocurrio un error cerrando el archivo de carga masiva"+ e.getMessage());
+
+				loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+						"Ocurrio un error cerrando el archivo de carga masiva" +e.getMessage(),"Carga masiva empleados", null);
 			}
-			
 		}
 		
 
@@ -246,57 +262,90 @@ public class EmpleadoMasivoBO implements Serializable{
 		arrayListEmpleadosDesactivar = new ArrayList<SdmEmpleado>();
 	}
 	
-	public String grabarEmpleados() {
-		Iterator<SdmEmpleado> it = this.arrayListEmpleadosCargar.iterator();
-		//boolean flag = true;
-		while (it.hasNext()){
-			SdmEmpleado empleado = it.next();
-			try{
-			if (sdmEmpleadoHome.buscarSdmEmpleadoXCodigo(empleado.getCodigo()) != null) throw new Exception("Ya existe ese código de empleado");
-				sdmEmpleadoHome.crearEmpleado(empleado) ;
-				this.resultado.add("Se creo el empleado :" + empleado.getCodigo());
-			}catch(Exception e){
-				//flag=false;
-				this.resultado.add("Ocurrio un error y no se creó el empleado :"+ empleado.getCodigo());
-				log.error("Ocurrio un error y no se creo el empleado :"+ empleado.getCodigo());
-				log.error("Error creación masiva :"+ e.getMessage());
+	/**
+	 * Graba los cambios
+	 * @return
+	 */
+	public String grabarEmpleados() throws Exception {
+		try {
+			Iterator<SdmEmpleado> it = this.arrayListEmpleadosCargar.iterator();
+			//boolean flag = true;
+			while (it.hasNext()){
+				SdmEmpleado empleado = it.next();
+				try{
+				if (sdmEmpleadoHome.buscarSdmEmpleadoXCodigo(empleado.getCodigo()) != null) throw new Exception("Ya existe ese código de empleado");
+					sdmEmpleadoHome.crearEmpleado(empleado) ;
+					this.resultado.add("Se creo el empleado :" + empleado.getCodigo());
+					
+					loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(),
+							"Se creo el empleado :" + empleado.getCodigo(),"Carga masiva empleados", null);
+					
+				}catch(Exception e){
+					//flag=false;
+					this.resultado.add("Ocurrio un error y no se creó el empleado :"+ empleado.getCodigo());
+					log.error("Ocurrio un error y no se creo el empleado :"+ empleado.getCodigo());
+					log.error("Error creación masiva :"+ e.getMessage());
+	
+					loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+							"Error creación masiva :"+ e.getMessage(),"Carga masiva empleados", empleado.getCodigo());
+				
+				}
 			}
-		}
-		Iterator<SdmEmpleado> it2 = this.arrayListEmpleadosActualizar.iterator();
-		while (it2.hasNext()){
-			SdmEmpleado empleado = it2.next();
-			try{
-				sdmEmpleadoHome.actualizarEmpleado(empleado) ;
-				this.resultado.add("Se actualizó el empleado :" + empleado.getCodigo());
-			}catch(Exception e){
-				//flag=false;
-				this.resultado.add("Ocurrio un error y no se actualizó el empleado :"+ empleado.getCodigo());
-				log.error("Ocurrio un error y no se actualizó el empleado :"+ empleado.getCodigo());
-				log.error("Error actualización masiva :"+ e.getMessage());
+			Iterator<SdmEmpleado> it2 = this.arrayListEmpleadosActualizar.iterator();
+			while (it2.hasNext()){
+				SdmEmpleado empleado = it2.next();
+				try{
+					sdmEmpleadoHome.actualizarEmpleado(empleado) ;
+					this.resultado.add("Se actualizó el empleado :" + empleado.getCodigo());
+	
+					loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(),
+							"Se actualizó el empleado :" + empleado.getCodigo(),"Carga masiva empleados", empleado.getCodigo());
+					
+				}catch(Exception e){
+					//flag=false;
+					this.resultado.add("Ocurrio un error y no se actualizó el empleado :"+ empleado.getCodigo());
+					log.error("Ocurrio un error y no se actualizó el empleado :"+ empleado.getCodigo());
+					log.error("Error actualización masiva :"+ e.getMessage());
+	
+					loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(),
+							"Error actualización masiva :"+ e.getMessage(),"Carga masiva empleados", empleado.getCodigo());
+				}
 			}
-		}
-		
-		Iterator<SdmEmpleado> it3 = this.arrayListEmpleadosDesactivar.iterator();
-		while (it3.hasNext()){
-			SdmEmpleado empleado = it3.next();
-			try{
-				sdmEmpleadoHome.actualizarEmpleado(empleado) ;
-				this.resultado.add("Se desactivó el empleado :" + empleado.getCodigo());
-			}catch(Exception e){
-				//flag=false;
-				this.resultado.add("Ocurrio un error y no se desactivó el empleado :"+ empleado.getCodigo());
-				log.error("Ocurrio un error y no se desactivó el empleado :"+ empleado.getCodigo());
-				log.error("Error creación desactivación :"+ e.getMessage());
+			
+			Iterator<SdmEmpleado> it3 = this.arrayListEmpleadosDesactivar.iterator();
+			while (it3.hasNext()){
+				SdmEmpleado empleado = it3.next();
+				try{
+					sdmEmpleadoHome.actualizarEmpleado(empleado) ;
+					this.resultado.add("Se desactivó el empleado :" + empleado.getCodigo());
+	
+					loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(),
+							"Se desactivó el empleado :" + empleado.getCodigo(),"Carga masiva empleados", empleado.getCodigo());
+				
+				}catch(Exception e){
+					//flag=false;
+					this.resultado.add("Ocurrio un error y no se desactivó el empleado :"+ empleado.getCodigo());
+					log.error("Ocurrio un error y no se desactivó el empleado :"+ empleado.getCodigo());
+					log.error("Error creación desactivación :"+ e.getMessage());
+	
+					loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+							"Error creación desactivación :"+ e.getMessage(),"Carga masiva empleados", empleado.getCodigo());
+				
+				}
 			}
-		}
-		
-		//if (flag) this.statusMessages.add("Operación Realizada");
-		this.file = null;
-		erroresCarga = new ArrayList<String>();
-		//resultado  = new ArrayList<String>();
-		limpiarListasEmpleados();
-		limpiarListas();
-		return "/altaEmpleadosMasiva.xhtml";
+			
+			//if (flag) this.statusMessages.add("Operación Realizada");
+			this.file = null;
+			erroresCarga = new ArrayList<String>();
+			//resultado  = new ArrayList<String>();
+			limpiarListasEmpleados();
+			limpiarListas();
+			return "/altaEmpleadosMasiva.xhtml";
+		}catch(Exception e){
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					"Error al grabar empleados :"+ e.getMessage(),"Carga masiva empleados", null);
+			throw e;
+		}	
 	}
 	
 	public String limpiarNuevos(){

@@ -26,6 +26,16 @@ public class DelegacionBO implements Serializable {
 	 */
 	private static final long serialVersionUID = -3047272031277780091L;
 
+	
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
+	String modificarDelegacion = "Modficar Delegacion ";
+	String eliminarDelegacion = "Eliminar Delegación ";
+	String crearDelegacion = "Crear Delegación  ";
+	
+	
 	@Logger private Log log;
 
 	@In 
@@ -59,78 +69,127 @@ public class DelegacionBO implements Serializable {
 		return "/delegacion.xhtml";
 	}
 	
-	public String  modificarDelegacion(){
-		if (this.sdmDelegacionSelect.getCodigo() == null 
-				|| this.sdmDelegacionSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione una delegación primero ");
+	/**
+	 * Modifica una Delegación
+	 * @return
+	 * @throws Exception
+	 */
+	public String  modificarDelegacion() throws Exception{
+		try{
+			if (this.sdmDelegacionSelect.getCodigo() == null 
+					|| this.sdmDelegacionSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione una delegación primero ");
+				return "/delegacion.xhtml";
+			}
+			this.sdmDelegacionSelect.setNombre(this.sdmDelegacionSelect.getNombre().trim());
+			
+			if (this.sdmDelegacionSelect.getNombre().isEmpty()){
+				statusMessages.add(Severity.INFO,"Ingrese un nombre válido ");
+				return "/delegacion.xhtml";
+			}
+			
+			sdmDelegacionHome.modificarDelegacion(this.sdmDelegacionSelect);
+			statusMessages.add(Severity.INFO,"Se modificó la delegación ");
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se modificó la Delegación " , this.modificarDelegacion ,String.valueOf(sdmDelegacionSelect.getCodigo()));
+	
+			this.sdmDelegacionSelect = new SdmDelegacion();
 			return "/delegacion.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.modificarDelegacion, null);
+
+			throw e;
 		}
-		this.sdmDelegacionSelect.setNombre(this.sdmDelegacionSelect.getNombre().trim());
-		
-		if (this.sdmDelegacionSelect.getNombre().isEmpty()){
-			statusMessages.add(Severity.INFO,"Ingrese un nombre válido ");
-			return "/delegacion.xhtml";
-		}
-		
-		sdmDelegacionHome.modificarDelegacion(this.sdmDelegacionSelect);
-		statusMessages.add(Severity.INFO,"Se modificó la delegación ");
-		this.sdmDelegacionSelect = new SdmDelegacion();
-		return "/delegacion.xhtml";
+			
 	}
 	
-	public String eliminarDelegacion(){
-		
-		if (this.sdmDelegacionSelect.getCodigo() == null ||
-				this.sdmDelegacionSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione una delegación primero ");
+	/**
+	 * Eliminar Delegación
+	 * @return
+	 * @throws Exception
+	 */
+	public String eliminarDelegacion() throws Exception{
+		try {
+			if (this.sdmDelegacionSelect.getCodigo() == null ||
+					this.sdmDelegacionSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione una delegación primero ");
+				return "/delegacion.xhtml";
+			}	
+			if (sdmEmpleadoHome.buscarEmpleadosDelegacion(this.sdmDelegacionSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen empleados con dicha delegación asignada");
+				return "/delegacion.xhtml";
+			}
+			
+			if (sdmInformeViaticosHome.buscarInformesXDelegacion(this.sdmDelegacionSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicha delegación asignada");
+				return "/delegacion.xhtml";
+			}
+			sdmDelegacionHome.eliminarDelegacion(this.sdmDelegacionSelect);
+			statusMessages.add(Severity.INFO,"Se eliminó la delegación " + this.sdmDelegacionSelect.getNombre());
+	
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se eliminó la Delegación " , this.eliminarDelegacion,String.valueOf(sdmDelegacionSelect.getCodigo()));
+	
+			this.sdmDelegacionSelect = new SdmDelegacion();
 			return "/delegacion.xhtml";
-		}	
-		if (sdmEmpleadoHome.buscarEmpleadosDelegacion(this.sdmDelegacionSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen empleados con dicha delegación asignada");
-			return "/delegacion.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.eliminarDelegacion, null);
+
+			throw e;
 		}
-		
-		if (sdmInformeViaticosHome.buscarInformesXDelegacion(this.sdmDelegacionSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicha delegación asignada");
-			return "/delegacion.xhtml";
-		}
-		sdmDelegacionHome.eliminarDelegacion(this.sdmDelegacionSelect);
-		statusMessages.add(Severity.INFO,"Se eliminó la delegación " + this.sdmDelegacionSelect.getNombre());
-		this.sdmDelegacionSelect = new SdmDelegacion();
-		return "/delegacion.xhtml";
+			
 	}
 	
-	public String crearDelegacion(){
-
-		this.codigoDelegacionNueva = this.codigoDelegacionNueva.trim().toUpperCase();
-		
-		if (this.codigoDelegacionNueva.length() < 5){
-			statusMessages.add(Severity.ERROR, "Ingrese un código válido");
+	/**
+	 * Crea una delegación
+	 * @return
+	 * @throws Exception
+	 */
+	public String crearDelegacion() throws Exception{
+		try {
+			this.codigoDelegacionNueva = this.codigoDelegacionNueva.trim().toUpperCase();
+			
+			if (this.codigoDelegacionNueva.length() < 5){
+				statusMessages.add(Severity.ERROR, "Ingrese un código válido");
+				return "/delegacion.xhtml";
+			}
+	
+			
+			this.nombreDelegacionNueva = this.nombreDelegacionNueva.trim();
+			
+			if (this.nombreDelegacionNueva.isEmpty()){
+				statusMessages.add(Severity.ERROR, "Ingrese un nombre válido");
+				return "/delegacion.xhtml";
+			}
+			
+			this.nombreDelegacionNueva = this.nombreDelegacionNueva.trim();
+			if (this.nombreDelegacionNueva.isEmpty()){
+				statusMessages.add(Severity.ERROR, "Ingreso un nombre válido");
+				return "/delegacion.xhtml";
+			}
+			
+			if ( sdmDelegacionHome.buscarSdmDelegacionXCodigo(this.codigoDelegacionNueva) != null){
+				statusMessages.add(Severity.ERROR, "Ya existe una delegación con dicho código");
+				return "/delegacion.xhtml";
+			}
+			SdmDelegacion sdmDelegacion = new SdmDelegacion(this.codigoDelegacionNueva , this.nombreDelegacionNueva);
+			sdmDelegacionHome.crearDelegacion(sdmDelegacion);
+			statusMessages.add(Severity.INFO,"Se creó la nueva delegación");
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se creó la Delegación " , this.crearDelegacion ,String.valueOf(sdmDelegacion.getCodigo()));
+	
 			return "/delegacion.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.crearDelegacion, null);
+			throw e;
 		}
-
-		
-		this.nombreDelegacionNueva = this.nombreDelegacionNueva.trim();
-		
-		if (this.nombreDelegacionNueva.isEmpty()){
-			statusMessages.add(Severity.ERROR, "Ingrese un nombre válido");
-			return "/delegacion.xhtml";
-		}
-		
-		this.nombreDelegacionNueva = this.nombreDelegacionNueva.trim();
-		if (this.nombreDelegacionNueva.isEmpty()){
-			statusMessages.add(Severity.ERROR, "Ingreso un nombre válido");
-			return "/delegacion.xhtml";
-		}
-		
-		if ( sdmDelegacionHome.buscarSdmDelegacionXCodigo(this.codigoDelegacionNueva) != null){
-			statusMessages.add(Severity.ERROR, "Ya existe una delegación con dicho código");
-			return "/delegacion.xhtml";
-		}
-		SdmDelegacion sdmDelegacion = new SdmDelegacion(this.codigoDelegacionNueva , this.nombreDelegacionNueva);
-		sdmDelegacionHome.crearDelegacion(sdmDelegacion);
-		statusMessages.add(Severity.INFO,"Se creó la nueva delegación");
-		return "/delegacion.xhtml";
+			
 	}
 
 

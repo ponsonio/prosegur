@@ -48,6 +48,11 @@ public class IngresoViaticoBO implements Serializable {
 	@Logger
 	private Log log;
 	
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
+	String stringCrearInforme = "Crear Informe";
+	
     @In 
     StatusMessages statusMessages;
 
@@ -116,7 +121,7 @@ public class IngresoViaticoBO implements Serializable {
 	}
 	
 	
-	public String buscarSdmEmpleado() {
+	public String buscarSdmEmpleado() throws Exception {
 		//String codigoEmpleado = sdmEmpleadoSelect.getCodigo();
 		this.sdmEmpleadoSelect = new SdmEmpleado();
 		try {
@@ -132,118 +137,145 @@ public class IngresoViaticoBO implements Serializable {
 		return "/ingresoViaticos.xhtml";
 	}
 	
-
-	public String agregarAdelanto() {
-		
-		if (adelantoNuevo.getMonto().compareTo(BigDecimal.ZERO) < 1){
-			statusMessages.add(Severity.ERROR,"Ingrese un monto superior a 0.00") ;
+	
+	/**
+	 * Agrega un adelanto
+	 * @return
+	 * @throws Exception
+	 */
+	public String agregarAdelanto() throws Exception{
+		try {
+			if (adelantoNuevo.getMonto().compareTo(BigDecimal.ZERO) < 1){
+				statusMessages.add(Severity.ERROR,"Ingrese un monto superior a 0.00") ;
+				return "/ingresoViaticos.xhtml";
+			}
+			if (this.sdmEmpleadoSelect.getId() <= 0 ){
+				statusMessages.add(Severity.ERROR,"Selecione un empleado primero") ;
+				return "/ingresoViaticos.xhtml";
+			}
+			if (arraylistAdelanto == null) {
+				arraylistAdelanto = new ArrayList<Adelanto>();
+			}
+			sdmTipoServicioSelect =  sdmTipoServicioHome.getSdmTipoServicioxId(sdmTipoServicioSelect
+					.getId());
+	
+			adelantoNuevo.setMonto(adelantoNuevo.getMonto().setScale(2, RoundingMode.CEILING));
+	
+			Adelanto adelantoArray = new Adelanto();
+			adelantoArray.setCorrelativo(this.correlativo);
+			adelantoArray.setMonto(adelantoNuevo.getMonto());
+			adelantoArray.setDescripcion(adelantoNuevo.getDescripcion());
+			adelantoArray.setDestino(adelantoNuevo.getDestino());
+			adelantoArray.setSdmTipoServicio(new SdmTipoServicio(sdmTipoServicioSelect));
+			adelantoArray.setCodigoCentroCosto(sdmEmpleadoSelect.getSdmCentroCosto().getCodigo());
+			adelantoArray.setCodigoDelegacion(sdmEmpleadoSelect.getSdmDelegacion().getCodigo());
+			adelantoArray.setCodigoDivicion(sdmEmpleadoSelect.getSdmDivicion().getCodigo());
+			adelantoArray.setCodigoEmpresa(sdmEmpleadoSelect.getSdmEmpresa().getCodigo());
+			adelantoArray.setSdmEmpleado(new SdmEmpleado(sdmEmpleadoSelect));
+			adelantoArray.setDateFechaAdelanto(new Date());
+			arraylistAdelanto.add(adelantoArray);
+	
+			this.bigDecimalTotal = this.bigDecimalTotal.add(adelantoNuevo.getMonto());
+			adelantoNuevo = new Adelanto();
+			this.correlativo++;
+			
 			return "/ingresoViaticos.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Agregando Adelanto", null);
+			throw e;
 		}
-		if (this.sdmEmpleadoSelect.getId() <= 0 ){
-			statusMessages.add(Severity.ERROR,"Selecione un empleado primero") ;
-			return "/ingresoViaticos.xhtml";
-		}
-		if (arraylistAdelanto == null) {
-			arraylistAdelanto = new ArrayList<Adelanto>();
-		}
-		sdmTipoServicioSelect =  sdmTipoServicioHome.getSdmTipoServicioxId(sdmTipoServicioSelect
-				.getId());
 
-		adelantoNuevo.setMonto(adelantoNuevo.getMonto().setScale(2, RoundingMode.CEILING));
-
-		Adelanto adelantoArray = new Adelanto();
-		adelantoArray.setCorrelativo(this.correlativo);
-		adelantoArray.setMonto(adelantoNuevo.getMonto());
-		adelantoArray.setDescripcion(adelantoNuevo.getDescripcion());
-		adelantoArray.setDestino(adelantoNuevo.getDestino());
-		adelantoArray.setSdmTipoServicio(new SdmTipoServicio(sdmTipoServicioSelect));
-		adelantoArray.setCodigoCentroCosto(sdmEmpleadoSelect.getSdmCentroCosto().getCodigo());
-		adelantoArray.setCodigoDelegacion(sdmEmpleadoSelect.getSdmDelegacion().getCodigo());
-		adelantoArray.setCodigoDivicion(sdmEmpleadoSelect.getSdmDivicion().getCodigo());
-		adelantoArray.setCodigoEmpresa(sdmEmpleadoSelect.getSdmEmpresa().getCodigo());
-		adelantoArray.setSdmEmpleado(new SdmEmpleado(sdmEmpleadoSelect));
-		adelantoArray.setDateFechaAdelanto(new Date());
-		arraylistAdelanto.add(adelantoArray);
-
-		this.bigDecimalTotal = this.bigDecimalTotal.add(adelantoNuevo.getMonto());
-		adelantoNuevo = new Adelanto();
-		this.correlativo++;
-		
-		return "/ingresoViaticos.xhtml";
 	}
 
 	
+	/**
+	 * Graba un informe
+	 * @return
+	 * @throws Exception
+	 */
+	public String grabarInforme()  throws Exception{
+		try {
+			if (arraylistAdelanto == null ||  arraylistAdelanto.size() == 0){
+				statusMessages.add(Severity.ERROR,"Debe añadir al memos un adelanto") ;
+				return "/ingresoViaticos.xhtml";
+			}
 	
-	public String grabarInforme() {
-
-		if (arraylistAdelanto == null ||  arraylistAdelanto.size() == 0){
-			statusMessages.add(Severity.ERROR,"Debe añadir al memos un adelanto") ;
-			return "/ingresoViaticos.xhtml";
+			sdmInformeViaticos = new SdmInformeViaticos();
+			sdmInformeViaticos.setAnulado(false);
+			sdmInformeViaticos.setFecha(new Date());		
+			sdmInformeViaticos.setSdmEmpleado(sdmEmpleado);
+			sdmInformeViaticos.setSdmCentroCosto(sdmEmpleado
+					.getSdmCentroCosto());
+			sdmInformeViaticos.setSdmDelegacion(sdmEmpleado
+					.getSdmDelegacion());
+			sdmInformeViaticos.setSdmDivicion(sdmEmpleado.getSdmDivicion());
+			sdmInformeViaticos.setSdmEmpresa(sdmEmpleado.getSdmEmpresa());
+			sdmInformeViaticos.setMontoTotal(this.bigDecimalTotal);
+			
+			SdmInformeViaticoDetalle sdmInformeViaticoDetalle;
+			Iterator<Adelanto> it = arraylistAdelanto.iterator();
+			while (it.hasNext()) {
+				Adelanto adelanto = it.next();
+				sdmInformeViaticoDetalle = new SdmInformeViaticoDetalle();
+				sdmInformeViaticoDetalle.setSdmInformeViaticos(sdmInformeViaticos);
+				sdmInformeViaticoDetalle.setCorrelativoInforme(adelanto.getCorrelativo());
+				
+				SdmCentroCosto sdmCentroCosto = new SdmCentroCosto();
+				sdmCentroCosto.setCodigo(adelanto
+						.getCodigoCentroCosto());
+				sdmInformeViaticoDetalle.setSdmCentroCosto(sdmCentroCosto);
+				
+				SdmDelegacion sdmDelegacion = new SdmDelegacion();
+				sdmDelegacion.setCodigo(adelanto
+						.getCodigoDelegacion());
+				
+				sdmInformeViaticoDetalle.setSdmDelegacion(sdmDelegacion);
+				
+				SdmDivicion sdmDivicion = new SdmDivicion();
+				sdmDivicion.setCodigo(adelanto
+						.getCodigoDivicion());
+				
+				sdmInformeViaticoDetalle.setSdmDivicion(sdmDivicion);
+				
+				SdmEmpresa sdmEmpresa = new SdmEmpresa();
+				sdmEmpresa.setCodigo(adelanto
+						.getCodigoEmpresa());
+				
+				sdmInformeViaticoDetalle.setSdmEmpresa(sdmEmpresa);
+				sdmInformeViaticoDetalle.setSdmTipoServicio(adelanto
+						.getSdmTipoServicio());
+				sdmInformeViaticoDetalle.setDescripcion(adelanto.getDescripcion());
+				sdmInformeViaticoDetalle.setDestino(adelanto.getDestino());
+				sdmInformeViaticoDetalle.setSdmEmpleado(adelanto.getSdmEmpleado());
+				sdmInformeViaticoDetalle.setFecha(adelanto.getDateFechaAdelanto());
+				sdmInformeViaticoDetalle.setMonto(adelanto.getMonto());
+				
+				
+				sdmInformeViaticos.getSdmInformeViaticoDetalles().add(
+						sdmInformeViaticoDetalle);
+			}
+			
+			this.sdmInformeViaticos = sdmInformeViaticosHome.grabarInformeViaticos(this.sdmInformeViaticos);
+	
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se grabó el informe " , this.stringCrearInforme ,String.valueOf(sdmInformeViaticos.getId()));		
+			
+			informeLiquidacionPDFBO.setEnviarCorreo(true);
+			informeLiquidacionPDFBO.setIdInforme(this.sdmInformeViaticos.getId());
+			
+			arraylistAdelanto = new ArrayList<Adelanto>();
+			this.bigDecimalTotal = new BigDecimal(0.0);
+			return "/impresionInforme.xhtml";
+		
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Grabar Solicitud", null);
+			throw e;
 		}
 
-		sdmInformeViaticos = new SdmInformeViaticos();
-		sdmInformeViaticos.setAnulado(false);
-		sdmInformeViaticos.setFecha(new Date());		
-		sdmInformeViaticos.setSdmEmpleado(sdmEmpleado);
-		sdmInformeViaticos.setSdmCentroCosto(sdmEmpleado
-				.getSdmCentroCosto());
-		sdmInformeViaticos.setSdmDelegacion(sdmEmpleado
-				.getSdmDelegacion());
-		sdmInformeViaticos.setSdmDivicion(sdmEmpleado.getSdmDivicion());
-		sdmInformeViaticos.setSdmEmpresa(sdmEmpleado.getSdmEmpresa());
-		sdmInformeViaticos.setMontoTotal(this.bigDecimalTotal);
-		
-		SdmInformeViaticoDetalle sdmInformeViaticoDetalle;
-		Iterator<Adelanto> it = arraylistAdelanto.iterator();
-		while (it.hasNext()) {
-			Adelanto adelanto = it.next();
-			sdmInformeViaticoDetalle = new SdmInformeViaticoDetalle();
-			sdmInformeViaticoDetalle.setSdmInformeViaticos(sdmInformeViaticos);
-			sdmInformeViaticoDetalle.setCorrelativoInforme(adelanto.getCorrelativo());
-			
-			SdmCentroCosto sdmCentroCosto = new SdmCentroCosto();
-			sdmCentroCosto.setCodigo(adelanto
-					.getCodigoCentroCosto());
-			sdmInformeViaticoDetalle.setSdmCentroCosto(sdmCentroCosto);
-			
-			SdmDelegacion sdmDelegacion = new SdmDelegacion();
-			sdmDelegacion.setCodigo(adelanto
-					.getCodigoDelegacion());
-			
-			sdmInformeViaticoDetalle.setSdmDelegacion(sdmDelegacion);
-			
-			SdmDivicion sdmDivicion = new SdmDivicion();
-			sdmDivicion.setCodigo(adelanto
-					.getCodigoDivicion());
-			
-			sdmInformeViaticoDetalle.setSdmDivicion(sdmDivicion);
-			
-			SdmEmpresa sdmEmpresa = new SdmEmpresa();
-			sdmEmpresa.setCodigo(adelanto
-					.getCodigoEmpresa());
-			
-			sdmInformeViaticoDetalle.setSdmEmpresa(sdmEmpresa);
-			sdmInformeViaticoDetalle.setSdmTipoServicio(adelanto
-					.getSdmTipoServicio());
-			sdmInformeViaticoDetalle.setDescripcion(adelanto.getDescripcion());
-			sdmInformeViaticoDetalle.setDestino(adelanto.getDestino());
-			sdmInformeViaticoDetalle.setSdmEmpleado(adelanto.getSdmEmpleado());
-			sdmInformeViaticoDetalle.setFecha(adelanto.getDateFechaAdelanto());
-			sdmInformeViaticoDetalle.setMonto(adelanto.getMonto());
-			
-			
-			sdmInformeViaticos.getSdmInformeViaticoDetalles().add(
-					sdmInformeViaticoDetalle);
-		}
-		
-		this.sdmInformeViaticos = sdmInformeViaticosHome.grabarInformeViaticos(this.sdmInformeViaticos);
-
-		informeLiquidacionPDFBO.setEnviarCorreo(true);
-		informeLiquidacionPDFBO.setIdInforme(this.sdmInformeViaticos.getId());
-		
-		arraylistAdelanto = new ArrayList<Adelanto>();
-		this.bigDecimalTotal = new BigDecimal(0.0);
-		return "/impresionInforme.xhtml";
 	}
 
 	

@@ -114,12 +114,22 @@
    <redirect view-id="/home.xhtml"/>
   </navigation>
  </page>
+ 
  <page login-required="true" view-id="/cambioContrasena.xhtml">
   <navigation from-action="#{identity.logout}">
    <end-conversation/>
    <redirect view-id="/home.xhtml"/>
   </navigation>
  </page>
+
+ <page login-required="true" view-id="/busquedaLog.xhtml">
+  <navigation from-action="#{identity.logout}">
+   <end-conversation/>
+   <redirect view-id="/home.xhtml"/>
+  </navigation>
+ </page>
+
+ 
  <page login-required="true" view-id="/altaEmpleadosMasiva.xhtml">
   <restrict>#{s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') }</restrict>
   <navigation from-action="#{identity.logout}">

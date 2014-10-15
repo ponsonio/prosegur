@@ -52,6 +52,14 @@ public class InformeLiquidacionPDFBO implements  Serializable{
 	 */
 	private static final long serialVersionUID = 5759529596468420489L;
 	
+	@In(create= true)
+	LoggerBO loggerBO ;
+
+	
+	String stringGenerarReporte = "Generar Reporte";
+	
+	String stringEnviarReporte = "Enviar Reporte Email";
+	
 	public List<SdmInformeViaticoDetalle> listSdmInformeViaticoDetalle ;
 	
 	
@@ -104,7 +112,7 @@ public class InformeLiquidacionPDFBO implements  Serializable{
 	private EntityManager entityManager;
 	
 	
-	public String generarReporteXidSinCorreo(long id){
+	public String generarReporteXidSinCorreo(long id) throws Exception{
 		this.idInforme = id;
 		this.enviarCorreo = false;
 		this.generarReporte();
@@ -114,7 +122,9 @@ public class InformeLiquidacionPDFBO implements  Serializable{
 	
 	
 	
-	public void generarReporte()  {
+	public void generarReporte()  throws Exception {
+		try{
+			
 			this.sdmInformeViaticos = sdmInformeViaticosHome.obtenerInformeViaticos(this.idInforme);
 			
 			if (sdmInformeViaticos.isAnulado()){
@@ -155,14 +165,29 @@ public class InformeLiquidacionPDFBO implements  Serializable{
 				 this.arrTotalCentroCostos.add(vista);
 			}
 
-		if (this.enviarCorreo){
-			try {
-				enviarEmail();
-			}catch (Exception e){
-				   statusMessages.add(Severity.ERROR ,"Ocurrio un error al enviar el correo : " + e.getMessage());
-				   log.error(e.getStackTrace());
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se generó el reporte (pdf) " , this.stringGenerarReporte ,String.valueOf(sdmInformeViaticos.getId()));		
+
+			
+			if (this.enviarCorreo){
+				try {
+					enviarEmail();
+				}catch (Exception e){
+					   statusMessages.add(Severity.ERROR ,"Ocurrio un error al enviar el correo : " + e.getMessage());
+					   log.error(e.getStackTrace());
+
+					   loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+								e.getMessage(), "Enviando Email ", String.valueOf(this.idInforme));
+
+				}
 			}
+
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Generado  para el informe de liquidación ", String.valueOf(this.idInforme));
+			throw e;
 		}
+			
 	}
 	
 
@@ -173,13 +198,24 @@ public class InformeLiquidacionPDFBO implements  Serializable{
     }
      
 
-	
+	/**
+	 * Envia email con la liquidación
+	 * @return
+	 * @throws Exception
+	 */
 	public String enviarEmail() throws Exception{
 			
 		  try {
 			  renderer.render("/emailInformeLiquidacion.xhtml");
+				 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+							"Se envio email " , this.stringEnviarReporte ,String.valueOf(sdmInformeViaticos.getId()));
+				 
 		   } catch (Exception e) {
 			   statusMessages.add(Severity.ERROR ,"Ocurrio un error al enviar el correo: " + e.getMessage());
+			   
+				 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+							"Ocurrio un error al enviar email " + e.getMessage()  , this.stringEnviarReporte ,String.valueOf(sdmInformeViaticos.getId()));		
+
 			   log.error(e.getStackTrace());
 			   throw e;
 		   }

@@ -242,7 +242,7 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     
     @Transactional
     public SdmEmpleado actualizarEmpleado(SdmEmpleado e , SdmUsuario u , ArrayList<SdmRol> arraSdmRols){
-    	log.error("1");
+
     	
     	
     	SdmEmpleado empAux = this.buscarSdmEmpleadoXCodigo(e.getCodigo());
@@ -261,7 +261,6 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     	//Si no tiene usuario y hay que crear uno
     	
     	if(u != null && usrAux == null) {
-    		log.error("creo usuario , por que no tenia ini");
     		SdmUsuario u2 = new SdmUsuario();
     		u2.setActivo(u.isActivo());
     		u2.setContrasena(u.getContrasena());
@@ -269,18 +268,15 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     		u2.setSdmEmpleado(empAux);
     		entityManager.persist(u2);
     		u = u2;
-    		log.error("creo usuario , por que no tenia fin");
     	}
     	
 
     	//Elimino los roles que tiene
     	if (usrAux !=  null) {
-    		log.error("elimino los roles ini");
     		Iterator<SdmRolXUsuario> rxue = usrAux.getSdmRolXUsuarios().iterator();
     		while (rxue.hasNext()){
     			entityManager.remove(rxue.next());
     		}
-    		log.error("elimino los roles fin");
     		if (u == null) {
         		log.error("remove usrAux pq mando null");
         		entityManager.remove(usrAux);
@@ -288,7 +284,6 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     	}
     	
     	
-    	log.error("grabo los roles que mando ini");
     	//Grabo los roles
     	if (u != null && arraSdmRols != null){
 	    	Iterator<SdmRol> it =  arraSdmRols.iterator();
@@ -301,11 +296,8 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
 	    		entityManager.persist(rolxu);
 	    	}
     	}
-    	log.error("grabo los roles que mando fin");
     	return e;
     }
-    
-    
     
     
 }

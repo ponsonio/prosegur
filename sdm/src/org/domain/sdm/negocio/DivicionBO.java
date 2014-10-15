@@ -63,78 +63,113 @@ public class DivicionBO implements Serializable {
 		return "/division.xhtml";
 	}
 	
+	/**
+	 * Modifica una divición
+	 * @return
+	 * @throws Exception
+	 */
 	public String  modificarDivicion() throws Exception{
-		if (this.sdmDivicionSelect.getCodigo() == null 
-				|| this.sdmDivicionSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione una división primero ");
-			return "/division.xhtml";
-		}
-		this.sdmDivicionSelect.setNombre(this.sdmDivicionSelect.getNombre().trim());
+		try {
+			if (this.sdmDivicionSelect.getCodigo() == null 
+					|| this.sdmDivicionSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione una división primero ");
+				return "/division.xhtml";
+			}
+			this.sdmDivicionSelect.setNombre(this.sdmDivicionSelect.getNombre().trim());
+			
+			if (this.sdmDivicionSelect.getNombre().isEmpty()){
+				statusMessages.add(Severity.INFO,"Ingrese un nombre válido");
+				return "/division.xhtml";
+			}
+				sdmDivicionHome.modificarDivicion(this.sdmDivicionSelect);
+				statusMessages.add(Severity.INFO,"Se modificó la división ");
+	
+				 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+							"Se modificó la División " , this.modificarDivicion ,String.valueOf(sdmDivicionSelect.getCodigo()));
 		
-		if (this.sdmDivicionSelect.getNombre().isEmpty()){
-			statusMessages.add(Severity.INFO,"Ingrese un nombre válido");
+			this.sdmDivicionSelect = new SdmDivicion();
 			return "/division.xhtml";
-		}
-		try{
-			sdmDivicionHome.modificarDivicion(this.sdmDivicionSelect);
-			statusMessages.add(Severity.INFO,"Se modificó la división ");
-			loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
-					"Se modificó la división", this.modificarDivicion, this.sdmDivicionSelect.getCodigo());
-		}catch(Exception e){
-			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
-					"Error Modificando la división", this.modificarDivicion, this.sdmDivicionSelect.getCodigo());
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.modificarDivicion, null);
 			throw e;
 		}
-		this.sdmDivicionSelect = new SdmDivicion();
-		return "/division.xhtml";
 	}
 	
-	public String eliminarDivicion(){
-		
-		if (this.sdmDivicionSelect.getCodigo() == null ||
-				this.sdmDivicionSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione una división primero ");
+	/**
+	 * Elimina una división
+	 * @return
+	 */
+	public String eliminarDivicion() throws Exception{
+		try{
+			if (this.sdmDivicionSelect.getCodigo() == null ||
+					this.sdmDivicionSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione una división primero ");
+				return "/division.xhtml";
+			}	
+			if (sdmEmpleadoHome.buscarEmpleadosDivicion(this.sdmDivicionSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen empleados con dicha división asignada");
+				return "/division.xhtml";
+			}
+			
+			if (sdmInformeViaticosHome.buscarInformesXDivicion(this.sdmDivicionSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicha división asignada");
+				return "/division.xhtml";
+			}
+			sdmDivicionHome.eliminarDivicion(this.sdmDivicionSelect);
+			statusMessages.add(Severity.INFO,"Se eliminó la división " + this.sdmDivicionSelect.getNombre());
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se eliminó la División " , this.eliminarDivicion ,String.valueOf(sdmDivicionSelect.getCodigo()));
+	
+			this.sdmDivicionSelect = new SdmDivicion();
 			return "/division.xhtml";
-		}	
-		if (sdmEmpleadoHome.buscarEmpleadosDivicion(this.sdmDivicionSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen empleados con dicha división asignada");
-			return "/division.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.eliminarDivicion, null);
+			throw e;
 		}
-		
-		if (sdmInformeViaticosHome.buscarInformesXDivicion(this.sdmDivicionSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicha división asignada");
-			return "/division.xhtml";
-		}
-		sdmDivicionHome.eliminarDivicion(this.sdmDivicionSelect);
-		statusMessages.add(Severity.INFO,"Se eliminó la división " + this.sdmDivicionSelect.getNombre());
-		this.sdmDivicionSelect = new SdmDivicion();
-		return "/division.xhtml";
+
 	}
 	
-	public String crearDivicion(){
-		
-		this.codigoDivicionNueva = this.codigoDivicionNueva.trim().toUpperCase();
-		
-		if (this.codigoDivicionNueva.length() < 4){
-			statusMessages.add(Severity.ERROR, "Ingrese un código válido");
+	/**
+	 * Crea una división
+	 * @return
+	 */
+	public String crearDivicion() throws Exception{
+		try {
+			this.codigoDivicionNueva = this.codigoDivicionNueva.trim().toUpperCase();
+			
+			if (this.codigoDivicionNueva.length() < 4){
+				statusMessages.add(Severity.ERROR, "Ingrese un código válido");
+				return "/division.xhtml";
+			}
+			
+			this.nombreDivicionNueva = this.nombreDivicionNueva.trim();
+			
+			if (this.nombreDivicionNueva.isEmpty()){
+				statusMessages.add(Severity.ERROR, "Ingrese un nombre válido");
+				return "/division.xhtml";
+			}
+			
+			if ( sdmDivicionHome.buscarSdmDivicionXCodigo(this.codigoDivicionNueva) != null){
+				statusMessages.add(Severity.ERROR, "Ya existe una división con dicho código");
+				return "/division.xhtml";
+			}
+			SdmDivicion sdmDivicion = new SdmDivicion(this.codigoDivicionNueva , this.nombreDivicionNueva);
+			sdmDivicionHome.crearDivicion(sdmDivicion);
+			statusMessages.add(Severity.INFO,"Se creó la nueva división");
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se creó la División " , this.crearDivicion ,String.valueOf(sdmDivicion.getCodigo()));
+	
 			return "/division.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), this.modificarDivicion, null);
+			throw e;
 		}
-		
-		this.nombreDivicionNueva = this.nombreDivicionNueva.trim();
-		
-		if (this.nombreDivicionNueva.isEmpty()){
-			statusMessages.add(Severity.ERROR, "Ingrese un nombre válido");
-			return "/division.xhtml";
-		}
-		
-		if ( sdmDivicionHome.buscarSdmDivicionXCodigo(this.codigoDivicionNueva) != null){
-			statusMessages.add(Severity.ERROR, "Ya existe una división con dicho código");
-			return "/division.xhtml";
-		}
-		SdmDivicion sdmDivicion = new SdmDivicion(this.codigoDivicionNueva , this.nombreDivicionNueva);
-		sdmDivicionHome.crearDivicion(sdmDivicion);
-		statusMessages.add(Severity.INFO,"Se creó la nueva división");
-		return "/division.xhtml";
+
 	}
 
 

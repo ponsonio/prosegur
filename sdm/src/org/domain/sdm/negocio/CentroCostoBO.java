@@ -24,7 +24,13 @@ public class CentroCostoBO implements Serializable {
 	 */
 	private static final long serialVersionUID = 787937008071175854L;
 	
-
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
+	String modificarCentroCosto = "Modficar Centro Costo ";
+	String eliminarCentroCosto = "Eliminar Centro Costo ";
+	String crearCentroCosto = "Crear Centro Costo ";
+	
 
     @In 
     StatusMessages statusMessages;
@@ -57,71 +63,115 @@ public class CentroCostoBO implements Serializable {
 		return "/centroCosto.xhtml";
 	}
 	
-	public String  modificarCentroCosto(){
-		if (this.sdmCentroCostoSelect.getCodigo() == null 
-				|| this.sdmCentroCostoSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione un centro de costo primero ");
-			return "/centroCosto.xhtml";
-		}
-		this.sdmCentroCostoSelect.setNombre(this.sdmCentroCostoSelect.getNombre().trim());
+	/**
+	 * Modifica el centro de costo
+	 * @return
+	 */
+	public String  modificarCentroCosto() throws Exception{
+		try{
+			if (this.sdmCentroCostoSelect.getCodigo() == null 
+					|| this.sdmCentroCostoSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione un centro de costo primero ");
+				return "/centroCosto.xhtml";
+			}
+			this.sdmCentroCostoSelect.setNombre(this.sdmCentroCostoSelect.getNombre().trim());
+				
+			if (this.sdmCentroCostoSelect.getNombre().isEmpty()){
+				statusMessages.add(Severity.INFO,"Ingrese un nombre valido");
+				return "/centroCosto.xhtml";
+			}
+	
+			sdmCentroCostoHome.modificarCentroCosto(this.sdmCentroCostoSelect);
+			statusMessages.add(Severity.INFO,"Se modificó el centro de costo ");
 			
-		if (this.sdmCentroCostoSelect.getNombre().isEmpty()){
-			statusMessages.add(Severity.INFO,"Ingrese un nombre valido");
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se modifico el centro de costo " , this.modificarCentroCosto ,String.valueOf(this.sdmCentroCostoSelect.getCodigo() ));
+	
+			this.sdmCentroCostoSelect = new SdmCentroCosto();
 			return "/centroCosto.xhtml";
-		}
+			
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Modificando Centro de Costo", null);
+			 throw e ;
+		 }
+	}
+	
+	/**
+	 * Elimina el centro de costo 
+	 * @return
+	 */
+	public String eliminarCentroCosto() throws Exception{
+		try {
+			if (this.sdmCentroCostoSelect.getCodigo() == null ||
+					this.sdmCentroCostoSelect.getCodigo().isEmpty()){
+				statusMessages.add(Severity.INFO,"Seleccione un centro costo primero ");
+				return "/centroCosto.xhtml";
+			}	
+			if (sdmEmpleadoHome.buscarEmpleadosCentroCosto(this.sdmCentroCostoSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen empleados con dicho centro de costo asignado");
+				return "/centroCosto.xhtml";
+			}
+			
+			if (sdmInformeViaticosHome.buscarInformesXCentroCosto(this.sdmCentroCostoSelect.getCodigo()).size() > 0 ) {
+				statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicho centro de costo asignado");
+				return "/centroCosto.xhtml";
+			}
+			sdmCentroCostoHome.eliminarCentroCosto(this.sdmCentroCostoSelect);
+			statusMessages.add(Severity.INFO,"Se eliminó el centro de costo " + this.sdmCentroCostoSelect.getNombre());
+	
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se elimino el centro de costo " , this.eliminarCentroCosto ,String.valueOf(this.sdmCentroCostoSelect.getCodigo() ));
+	
+			
+			this.sdmCentroCostoSelect = new SdmCentroCosto();
+			return "/centroCosto.xhtml";
+		 
+		}catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Eliminar centro de costo", null);
+			 throw e ;
+		 }			
+	}
+	
+	/**
+	 * Crear Centro de Costo
+	 * @return
+	 */
+	public String crearCentroCosto() throws Exception{
+		try {
+			this.codigoCentroCostoNueva = this.codigoCentroCostoNueva.trim().toUpperCase();
+			
+			if (this.codigoCentroCostoNueva.length() < 5){
+				statusMessages.add(Severity.ERROR, "Ingrese un código válido");
+				return "/centroCosto.xhtml";
+			}
+			
+			this.nombreCentroCostoNueva = this.nombreCentroCostoNueva.trim();
+			
+			if (this.nombreCentroCostoNueva.isEmpty()){
+				statusMessages.add(Severity.ERROR, "Ingrese un nombre válido");
+				return "/centroCosto.xhtml";
+			}
+			
+			if ( sdmCentroCostoHome.buscarSdmCentroCostoXCodigo(this.codigoCentroCostoNueva) != null){
+				statusMessages.add(Severity.ERROR, "Ya existe un centro de costo con dicho código");
+				return "/centroCosto.xhtml";
+			}
+			
+			SdmCentroCosto sdmCentroCosto = new SdmCentroCosto(this.codigoCentroCostoNueva , this.nombreCentroCostoNueva);
+			sdmCentroCostoHome.crearCentroCosto(sdmCentroCosto);
+			statusMessages.add(Severity.INFO,"Se creó el centro de costo");
+	
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se creó el centro de costo " , this.crearCentroCosto ,String.valueOf(sdmCentroCosto.getCodigo() ));
+			return "/centroCosto.xhtml";
 
-		sdmCentroCostoHome.modificarCentroCosto(this.sdmCentroCostoSelect);
-		statusMessages.add(Severity.INFO,"Se modificó el centro de costo ");
-		this.sdmCentroCostoSelect = new SdmCentroCosto();
-		return "/centroCosto.xhtml";
-	}
-	
-	public String eliminarCentroCosto(){
-		
-		if (this.sdmCentroCostoSelect.getCodigo() == null ||
-				this.sdmCentroCostoSelect.getCodigo().isEmpty()){
-			statusMessages.add(Severity.INFO,"Seleccione un centro costo primero ");
-			return "/centroCosto.xhtml";
-		}	
-		if (sdmEmpleadoHome.buscarEmpleadosCentroCosto(this.sdmCentroCostoSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen empleados con dicho centro de costo asignado");
-			return "/centroCosto.xhtml";
-		}
-		
-		if (sdmInformeViaticosHome.buscarInformesXCentroCosto(this.sdmCentroCostoSelect.getCodigo()).size() > 0 ) {
-			statusMessages.add(Severity.ERROR, "Existen liquidaciones con dicho centro de costo asignado");
-			return "/centroCosto.xhtml";
-		}
-		sdmCentroCostoHome.eliminarCentroCosto(this.sdmCentroCostoSelect);
-		statusMessages.add(Severity.INFO,"Se eliminó el centro de costo " + this.sdmCentroCostoSelect.getNombre());
-		this.sdmCentroCostoSelect = new SdmCentroCosto();
-		return "/centroCosto.xhtml";
-	}
-	
-	public String crearCentroCosto(){
-		this.codigoCentroCostoNueva = this.codigoCentroCostoNueva.trim().toUpperCase();
-		
-		if (this.codigoCentroCostoNueva.length() < 5){
-			statusMessages.add(Severity.ERROR, "Ingrese un código válido");
-			return "/centroCosto.xhtml";
-		}
-		
-		this.nombreCentroCostoNueva = this.nombreCentroCostoNueva.trim();
-		
-		if (this.nombreCentroCostoNueva.isEmpty()){
-			statusMessages.add(Severity.ERROR, "Ingrese un nombre válido");
-			return "/centroCosto.xhtml";
-		}
-		
-		if ( sdmCentroCostoHome.buscarSdmCentroCostoXCodigo(this.codigoCentroCostoNueva) != null){
-			statusMessages.add(Severity.ERROR, "Ya existe un centro de costo con dicho código");
-			return "/centroCosto.xhtml";
-		}
-		
-		SdmCentroCosto sdmCentroCosto = new SdmCentroCosto(this.codigoCentroCostoNueva , this.nombreCentroCostoNueva);
-		sdmCentroCostoHome.crearCentroCosto(sdmCentroCosto);
-		statusMessages.add(Severity.INFO,"Se creó el centro de costo");
-		return "/centroCosto.xhtml";
+		}catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"creando centro de costo", null);
+			 throw e ;
+		 }			
 	}
 
 

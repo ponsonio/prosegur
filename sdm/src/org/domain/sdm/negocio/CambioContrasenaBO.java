@@ -23,6 +23,12 @@ public class CambioContrasenaBO  implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	String cambiarContrasena = "Cambiar contraseña ";
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
+	
 	@In 
     StatusMessages statusMessages;
 
@@ -36,15 +42,31 @@ public class CambioContrasenaBO  implements Serializable{
 	@In(create=true)
 	SdmUsuarioHome sdmUsuarioHome;
 
-	public String cambiarContrasena(){
-		sdmUsuario.setContrasena(sdmUsuario.getContrasena().trim());
-		if (sdmUsuario.getContrasena().isEmpty()) {
-			statusMessages.add("Ingrese una contraseña no vacia");
-			return "/cambioContrasena.xhtml";
-		}
-		sdmUsuarioHome.actualizarUsuario(sdmUsuario);
-		statusMessages.add("Contraseña cambiada");
-		return "/home.xhtml";
+	
+	/**
+	 *	Cambio de contraseña 
+	 * @return
+	 */
+	public String cambiarContrasena() throws Exception{
+		try{
+			sdmUsuario.setContrasena(sdmUsuario.getContrasena().trim());
+			if (sdmUsuario.getContrasena().isEmpty()) {
+				statusMessages.add("Ingrese una contraseña no vacia");
+				return "/cambioContrasena.xhtml";
+			}
+			
+			sdmUsuarioHome.actualizarUsuario(sdmUsuario);
+			
+			loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se cambio la contraseña " , this.cambiarContrasena , String.valueOf(sdmUsuario.getId()) );
+	
+			statusMessages.add("Contraseña cambiada");
+			return "/home.xhtml";
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Cambio contraseña", null);
+			 throw e ;
+		 }	
 	}
 
 }

@@ -24,6 +24,7 @@ import org.hibernate.validator.NotNull;
 @Table(name = "SDM_rol")
 public class SdmRol implements java.io.Serializable {
 
+	
 	private long id;
 	private String etiqueta;
 	private Set<SdmRolXUsuario> sdmRolXUsuarios = new HashSet<SdmRolXUsuario>(0);

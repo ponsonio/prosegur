@@ -30,6 +30,13 @@ public class MantenimientoTipoServicioBO implements Serializable{
 	 */
 	private static final long serialVersionUID = 7360835165849520535L;
 	
+	String stringCrearTipoServicio = "Crear Tipo Servicio";
+	String stringActivarTipoServicio = "Activar Tipo Servicio";
+	String stringDesactivarTipoServicio = "Desactivar Tipo Servicio";
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
+	
 	@Logger
 	private Log log;
 	
@@ -48,33 +55,88 @@ public class MantenimientoTipoServicioBO implements Serializable{
 	SdmTipoServicioHome sdmTipoServicioHome;
 	
 	@Factory("arraylistSdmTipoServicioEdit")
-	public void obtenerListaSDMTipoServicio()	{
-		arraylistSdmTipoServicioEdit = sdmTipoServicioHome.obtenerListaSDMTipoServicio();
+	public void obtenerListaSDMTipoServicio()	throws Exception{
+		try {
+			arraylistSdmTipoServicioEdit = sdmTipoServicioHome.obtenerListaSDMTipoServicio();
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Listar Tipo Servicio ", null);
+			throw e;
+		}
 	}
 
-	
-	public String activar(){
-		sdmTipoServicioSelect = sdmTipoServicioHome.activar(sdmTipoServicioSelect);
-		return "/tipoServicio.xhtml";
-	}
-	
-	public String desactivar(){
-		sdmTipoServicioSelect = sdmTipoServicioHome.desactivar(sdmTipoServicioSelect);
-		return "/tipoServicio.xhtml";
-	}
-	
-	public String crearTipoServicio(){
-		sdmTipoServicioNuevo.setDescripcion(sdmTipoServicioNuevo.getDescripcion().trim());
-		if (sdmTipoServicioNuevo.getDescripcion().isEmpty() == true) {
-			statusMessages.add(Severity.ERROR , "Ingrese un nombre");
+	/**
+	 * Activa un tipo de servicio
+	 * @return
+	 * @throws Exception
+	 */
+	public String activar() throws Exception{
+		try {
+			sdmTipoServicioSelect = sdmTipoServicioHome.activar(sdmTipoServicioSelect);
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se activó el tipo de servicio " , this.stringActivarTipoServicio , String.valueOf( sdmTipoServicioSelect.getId()));		
+			 
 			return "/tipoServicio.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Activar Tipo Servicio ", null);
+			throw e;
 		}
-		sdmTipoServicioNuevo.setActivo(true);
-		sdmTipoServicioHome.crear(sdmTipoServicioNuevo);
-		obtenerListaSDMTipoServicio();
-		this.sdmTipoServicioNuevo = new SdmTipoServicio();
-		this.statusMessages.add(Severity.INFO,"Se creó el tipo de servicio ");
-		return "/tipoServicio.xhtml";
+			
+	}
+	
+	/**
+	 * Desactivar tipo de servicio
+	 * @return
+	 * @throws Exception
+	 */
+	public String desactivar() throws Exception{
+		try {
+			sdmTipoServicioSelect = sdmTipoServicioHome.desactivar(sdmTipoServicioSelect);
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se desactivó el tipo de servicio " , this.stringDesactivarTipoServicio , String.valueOf( sdmTipoServicioSelect.getId()));		
+			return "/tipoServicio.xhtml";
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Desactivar Tipo Servicio ", null);
+			throw e;
+		}
+
+	}
+	
+	/**
+	 * Crear tipo de servicio
+	 * @return
+	 * @throws Exception
+	 */
+	public String crearTipoServicio() throws Exception{
+		try {
+			sdmTipoServicioNuevo.setDescripcion(sdmTipoServicioNuevo.getDescripcion().trim());
+			if (sdmTipoServicioNuevo.getDescripcion().isEmpty() == true) {
+				statusMessages.add(Severity.ERROR , "Ingrese un nombre");
+				return "/tipoServicio.xhtml";
+			}
+			sdmTipoServicioNuevo.setActivo(true);
+			sdmTipoServicioHome.crear(sdmTipoServicioNuevo);
+			obtenerListaSDMTipoServicio();
+	
+			
+			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+						"Se creó el tipo de servicio " , this.stringCrearTipoServicio , String.valueOf( sdmTipoServicioNuevo.getId()));		
+	
+			
+			this.sdmTipoServicioNuevo = new SdmTipoServicio();
+			this.statusMessages.add(Severity.INFO,"Se creó el tipo de servicio ");
+				
+			return "/tipoServicio.xhtml";
+			
+		} catch (Exception e) {
+			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
+					e.getMessage(), "Crear Tipo Servicio ", null);
+			throw e;
+		}
 	}
 
 

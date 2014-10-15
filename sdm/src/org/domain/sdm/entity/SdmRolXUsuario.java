@@ -20,6 +20,7 @@ import org.hibernate.validator.NotNull;
 @Table(name = "SDM_rol_x_usuario")
 public class SdmRolXUsuario implements java.io.Serializable {
 
+	
 	private SdmRolXUsuarioId id;
 	private SdmUsuario sdmUsuario;
 	private SdmRol sdmRol;

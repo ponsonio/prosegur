@@ -40,8 +40,18 @@ public class AsignacionRolesBO implements Serializable {
 	 */
 	private static final long serialVersionUID = 4320533824412478306L;
 
+	String asignarRol = "Asigno Rol";
+	
+	String removerRol = "Remover Rol";
+	
+	
 	@Logger
 	private Log log;
+	
+	
+	
+	@In(create= true)
+	LoggerBO loggerBO ;
 	
     @In 
     StatusMessages statusMessages;
@@ -72,22 +82,31 @@ public class AsignacionRolesBO implements Serializable {
 	
 	
 	@Factory("arrayListUsuariosRol")
-	public ArrayList<SdmUsuario>  obtenerUsuarios(){
+	public ArrayList<SdmUsuario>  obtenerUsuarios() throws Exception{
+		try{
 			Query query =  entityManager.createQuery("From SdmUsuario s");
 			return  (ArrayList<SdmUsuario>)query.getResultList();
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Obtener usuarios", null);
+			 throw e ;
+		 }
 	}
 	
 	
 	@Factory("arrayListRol")
-	public  ArrayList<SdmRol> obtenerRoles(){
+	public  ArrayList<SdmRol> obtenerRoles() throws Exception{
+		try{
 			Query query =  entityManager.createQuery("From SdmRol s");
 			return  (ArrayList<SdmRol>)query.getResultList();
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Obtener roles", null);
+			 throw e ;
+		 }
 	}
 
-
-
-
-
+	
 	public SdmUsuario getSdmUsuarioSelect() {
 		return sdmUsuarioSelect;
 	}
@@ -101,33 +120,44 @@ public class AsignacionRolesBO implements Serializable {
 	 * Carga la información de roles y usuario del Usuario elegido
 	 * @return
 	 */
-	public String cargarInfo(){
-		arrayListSdmRolUsuarioSelect = obtenerRolXUsuario(this.sdmUsuarioSelect.getId());
-		this.sdmUsuarioSelect = obtenerUsuarioXId(this.sdmUsuarioSelect.getId());
-		return "/asignacionRoles.xhtml";
-	}
-
+	public String cargarInfo() throws Exception{
+		try{
+			arrayListSdmRolUsuarioSelect = obtenerRolXUsuario(this.sdmUsuarioSelect.getId());
+			this.sdmUsuarioSelect = obtenerUsuarioXId(this.sdmUsuarioSelect.getId());
+			return "/asignacionRoles.xhtml";
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Obtener roles del usuario", String.valueOf(this.sdmUsuarioSelect.getId()));
+			 throw e ;
+		 }
+	}	
 	/**
 	 * Obtiene los roles de un usuario y los muestra
 	 * @param idUsuario id del usuario
 	 * @return
 	 */
-	public ArrayList<SdmRol> obtenerRolXUsuario(long idUsuario){
-		//log.info("id usuario"+idUsuario);
-		ArrayList<SdmRol> arraSdmRols = new ArrayList<SdmRol>();
-		Query query =  entityManager.createQuery("select u.sdmRolXUsuarios From  SdmUsuario u where u.id = :idUsuario");  
-		ArrayList<SdmRolXUsuario>  rolxusuario = (ArrayList<SdmRolXUsuario>)query.setParameter("idUsuario", idUsuario).getResultList();
-		Iterator<SdmRolXUsuario> it = rolxusuario.iterator();
-		longIdRolesSelecionados = new long[rolxusuario.size()];
-		int i = 0 ;
-		while (it.hasNext()){
-			SdmRol rol = it.next().getSdmRol();
-			//arraSdmRols.add(rol);
-			longIdRolesSelecionados[i] =  rol.getId();
-			log.info("rol de usuario:" + rol.getEtiqueta());
-			i++;
-		}
-		return arraSdmRols;
+	public ArrayList<SdmRol> obtenerRolXUsuario(long idUsuario) throws Exception{
+		try{
+			//log.info("id usuario"+idUsuario);
+			ArrayList<SdmRol> arraSdmRols = new ArrayList<SdmRol>();
+			Query query =  entityManager.createQuery("select u.sdmRolXUsuarios From  SdmUsuario u where u.id = :idUsuario");  
+			ArrayList<SdmRolXUsuario>  rolxusuario = (ArrayList<SdmRolXUsuario>)query.setParameter("idUsuario", idUsuario).getResultList();
+			Iterator<SdmRolXUsuario> it = rolxusuario.iterator();
+			longIdRolesSelecionados = new long[rolxusuario.size()];
+			int i = 0 ;
+			while (it.hasNext()){
+				SdmRol rol = it.next().getSdmRol();
+				//arraSdmRols.add(rol);
+				longIdRolesSelecionados[i] =  rol.getId();
+				log.info("rol de usuario:" + rol.getEtiqueta());
+				i++;
+			}
+			return arraSdmRols;
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Obtener roles del usuario", String.valueOf(idUsuario));
+			 throw e ;
+		 }
 	}
 
 	public boolean verificarRolUSuario(long idRol){
@@ -155,27 +185,40 @@ public class AsignacionRolesBO implements Serializable {
 	 * @param idUsuario
 	 * @return
 	 */
-	public SdmUsuario obtenerUsuarioXId(long idUsuario){
-		Query query =  entityManager.createQuery("select u From  SdmUsuario u where u.id = :idUsuario");  
-		return (SdmUsuario)query.setParameter("idUsuario",idUsuario).getSingleResult();
+	public SdmUsuario obtenerUsuarioXId(long idUsuario) throws Exception{
+		try{
+			Query query =  entityManager.createQuery("select u From  SdmUsuario u where u.id = :idUsuario");  
+			return (SdmUsuario)query.setParameter("idUsuario",idUsuario).getSingleResult();
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Obtener usuario por id", String.valueOf(idUsuario));
+			 throw e ;
+		 }
 	}
 
 	/**
 	 * Carga los datos del empleado selecionado
 	 * @return
 	 */
-	public String cargarEmpleadoSelect(){
-		SdmUsuario usuarioAux = this.obtenerUsuarioxIdEmpleado(sdmEmpleadoBusquedaNombre.getId());
-		
-		if  (usuarioAux != null ) {
-			statusMessages.add(Severity.ERROR,"El empleado ya tiene usuario");
+	public String cargarEmpleadoSelect() throws Exception{
+		try{
+			SdmUsuario usuarioAux = this.obtenerUsuarioxIdEmpleado(sdmEmpleadoBusquedaNombre.getId());
+			
+			if  (usuarioAux != null ) {
+				statusMessages.add(Severity.ERROR,"El empleado ya tiene usuario");
+				return "/asignacionRoles.xhtml";
+			}
+			this.sdmUsuarioSelect = new SdmUsuario();
+			this.sdmUsuarioSelect.setSdmEmpleado(sdmEmpleadoBusquedaNombre);
+			this.sdmUsuarioSelect.setActivo(true);
+			this.arraylistSdmEmpleado = new  ArrayList<SdmEmpleado>();
 			return "/asignacionRoles.xhtml";
-		}
-		this.sdmUsuarioSelect = new SdmUsuario();
-		this.sdmUsuarioSelect.setSdmEmpleado(sdmEmpleadoBusquedaNombre);
-		this.sdmUsuarioSelect.setActivo(true);
-		this.arraylistSdmEmpleado = new  ArrayList<SdmEmpleado>();
-		return "/asignacionRoles.xhtml";
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Obtener datos del empleado ", String.valueOf(sdmEmpleadoBusquedaNombre.getId()));
+			 throw e ;
+		 }
+
 	}
 	
 	public String getTabSelect() {
@@ -191,12 +234,18 @@ public class AsignacionRolesBO implements Serializable {
 	 * Busqueda de empelados activos por nombre
 	 * @return
 	 */
-	public String buscarSdmEmpleadoActivoPorNombre(){
+	public String buscarSdmEmpleadoActivoPorNombre() throws Exception{
    		String nombre = this.nombreBuscar;
-   		Query query =  entityManager.createQuery("From SdmEmpleado e where e.activo = true and lower(e.nombre) like lower('%"+nombre+"%')");
-   		arraylistSdmEmpleado = (ArrayList<SdmEmpleado>)query.getResultList();
-   		this.tabSelect="tabNombre";
-		return "/asignacionRoles.xhtml";
+		try {
+	   		Query query =  entityManager.createQuery("From SdmEmpleado e where e.activo = true and lower(e.nombre) like lower('%"+nombre+"%')");
+	   		arraylistSdmEmpleado = (ArrayList<SdmEmpleado>)query.getResultList();
+	   		this.tabSelect="tabNombre";
+			return "/asignacionRoles.xhtml";
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Busqueda Empleado ", nombre);
+			 throw e ;
+		 }
    }
 
 
@@ -232,64 +281,75 @@ public class AsignacionRolesBO implements Serializable {
 	 * Valida y graba los datos
 	 * @return
 	 */
-	public String grabar(){
-		
-		if (sdmUsuarioSelect.getSdmEmpleado() == null ||
-				sdmUsuarioSelect.getSdmEmpleado().getId() <= 0){
-			statusMessages.add(Severity.ERROR , "Selecione un usuario o empleado primero");
-			return "/asignacionRoles.xhtml";
-		}
-		
-		sdmUsuarioSelect.setContrasena(sdmUsuarioSelect.getContrasena().trim());
-		if (sdmUsuarioSelect.getContrasena().isEmpty()){
-			statusMessages.add(Severity.ERROR , "La contraseña no es valida");
-			return "/asignacionRoles.xhtml";
-		}
-		
-		sdmUsuarioSelect.setCorreo(sdmUsuarioSelect.getCorreo().trim());
-		if (sdmUsuarioSelect.getCorreo().isEmpty()){
-			statusMessages.add(Severity.ERROR , "La contraseña no es valida");
-			return "/asignacionRoles.xhtml";
-		}
-		
-
-		
-		Iterator<SdmRolXUsuario> iterator  = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
-		
-		//quito los que no estan selecionados
-		while (iterator.hasNext()){
-			SdmRolXUsuario sdmRolXUsuario = iterator.next();
-			boolean selecionado = false;	
-			for (int i = 0 ; i < longIdRolesSelecionados.length ; i ++){
-				if (longIdRolesSelecionados[i] == sdmRolXUsuario.getSdmRol().getId()) 
-						selecionado = true; 	
+	public String grabar() throws Exception{
+		try{
+			if (sdmUsuarioSelect.getSdmEmpleado() == null ||
+					sdmUsuarioSelect.getSdmEmpleado().getId() <= 0){
+				statusMessages.add(Severity.ERROR , "Selecione un usuario o empleado primero");
+				return "/asignacionRoles.xhtml";
 			}
-			if (!selecionado) entityManager.remove(sdmRolXUsuario);
-		}
-		
-		//creo los que no estan
-		for (int i = 0 ; i < longIdRolesSelecionados.length ; i ++){
 			
-			Iterator<SdmRolXUsuario> iterator2  = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
-			boolean asigando = false;
-			while (iterator2.hasNext()){
-				SdmRolXUsuario sdmRolXUsuario = iterator2.next();
-				if (longIdRolesSelecionados[i] == sdmRolXUsuario.getSdmRol().getId())
-					asigando = true;
+			sdmUsuarioSelect.setContrasena(sdmUsuarioSelect.getContrasena().trim());
+			if (sdmUsuarioSelect.getContrasena().isEmpty()){
+				statusMessages.add(Severity.ERROR , "La contraseña no es valida");
+				return "/asignacionRoles.xhtml";
 			}
-			if (!asigando){
-				SdmRolXUsuario sdmRolXUsuario = new SdmRolXUsuario();
-				SdmRol sdmrol = new SdmRol();
-				sdmrol.setId(longIdRolesSelecionados[i]);
-				sdmRolXUsuario.setSdmRol(sdmrol);
-				sdmRolXUsuario.setSdmUsuario(sdmUsuarioSelect);
-				entityManager.merge(sdmRolXUsuario);
+			
+			sdmUsuarioSelect.setCorreo(sdmUsuarioSelect.getCorreo().trim());
+			if (sdmUsuarioSelect.getCorreo().isEmpty()){
+				statusMessages.add(Severity.ERROR , "La contraseña no es valida");
+				return "/asignacionRoles.xhtml";
 			}
-		}
+			
 
-		
-		statusMessages.add(Severity.INFO , "Se guardaron los cambios");
-		return "/asignacionRoles.xhtml";	
+			
+			Iterator<SdmRolXUsuario> iterator  = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
+			//quito los que no estan selecionados
+			while (iterator.hasNext()){
+				SdmRolXUsuario sdmRolXUsuario = iterator.next();
+				boolean selecionado = false;	
+				for (int i = 0 ; i < longIdRolesSelecionados.length ; i ++){
+					if (longIdRolesSelecionados[i] == sdmRolXUsuario.getSdmRol().getId()) 
+							selecionado = true; 	
+				}
+				if (!selecionado) entityManager.remove(sdmRolXUsuario);
+				
+				 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+							"Removio el rol al usuario" + sdmUsuarioSelect.getId()  , this.removerRol , sdmRolXUsuario.getSdmRol().getEtiqueta());
+
+			}
+			
+			//creo los que no estan
+			for (int i = 0 ; i < longIdRolesSelecionados.length ; i ++){
+				
+				Iterator<SdmRolXUsuario> iterator2  = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
+				boolean asigando = false;
+				while (iterator2.hasNext()){
+					SdmRolXUsuario sdmRolXUsuario = iterator2.next();
+					if (longIdRolesSelecionados[i] == sdmRolXUsuario.getSdmRol().getId())
+						asigando = true;
+				}
+				if (!asigando){
+					SdmRolXUsuario sdmRolXUsuario = new SdmRolXUsuario();
+					SdmRol sdmrol = new SdmRol();
+					sdmrol.setId(longIdRolesSelecionados[i]);
+					sdmRolXUsuario.setSdmRol(sdmrol);
+					sdmRolXUsuario.setSdmUsuario(sdmUsuarioSelect);
+					entityManager.merge(sdmRolXUsuario);
+
+					 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
+								"Asigno el rol al usuario " + sdmUsuarioSelect.getId()  , this.asignarRol , sdmRolXUsuario.getSdmRol().getEtiqueta());
+					
+				}
+			}
+			statusMessages.add(Severity.INFO , "Se guardaron los cambios");
+			return "/asignacionRoles.xhtml";	
+			
+		 }catch (Exception e){
+			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
+						e.getMessage(),"Busqueda Empleado ", String.valueOf(sdmUsuarioSelect.getSdmEmpleado().getId()));
+			 throw e ;
+		 }
 	}
 
 
@@ -301,8 +361,5 @@ public class AsignacionRolesBO implements Serializable {
 	public void setLongIdRolesSelecionados(long[] longIdRolesSelecionados) {
 		this.longIdRolesSelecionados = longIdRolesSelecionados;
 	}
-	
-	
-	
 	
 }
