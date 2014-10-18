@@ -37,6 +37,17 @@ public class BusquedaLogBO implements  Serializable{
 
 	private Date fechaHasta = new Date();
 	
+	String usuarioBusqueda  = "%%"; 
+	
+	String mensajeBusqueda  = "%%";
+	
+	String referenciaBusqueda  = "%%";
+	
+	String tipoEventoBusqueda  = "%%"; 
+	
+	String operacionBusqueda  = "%%" ;
+	
+	String ipBusqueda  = "%%" ;
 	
 	public List<SdmLog> getListLog() {
 		return listLog;
@@ -51,9 +62,27 @@ public class BusquedaLogBO implements  Serializable{
 	public List<SdmLog> listLog = new ArrayList<SdmLog>();
 	
 	
+	public void trim(){
+		if (tipoEventoBusqueda!=null) tipoEventoBusqueda =  tipoEventoBusqueda.trim() ;		
+		if (usuarioBusqueda!=null) usuarioBusqueda = usuarioBusqueda.trim() ; 
+		if (mensajeBusqueda!=null) mensajeBusqueda = mensajeBusqueda.trim();
+		if (referenciaBusqueda!=null) referenciaBusqueda = referenciaBusqueda.trim() ;
+		if (tipoEventoBusqueda!=null) tipoEventoBusqueda = tipoEventoBusqueda.trim(); 
+		if (operacionBusqueda!=null) operacionBusqueda = operacionBusqueda.trim();
+	}
+	
 	public String buscarLog() throws Exception{
 		try{
-			listLog = (ArrayList<SdmLog>)sdmLogHome.buscarLogFechas(this.fechaDesde, this.fechaHasta);
+			trim();
+
+			if ( tipoEventoBusqueda == "Todos") {
+					listLog = (ArrayList<SdmLog>)sdmLogHome.buscarLogFechas(this.fechaDesde , this.fechaHasta, usuarioBusqueda
+							, mensajeBusqueda, referenciaBusqueda, operacionBusqueda);
+			}
+					
+					
+			
+			
 			//System.out.print("listLog.size()"+ listLog.size());
 		}catch(Exception e){
 			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
@@ -80,6 +109,78 @@ public class BusquedaLogBO implements  Serializable{
 
 	public void setFechaHasta(Date fechaHasta) {
 		this.fechaHasta = fechaHasta;
+	}
+
+
+
+	public String getUsuarioBusqueda() {
+		return usuarioBusqueda;
+	}
+
+
+
+	public void setUsuarioBusqueda(String usuarioBusqueda) {
+		this.usuarioBusqueda = usuarioBusqueda;
+	}
+
+
+
+	public String getMensajeBusqueda() {
+		return mensajeBusqueda;
+	}
+
+
+
+	public void setMensajeBusqueda(String mensajeBusqueda) {
+		this.mensajeBusqueda = mensajeBusqueda;
+	}
+
+
+
+	public String getReferenciaBusqueda() {
+		return referenciaBusqueda;
+	}
+
+
+
+	public void setReferenciaBusqueda(String referenciaBusqueda) {
+		this.referenciaBusqueda = referenciaBusqueda;
+	}
+
+
+
+	public String getTipoEventoBusqueda() {
+		return tipoEventoBusqueda;
+	}
+
+
+
+	public void setTipoEventoBusqueda(String tipoEventoBusqueda) {
+		this.tipoEventoBusqueda = tipoEventoBusqueda;
+	}
+
+
+
+	public String getOperacionBusqueda() {
+		return operacionBusqueda;
+	}
+
+
+
+	public void setOperacionBusqueda(String operacionBusqueda) {
+		this.operacionBusqueda = operacionBusqueda;
+	}
+
+
+
+	public String getIpBusqueda() {
+		return ipBusqueda;
+	}
+
+
+
+	public void setIpBusqueda(String ipBusqueda) {
+		this.ipBusqueda = ipBusqueda;
 	}
 	
 	

@@ -74,11 +74,26 @@ public class SdmLogHome extends EntityHome<SdmLog> {
 	
 	}
 	
-	
-	public List<SdmLog> buscarLogFechas(Date fechaIni , Date fechaHasta) {
+	/**
+	 * 
+	 * @param fechaIni
+	 * @param fechaHasta
+	 * @param usuario
+	 * @param mensaje
+	 * @param referencia
+	 * @param operacion
+	 * @return
+	 */
+	public List<SdmLog> buscarLogFechas(Date fechaIni , Date fechaHasta, String usuario , String mensaje
+			, String referencia , String operacion) {
 		
-		Query query =  entityManager.createQuery("From SdmLog i  where  i.fecha >= :fechaIni and i.fecha <= :fechaHasta ");
-		return (List<SdmLog>)query.setParameter("fechaIni",fechaIni).setParameter("fechaHasta",fechaHasta).getResultList();
+		Query query =  entityManager.createQuery("From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.id in "
+				+ "( select i.id From SdmLog i  where  i.usuario like :usr or  i.mensaje like :mensaje or i.referencia like :referencia or i.operacion like :operacion  )");
+		
+		return (List<SdmLog>)query.setParameter("usr",usuario).setParameter("mensaje",mensaje)
+				.setParameter("referencia",referencia).setParameter("operacion",operacion);
+		
+		//return (List<SdmLog>)query.setParameter("fechaIni",fechaIni).setParameter("fechaHasta",fechaHasta).getResultList();
 
 	}
 }

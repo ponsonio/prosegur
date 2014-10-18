@@ -19,7 +19,6 @@
 
 				<h3 align="center">#{messages['label.titulo.busquedaLog']}</h3>
 					
-                
 
 						           <s:decorate id="fechadesde" template="layout/edit.xhtml">
 						                <ui:define name="label">#{messages['label.fechaDesde']}</ui:define>
@@ -30,6 +29,61 @@
 						                <ui:define name="label">#{messages['label.fechaHasta']}</ui:define>
 												<rich:calendar id="fechahasta" value="#{busquedaLogBO.fechaHasta}"   />
 							      </s:decorate>	
+
+                				<s:decorate id="tipoBusqueda" template="layout/edit.xhtml">
+						                <ui:define name="label">#{messages['label.selecionar']}</ui:define>
+						                
+						                <h:selectOneMenu  id="tipoServicio"  value="#{busquedaLogBO.tipoEventoBusqueda}">
+						                	<f:selectItem itemLabel="Todos" itemValue="Todos" />
+						                	<f:selectItem itemLabel="Evento" itemValue="EVENTO" />
+						                	<f:selectItem itemLabel="Error" itemValue="ERROR" />
+						                	<f:selectItem itemLabel="Aviso" itemValue="AVISO" />
+						                	<f:selectItem itemLabel="Info" itemValue="INFO" />
+						                </h:selectOneMenu>
+							      </s:decorate>	
+
+
+					            <s:decorate id="usuarioBusqueda" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.usuario']}</ui:define>
+					                <h:inputText id="usuarioBusqueda"
+					                       required="false"
+					                          value="#{busquedaLogBO.usuarioBusqueda}">
+					                </h:inputText>
+					            </s:decorate>
+
+					            <s:decorate id="mensajeBusqueda" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.descripcion']}</ui:define>
+					                <h:inputText id="mensajeBusqueda"
+					                       required="false"
+					                          value="#{busquedaLogBO.mensajeBusqueda}">
+					                </h:inputText>
+					            </s:decorate>
+
+					            <s:decorate id="referenciaBusqueda" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.referencia']}</ui:define>
+					                <h:inputText id="referenciaBusqueda"
+					                       required="false"
+					                          value="#{busquedaLogBO.referenciaBusqueda}">
+					                </h:inputText>
+					            </s:decorate>
+
+					            <s:decorate id="operacionBusqueda" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.operacion']}</ui:define>
+					                <h:inputText id="operacionBusqueda"
+					                       required="false"
+					                          value="#{busquedaLogBO.operacionBusqueda}">
+					                </h:inputText>
+					            </s:decorate>
+					            			            
+					            <s:decorate id="ipBusqueda" template="layout/edit.xhtml">
+					                <ui:define name="label">#{messages['label.ip']}</ui:define>
+					                <h:inputText id="ipBusqueda"
+					                       required="false"
+					                          value="#{busquedaLogBO.ipBusqueda}">
+					                </h:inputText>
+					            </s:decorate>
+
+
 									<h:commandButton id="buscarCodigo" value="Buscar"
 												action="#{busquedaLogBO.buscarLog()}" />	
 				
@@ -101,6 +155,9 @@
 						
 					</rich:dataTable>
 					
+					<h:commandLink value="Exportar" 
+						action="#{org.jboss.seam.excel.excelExporter.export('buscarLog:tableLog')}" />  
+			        
 			        <div style="clear:both"/>
 
     			</rich:panel>
