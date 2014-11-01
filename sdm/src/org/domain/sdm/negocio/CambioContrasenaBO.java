@@ -1,11 +1,14 @@
 package org.domain.sdm.negocio;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 
 import org.domain.sdm.entity.SdmEmpleado;
 import org.domain.sdm.entity.SdmUsuario;
+import org.domain.sdm.session.Authenticator;
 import org.domain.sdm.session.SdmUsuarioHome;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -31,6 +34,9 @@ public class CambioContrasenaBO  implements Serializable{
 	
 	@In 
     StatusMessages statusMessages;
+	
+	@In
+	Authenticator authenticator;
 
 	@In
 	SdmEmpleado sdmEmpleado;
@@ -42,27 +48,64 @@ public class CambioContrasenaBO  implements Serializable{
 	@In(create=true)
 	SdmUsuarioHome sdmUsuarioHome;
 
+	String stringContrasena = "";
 	
+	
+	
+
+
+
+
+	public String getStringContrasena() {
+		return stringContrasena;
+	}
+
+
+
+
+
+
+
+	public void setStringContrasena(String stringContrasena) {
+		this.stringContrasena = stringContrasena;
+	}
+
+
+
+
+
+
+
 	/**
 	 *	Cambio de contraseña 
 	 * @return
 	 */
 	public String cambiarContrasena() throws Exception{
 		try{
-			sdmUsuario.setContrasena(sdmUsuario.getContrasena().trim());
-			if (sdmUsuario.getContrasena().isEmpty()) {
+			this.stringContrasena = this.stringContrasena.trim();
+			if (stringContrasena.isEmpty()) {
 				statusMessages.add("Ingrese una contraseña no vacia");
 				return "/cambioContrasena.xhtml";
 			}
+		
+			sdmUsuario =  sdmUsuarioHome.obtenerUsuarioXid(sdmUsuario.getId());
 			
+			sdmUsuario.setFechaModContrasena(new Date());
+			Charset UTF8_CHARSET = Charset.forName("UTF-8");
+			
+			//if (UTF8_CHARSET == null) System.out.print("charset null");
+			
+			sdmUsuario.setContrasena(this.stringContrasena.getBytes(UTF8_CHARSET));
 			sdmUsuarioHome.actualizarUsuario(sdmUsuario);
 			
 			loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
 						"Se cambio la contraseña " , this.cambiarContrasena , String.valueOf(sdmUsuario.getId()) );
 	
+			authenticator.setContrasenaExpirada(false);
 			statusMessages.add("Contraseña cambiada");
 			return "/home.xhtml";
 		 }catch (Exception e){
+			 statusMessages.add("Ocurrio un error Cambiando la Contraseña");
 			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
 						e.getMessage(),"Cambio contraseña", null);
 			 throw e ;

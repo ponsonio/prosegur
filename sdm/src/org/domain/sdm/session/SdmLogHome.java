@@ -85,15 +85,48 @@ public class SdmLogHome extends EntityHome<SdmLog> {
 	 * @return
 	 */
 	public List<SdmLog> buscarLogFechas(Date fechaIni , Date fechaHasta, String usuario , String mensaje
-			, String referencia , String operacion) {
+			, String referencia , String operacion , String tipo) {
+
+		String stringQuery = " Select i From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta " ;
+
+		if (usuario != null){
+			stringQuery = stringQuery + " and i.id in (Select i.id From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.usuario like :usuario ) " ;
+		}
 		
-		Query query =  entityManager.createQuery("From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.id in "
-				+ "( select i.id From SdmLog i  where  i.usuario like :usr or  i.mensaje like :mensaje or i.referencia like :referencia or i.operacion like :operacion  )");
 		
-		return (List<SdmLog>)query.setParameter("usr",usuario).setParameter("mensaje",mensaje)
-				.setParameter("referencia",referencia).setParameter("operacion",operacion);
+		if (mensaje != null){
+			stringQuery = stringQuery + " and i.id in (Select i.id From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.mensaje like :mensaje ) " ;
+		}
 		
-		//return (List<SdmLog>)query.setParameter("fechaIni",fechaIni).setParameter("fechaHasta",fechaHasta).getResultList();
+		if (referencia != null){
+			stringQuery = stringQuery + " and i.id in (Select i.id From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.referencia like :referencia ) " ;
+		}
+		
+		if (operacion != null){
+			stringQuery = stringQuery + " and i.id in (Select i.id From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.operacion like :operacion ) " ;
+		}
+		
+		if (tipo != null){
+			stringQuery = stringQuery + " and i.id in (Select i.id From SdmLog i  where  i.fecha >= :fechaIni  and  i.fecha <= :fechaHasta and i.tipo = :tipo ) " ;
+		}
+		
+		
+		System.out.println ("stringQuery:"+stringQuery) ;
+		
+		Query query =  entityManager.createQuery(stringQuery);
+		query.setParameter("fechaIni",fechaIni).setParameter("fechaHasta",fechaHasta) ;
+		
+		if (usuario != null) query.setParameter("usuario", "%"+usuario+"%");
+		if (mensaje != null) query.setParameter("mensaje", "%"+mensaje+"%");
+		if (referencia != null) query.setParameter("referencia", "%"+referencia+"%");
+		if (operacion != null) query.setParameter("operacion", "%"+operacion+"%");
+		if (tipo != null) query.setParameter("tipo", tipo);
+		
+		return (List<SdmLog>)query.getResultList();
 
 	}
+	
+	
+
+	
 }

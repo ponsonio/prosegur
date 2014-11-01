@@ -1,7 +1,9 @@
 package org.domain.sdm.negocio;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.persistence.NoResultException;
@@ -103,6 +105,8 @@ public class EmpleadoBO implements Serializable{
 	
 	private String nombreBuscar ;
 	
+	private String contrasena ;
+	
 	@DataModel
 	ArrayList<SdmEmpleado> arraylistSdmEmpleadoBusqueda;
 
@@ -182,10 +186,11 @@ public class EmpleadoBO implements Serializable{
 	
 	public boolean validarUsuario(SdmUsuario sdmUsuario){
 		boolean flag = true;
-		sdmUsuario.setContrasena(sdmUsuario.getContrasena().trim());
+		
+		//sdmUsuario.setContrasena(sdmUsuario.getContrasena().);
 		sdmUsuario.setCorreo(sdmUsuario.getCorreo().trim());
 		
-		if (sdmUsuario.getContrasena().isEmpty()) { this.statusMessages.add(Severity.ERROR,"Contraseña vacia :"+sdmUsuario.getContrasena()) ; flag = false ;}
+		if (sdmUsuario.getContrasena().length == 0) { this.statusMessages.add(Severity.ERROR,"Contraseña vacia :"+sdmUsuario.getContrasena()) ; flag = false ;}
 		if (sdmUsuario.getCorreo().isEmpty()) { this.statusMessages.add(Severity.ERROR,"Correo vacio :"+sdmUsuario.getCorreo()) ; flag = false ;}
 
 		return flag;
@@ -202,6 +207,15 @@ public class EmpleadoBO implements Serializable{
 			ArrayList<SdmRol> arraSdmRols = null;
 			if (this.validarEmpleado(this.sdmEmpleadoNuevo)){
 				if (this.empleadoNuevoUsuario){
+					
+					this.contrasena = this.contrasena.trim(); 
+					
+					Charset UTF8_CHARSET = Charset.forName("UTF-8");
+					
+					
+					sdmUsuarioNuevo.setContrasena(contrasena.getBytes(UTF8_CHARSET));
+					sdmUsuarioNuevo.setFechaModContrasena(new Date());
+					
 					if (this.validarUsuario(this.sdmUsuarioNuevo) == false)  return "/asignacionRoles.xhtml";
 					this.sdmUsuarioNuevo.setActivo(true);
 					arraSdmRols = new ArrayList<SdmRol>();
@@ -544,6 +558,17 @@ public class EmpleadoBO implements Serializable{
 	public void setLongRolesUsuarioSelect(long[] longRolesUsuarioSelect) {
 		this.longRolesUsuarioSelect = longRolesUsuarioSelect;
 	}
+
+
+	public String getContrasena() {
+		return contrasena;
+	}
+
+
+	public void setContrasena(String contrasena) {
+		this.contrasena = contrasena;
+	}
+	
 	
 	
 }

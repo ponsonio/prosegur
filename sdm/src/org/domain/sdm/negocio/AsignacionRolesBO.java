@@ -277,6 +277,7 @@ public class AsignacionRolesBO implements Serializable {
 		this.nombreBuscar = nombreBuscar;
 	}
 	
+	
 	/**
 	 * Valida y graba los datos
 	 * @return
@@ -289,11 +290,12 @@ public class AsignacionRolesBO implements Serializable {
 				return "/asignacionRoles.xhtml";
 			}
 			
-			sdmUsuarioSelect.setContrasena(sdmUsuarioSelect.getContrasena().trim());
-			if (sdmUsuarioSelect.getContrasena().isEmpty()){
-				statusMessages.add(Severity.ERROR , "La contraseña no es valida");
-				return "/asignacionRoles.xhtml";
-			}
+			//String password = new  String(usr.getContrasena(),"UTF-8");
+			//sdmUsuarioSelect.setContrasena(sdmUsuarioSelect.getContrasena().trim());
+			//if (this..isEmpty()){
+				//statusMessages.add(Severity.ERROR , "La contraseña no es valida");
+				//return "/asignacionRoles.xhtml";
+			//}
 			
 			sdmUsuarioSelect.setCorreo(sdmUsuarioSelect.getCorreo().trim());
 			if (sdmUsuarioSelect.getCorreo().isEmpty()){

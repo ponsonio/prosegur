@@ -4,6 +4,7 @@ package org.domain.sdm.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TemporalType;
+
 
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
@@ -37,16 +40,17 @@ public class SdmUsuario implements java.io.Serializable {
 	private static final long serialVersionUID = 8706192874178723813L;
 	private long id;
 	private SdmEmpleado sdmEmpleado;
-	private String contrasena;
+	private byte[] contrasena;
 	private String correo;
 	private boolean activo ;
+	private Date fechaModContrasena;
 	private Set<SdmRolXUsuario> sdmRolXUsuarios = new HashSet<SdmRolXUsuario>(0);
 
 	public SdmUsuario() {
 	}
 
-	public SdmUsuario(long id, SdmEmpleado sdmEmpleado, String contrasena,
-			String correo, boolean activo) {
+	public SdmUsuario(long id, SdmEmpleado sdmEmpleado, byte[] contrasena,
+			String correo, boolean activo , Date fechaModContrasena) {
 		this.id = id;
 		this.sdmEmpleado = sdmEmpleado;
 		this.contrasena = contrasena;
@@ -54,7 +58,7 @@ public class SdmUsuario implements java.io.Serializable {
 		this.activo = activo;
 	}
 
-	public SdmUsuario(long id, SdmEmpleado sdmEmpleado, String contrasena,
+	public SdmUsuario(long id, SdmEmpleado sdmEmpleado, byte[] contrasena,
 			String correo, boolean activo, Set<SdmRolXUsuario> sdmRolXUsuarios) {
 		this.id = id;
 		this.sdmEmpleado = sdmEmpleado;
@@ -62,6 +66,7 @@ public class SdmUsuario implements java.io.Serializable {
 		this.correo = correo;
 		this.activo = activo;
 		this.sdmRolXUsuarios = sdmRolXUsuarios;
+		this.fechaModContrasena = fechaModContrasena;
 	}
 
 	@Id
@@ -86,16 +91,18 @@ public class SdmUsuario implements java.io.Serializable {
 		this.sdmEmpleado = sdmEmpleado;
 	}
 
-	@Column(name = "contrasena", nullable = false, length = 20)
+
+	@Column(name = "contrasena", nullable = false)
 	@NotNull
-	@Length(max = 20)
-	public String getContrasena() {
+	public byte[] getContrasena() {
 		return this.contrasena;
 	}
 
-	public void setContrasena(String contrasena) {
+	public void setContrasena(byte[] contrasena) {
 		this.contrasena = contrasena;
 	}
+	
+	
 
 	@Column(name = "correo", nullable = false, length = 50)
 	@NotNull
@@ -117,6 +124,17 @@ public class SdmUsuario implements java.io.Serializable {
 		this.activo = activo;
 	}
 
+	@javax.persistence.Temporal(TemporalType.DATE)
+	@Column(name = "fecha_mod_contrasena", nullable = false, length = 10)
+	@NotNull
+	public Date getFechaModContrasena() {
+		return this.fechaModContrasena;
+	}
+
+	public void setFechaModContrasena(Date fechaModContrasena) {
+		this.fechaModContrasena = fechaModContrasena;
+	}
+	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "sdmUsuario")
 	public Set<SdmRolXUsuario> getSdmRolXUsuarios() {
 		return this.sdmRolXUsuarios;

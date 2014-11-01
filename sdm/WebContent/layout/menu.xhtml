@@ -14,15 +14,15 @@
     </rich:toolBarGroup>
     
     <rich:toolBarGroup>
-        <s:link id="liquidacion" view="/liquidacionInforme.xhtml" value="#{messages['label.liquidacionInformes']}" propagation="none" rendered="#{s:hasRole('Liquidador')}" />
+        <s:link id="liquidacion" view="/liquidacionInforme.xhtml" value="#{messages['label.liquidacionInformes']}" propagation="none" rendered="#{s:hasRole('Liquidador') and (authenticator.contrasenaExpirada == false) }" />
     </rich:toolBarGroup>
     
     <rich:toolBarGroup>
-        <s:link id="ingresoViaticos" view="/ingresoViaticos.xhtml" value="Pagos" propagation="none" rendered="#{s:hasRole('Emisor')}" />
+        <s:link id="ingresoViaticos" view="/ingresoViaticos.xhtml" value="Pagos" propagation="none" rendered="#{s:hasRole('Emisor') and (authenticator.contrasenaExpirada == false) }" />
     </rich:toolBarGroup>
     
      <rich:toolBarGroup>
-        <s:link id="anularInforme" view="/anulacionInforme.xhtml" value="Anular Informe" propagation="none" rendered="#{s:hasRole('Anulador')}" />
+        <s:link id="anularInforme" view="/anulacionInforme.xhtml" value="Anular Informe" propagation="none" rendered="#{s:hasRole('Anulador') and (authenticator.contrasenaExpirada == false) }" />
     </rich:toolBarGroup>
 
      <rich:toolBarGroup>
@@ -30,18 +30,18 @@
     </rich:toolBarGroup>
 
      <rich:toolBarGroup>
-        <s:link id="busquedaInforme" view="/busquedaInforme.xhtml" value="Buscar Informe/Imprimir" propagation="none" rendered="#{s:hasRole('Administrador') or s:hasRole('Liquidador') }" />
+        <s:link id="busquedaInforme" view="/busquedaInforme.xhtml" value="Buscar Informe/Imprimir" propagation="none" rendered="#{(s:hasRole('Administrador') or s:hasRole('Liquidador')) and (authenticator.contrasenaExpirada == false) }" />
     </rich:toolBarGroup>
     
      <rich:toolBarGroup>
-        <s:link id="matenimientoEmpleados" view="/asignacionRoles.xhtml" value="Mantenimiento de Empleados" propagation="none" rendered="#{s:hasRole('Gestor de Empleados')}" />
+        <s:link id="matenimientoEmpleados" view="/asignacionRoles.xhtml" value="Mantenimiento de Empleados" propagation="none" rendered="#{s:hasRole('Gestor de Empleados') and (authenticator.contrasenaExpirada == false) }" />
     </rich:toolBarGroup>
     
      <rich:toolBarGroup>
-        <s:link id="matenimientoMasivoEmpleados" view="/altaEmpleadosMasiva.xhtml" value="Mantenimiento Masivo de Empleados" propagation="none" rendered="#{s:hasRole('Gestor de Empleados')}" />
+        <s:link id="matenimientoMasivoEmpleados" view="/altaEmpleadosMasiva.xhtml" value="Mantenimiento Masivo de Empleados" propagation="none" rendered="#{s:hasRole('Gestor de Empleados') and (authenticator.contrasenaExpirada == false) }" />
     </rich:toolBarGroup>
     
-    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none" rendered="#{s:hasRole('Reportes')}">
+    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none" rendered="#{s:hasRole('Reportes') and (authenticator.contrasenaExpirada == false) }">
         <f:facet name="label">Reportes :</f:facet>
 			<rich:menuItem>
 		    	<s:link view="/reporteInformes.xhtml"
@@ -60,7 +60,7 @@
     
     </rich:dropDownMenu>
     
-    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none" rendered="#{s:hasRole('Administrador')}">
+    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none" rendered="#{s:hasRole('Administrador') and (authenticator.contrasenaExpirada == false) }">
         <f:facet name="label">Mantenimientos :</f:facet>
 			<rich:menuItem>
 		    	<s:link view="/tipoServicio.xhtml"
@@ -110,6 +110,15 @@
 					includePageParams="false"
 		     		propagation="none"/>
 		     </rich:menuItem>
+		     
+		    <rich:menuItem>
+		    	<s:link view="/busquedaLog.xhtml"
+		           	value="Auditoria Eventos"
+					includePageParams="false"
+		     		propagation="none"/>
+		     </rich:menuItem>
+		     		     
+		     		     
 		     		     
     </rich:dropDownMenu>
     <!-- @newMenuItem@ -->

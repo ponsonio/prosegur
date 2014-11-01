@@ -71,9 +71,9 @@ public class SdmUsuarioHome extends EntityHome<SdmUsuario> {
 	 * @param usr
 	 * @return
 	 */
-	public SdmUsuario obtenerSdmUsuario(String usr){
+	public List<SdmUsuario> obtenerSdmUsuario(String usr){
 		Query query =  entityManager.createQuery("select u From SdmEmpleado e , SdmUsuario u where e.id = u.sdmEmpleado.id and e.codigo = :usr and e.activo= true");
-		return (SdmUsuario)query.setParameter("usr",usr).getSingleResult();
+		return (List<SdmUsuario>)query.setParameter("usr",usr).getResultList();
 	}
 
 	
@@ -91,6 +91,11 @@ public class SdmUsuarioHome extends EntityHome<SdmUsuario> {
 		}
 	}
 	
+	
+	public SdmUsuario obtenerUsuarioXid(long id){
+		Query query =  entityManager.createQuery("select u  From SdmUsuario u where u.id = :id");
+		return (SdmUsuario)query.setParameter("id",id).getSingleResult();
+	}
 	
 	public SdmUsuario actualizarUsuario(SdmUsuario sdmUsuario) {
 		entityManager.persist(sdmUsuario);

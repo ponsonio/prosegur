@@ -37,17 +37,17 @@ public class BusquedaLogBO implements  Serializable{
 
 	private Date fechaHasta = new Date();
 	
-	String usuarioBusqueda  = "%%"; 
+	String usuarioBusqueda ; 
 	
-	String mensajeBusqueda  = "%%";
+	String mensajeBusqueda  ;
 	
-	String referenciaBusqueda  = "%%";
+	String referenciaBusqueda  ;
 	
-	String tipoEventoBusqueda  = "%%"; 
+	String tipoEventoBusqueda  ; 
 	
-	String operacionBusqueda  = "%%" ;
+	String operacionBusqueda  ;
 	
-	String ipBusqueda  = "%%" ;
+	String ipBusqueda  ;
 	
 	public List<SdmLog> getListLog() {
 		return listLog;
@@ -74,19 +74,22 @@ public class BusquedaLogBO implements  Serializable{
 	public String buscarLog() throws Exception{
 		try{
 			trim();
+			String usrAux =   ( usuarioBusqueda.isEmpty())?   null : usuarioBusqueda  ;
+			String mensajeAux =   ( mensajeBusqueda.isEmpty())?   null : mensajeBusqueda  ;
+			String referenciaAux =   ( referenciaBusqueda.isEmpty())?   null : referenciaBusqueda  ;
+			String operacionAux =   ( operacionBusqueda.isEmpty())?   null : operacionBusqueda  ;
+			String stringTipoEventoAux = this.tipoEventoBusqueda ;
+			
+			if (stringTipoEventoAux.equals("Todos")) stringTipoEventoAux = null ;
 
-			if ( tipoEventoBusqueda == "Todos") {
-					listLog = (ArrayList<SdmLog>)sdmLogHome.buscarLogFechas(this.fechaDesde , this.fechaHasta, usuarioBusqueda
-							, mensajeBusqueda, referenciaBusqueda, operacionBusqueda);
-			}
-					
-					
+					listLog = (ArrayList<SdmLog>)sdmLogHome.buscarLogFechas(this.fechaDesde , this.fechaHasta, usrAux
+							, mensajeAux, referenciaAux, operacionAux,stringTipoEventoAux);
 			
-			
+					
 			//System.out.print("listLog.size()"+ listLog.size());
 		}catch(Exception e){
 			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
-					e.getMessage(), "Busqueda empleado", null);
+					e.getMessage(), "Busqueda sobre el log", null);
 			throw e;
 	
 		}

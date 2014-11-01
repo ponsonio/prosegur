@@ -1,6 +1,9 @@
 package org.domain.sdm.session;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -12,6 +15,7 @@ import org.domain.sdm.entity.SdmLog;
 import org.domain.sdm.entity.SdmRolXUsuario;
 import org.domain.sdm.entity.SdmUsuario;
 import org.domain.sdm.negocio.LoggerBO;
+import org.domain.sdm.negocio.ParametroBO;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -32,9 +36,17 @@ public class Authenticator implements Serializable {
 
 	String Login = "Login";
 	
+	boolean contrasenaExpirada = false;
+	
+	int intentos = 0 ;
+	
+	String login_ant = null;
 	
 	@In(create= true)
 	LoggerBO loggerBO ;
+	
+	@In(create= true)
+	ParametroBO parametroBO;
 
 	@In
 	StatusMessages statusMessages;
@@ -56,36 +68,47 @@ public class Authenticator implements Serializable {
 	@In(create = true)
 	SdmUsuarioHome sdmUsuarioHome;
 
-	public boolean authenticate() {
+	public boolean authenticate() throws Exception {
 		// obtengo el usuario
 		SdmUsuario usr;
 		try {
-
-
-			usr = sdmUsuarioHome.obtenerSdmUsuario(credentials.getUsername());
+			ArrayList<SdmUsuario> arrayLisSdmUsuarios = (ArrayList<SdmUsuario>)sdmUsuarioHome.obtenerSdmUsuario(credentials.getUsername());
+			
+			if(arrayLisSdmUsuarios.size() == 0) {
+				loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+						"Sin usuario", this.Login, credentials.getUsername(), LoggerBO.ERROR, credentials.getUsername());
+				statusMessages
+						.add(Severity.ERROR,
+								"No se encontró su usuario");
+				return false;
+			}
+			
+			if(arrayLisSdmUsuarios.size() > 1) {
+				loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+						"Se encontró mas de un usuario", this.Login, credentials.getUsername(), LoggerBO.ERROR, credentials.getUsername());
+				statusMessages
+						.add(Severity.ERROR,
+								"Se encontró mas de un usuario");
+				return false;
+			}
+			
+			usr = arrayLisSdmUsuarios.get(0) ;
 			sdmUsuario = usr;
 
-		} catch (NoResultException nre) {
-			// log.info("Usuario no encontrado");
-			statusMessages
-					.add(Severity.ERROR,
-							"No se encontro su usuario, por favor comunicarse con el área de soporte");
-			
-			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
-					"No se encontro su usuario", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
-			
-			return false;
-		} catch (NonUniqueResultException nue) {
+		} catch (Exception e) {
 			// TODO: handle exception
 			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
-					"No se encontro su usuario", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
-			throw nue;
+					"Error obteniendo usuario", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
+			throw e;
 		}
 
-		
+		int diasExpira = parametroBO.obtenerNumeroDiasExpiraContrasena();
+		String password = new  String(usr.getContrasena(),"UTF-8");
+		System.out.print("password:"+password);
+		System.out.print("diasExpira:"+diasExpira);
+		System.out.print("intentos:"+this.intentos);
 		// Valido contraseña
-		if (usr != null
-				&& usr.getContrasena().equals(credentials.getPassword())) {
+		if (password.equals(credentials.getPassword())) {
 
 			sdmEmpleado = usr.getSdmEmpleado(); //
 			System.out.println("usuario:" + credentials.getUsername()); //no quitar 
@@ -109,16 +132,87 @@ public class Authenticator implements Serializable {
 				sdmRol_x_usr = it.next();
 				identity.addRole(sdmRol_x_usr.getSdmRol().getEtiqueta());
 			}
+			this.contrasenaExpirada = validaExpira();
+			System.out.println("contrasenaExpirada"+contrasenaExpirada);
+			if (this.contrasenaExpirada) {
+				statusMessages.add(Severity.ERROR , "Su contraseña expiró, por favor cambiarla");
+				loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+						"Contraseña Expirada", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
+			}
+			
 			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
 					"Inicio Sesión", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
 			return true;
 		}
+		
+		if (credentials.getUsername().equals(this.login_ant) ){
+			this.intentos ++;
+		}
+		
 		loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
 				"Contraseña Errada", this.Login, credentials.getUsername(), LoggerBO.ERROR, credentials.getUsername());
 		statusMessages.add(Severity.ERROR, "Contraseña Errada");
 		return false;
 	}
+
+	
 	
 
 
+
+	public boolean isContrasenaExpirada() {
+		return contrasenaExpirada;
+	}
+
+
+
+
+
+
+	public void setContrasenaExpirada(boolean contrasenaExpirada) {
+		this.contrasenaExpirada = contrasenaExpirada;
+	}
+
+
+
+
+
+
+	public int getIntentos() {
+		return intentos;
+	}
+
+
+
+	public void setIntentos(int intentos) {
+		this.intentos = intentos;
+	}
+
+
+
+	public String getLogin_ant() {
+		return login_ant;
+	}
+
+
+
+	public void setLogin_ant(String login_ant) {
+		this.login_ant = login_ant;
+	}
+	
+
+	public boolean validaExpira(){
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(this.sdmUsuario.getFechaModContrasena()); 
+		c.add(Calendar.DATE, 5);
+		Date fechaExpira = c.getTime();
+		Date hoy = new Date();
+		System.out.println("fechaModContrasena:" +fechaExpira.toLocaleString());
+		System.out.println("hoy:"+ hoy.toLocaleString());
+		if (fechaExpira.before(hoy) ){
+			System.out.println(" contraseña expirada");
+			return true;	
+		}
+		return false;
+	}
 }
