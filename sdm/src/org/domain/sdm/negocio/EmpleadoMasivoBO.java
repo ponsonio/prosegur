@@ -140,11 +140,11 @@ public class EmpleadoMasivoBO implements Serializable{
 							if (actualizar)  this.arrayListEmpleadosActualizar.add(empleado) ; else this.arrayListEmpleadosCargar.add(empleado);
 						}
 		    		}catch(Exception e){
-		    			//log.error(Severity.ERROR, "Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
+		    			//log.error(Severity.ERROR, "Ocurrió un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
 		    			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
-		    					"Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1)+ e.getMessage(), "Carga masiva empleados", null);
+		    					"Ocurrió un error leyendo la hoja 1 , fila "+(row.getRowNum()+1)+ e.getMessage(), "Carga masiva empleados", null);
 		    			
-		    			this.erroresCarga.add("Ocurrio un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
+		    			this.erroresCarga.add("Ocurrió un error leyendo la hoja 1 , fila "+(row.getRowNum()+1));
 		    			e.printStackTrace();
 		    		}
 						
@@ -171,12 +171,12 @@ public class EmpleadoMasivoBO implements Serializable{
 					    		this.arrayListEmpleadosDesactivar.add(empleadoEliminar);
 					    	}
 			    		}catch(Exception e){
-			    			//log.error(Severity.ERROR, "Ocurrio un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1));
+			    			//log.error(Severity.ERROR, "Ocurrió un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1));
 
 			    			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
-			    					"Ocurrio un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1) +e.getMessage(),"Carga masiva empleados", null);
+			    					"Ocurrió un error leyendo la hoja 2 , fila"+ (row.getRowNum()+1) +e.getMessage(),"Carga masiva empleados", null);
 			    			
-			    			this.erroresCarga.add("Ocurrio un error leyendo la hoja 2 , fila "+(row.getRowNum()+1));
+			    			this.erroresCarga.add("Ocurrió un error leyendo la hoja 2 , fila "+(row.getRowNum()+1));
 			    			e.printStackTrace();
 			    			
 			    		}
@@ -185,23 +185,23 @@ public class EmpleadoMasivoBO implements Serializable{
 			    }
 		    }
 		}catch(Exception e){
-			statusMessages.add("Ocurrio un error al abrir el archivo, por favor verifique el formato");
+			statusMessages.add("Ocurrió un error al abrir el archivo, por favor verifique el formato");
 
 			loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
-					"Ocurrio un error al abrir el archivo, por favor verifique el formato" +e.getMessage(),"Carga masiva empleados", null);
+					"Ocurrió un error al abrir el archivo, por favor verifique el formato" +e.getMessage(),"Carga masiva empleados", null);
 
 		
 			e.printStackTrace();
-			log.error("ocurrio un error leyendo el archivo");
+			log.error("Ocurrió un error leyendo el archivo");
 			log.error(e.getMessage());
 		}finally{
 			try{
 				file.close();
 			}catch(Exception e){
-				log.error("Ocurrio un error cerrando el archivo de carga masiva"+ e.getMessage());
+				log.error("Ocurrió un error cerrando el archivo de carga masiva"+ e.getMessage());
 
 				loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
-						"Ocurrio un error cerrando el archivo de carga masiva" +e.getMessage(),"Carga masiva empleados", null);
+						"Ocurrió un error cerrando el archivo de carga masiva" +e.getMessage(),"Carga masiva empleados", null);
 			}
 		}
 		
@@ -282,8 +282,8 @@ public class EmpleadoMasivoBO implements Serializable{
 					
 				}catch(Exception e){
 					//flag=false;
-					this.resultado.add("Ocurrio un error y no se creó el empleado :"+ empleado.getCodigo());
-					log.error("Ocurrio un error y no se creo el empleado :"+ empleado.getCodigo());
+					this.resultado.add("Ocurrió un error y no se creó el empleado :"+ empleado.getCodigo());
+					log.error("Ocurrió un error y no se creo el empleado :"+ empleado.getCodigo());
 					log.error("Error creación masiva :"+ e.getMessage());
 	
 					loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
@@ -303,8 +303,8 @@ public class EmpleadoMasivoBO implements Serializable{
 					
 				}catch(Exception e){
 					//flag=false;
-					this.resultado.add("Ocurrio un error y no se actualizó el empleado :"+ empleado.getCodigo());
-					log.error("Ocurrio un error y no se actualizó el empleado :"+ empleado.getCodigo());
+					this.resultado.add("Ocurrió un error y no se actualizó el empleado :"+ empleado.getCodigo());
+					log.error("Ocurrió un error y no se actualizó el empleado :"+ empleado.getCodigo());
 					log.error("Error actualización masiva :"+ e.getMessage());
 	
 					loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(),
@@ -324,8 +324,8 @@ public class EmpleadoMasivoBO implements Serializable{
 				
 				}catch(Exception e){
 					//flag=false;
-					this.resultado.add("Ocurrio un error y no se desactivó el empleado :"+ empleado.getCodigo());
-					log.error("Ocurrio un error y no se desactivó el empleado :"+ empleado.getCodigo());
+					this.resultado.add("Ocurrió un error y no se desactivó el empleado :"+ empleado.getCodigo());
+					log.error("Ocurrió un error y no se desactivó el empleado :"+ empleado.getCodigo());
 					log.error("Error creación desactivación :"+ e.getMessage());
 	
 					loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),

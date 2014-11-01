@@ -82,8 +82,8 @@ public class LoggerBO implements Serializable{
 			sdmLogHome.crear(sdmLog);
 			//return sdmLog; 
 		}catch(Exception e){
-			log.error("Ocurrio un error al grabar el Log " + sdmLog.toString());
-			statusMessages.add(Severity.ERROR,"Ocurrio un error al grabar el archivo de auditoría, por favor informar a Soporte");
+			log.error("Ocurrió un error al grabar el Log " + sdmLog.toString());
+			statusMessages.add(Severity.ERROR,"Ocurrió un error al grabar el archivo de auditoría, por favor informar a Soporte");
 			log.error(e.getLocalizedMessage());
 		}
 		return sdmLog;
@@ -106,9 +106,9 @@ public class LoggerBO implements Serializable{
 			sdmLog.setTipo(tipo);
 			sdmLogHome.crear(sdmLog);
 		}catch(Exception e){
-			log.error("Ocurrio un error al grabar el Log " + sdmLog.toString());
+			log.error("Ocurrió un error al grabar el Log " + sdmLog.toString());
 			log.error(e.getLocalizedMessage());
-			statusMessages.add(Severity.ERROR,"Ocurrio un error al grabar el archivo de auditoría, por favor informar a Soporte");
+			statusMessages.add(Severity.ERROR,"Ocurrió un error al grabar el archivo de auditoría, por favor informar a Soporte");
 
 		}
 		return sdmLog;
@@ -129,9 +129,9 @@ public class LoggerBO implements Serializable{
 			sdmLog.setReferencia(referencia);
 			sdmLogHome.crear(sdmLog);
 		}catch(Exception e){
-			log.error("Ocurrio un error al grabar el Log " + sdmLog.toString());
+			log.error("Ocurrió un error al grabar el Log " + sdmLog.toString());
 			log.error(e.getLocalizedMessage());
-			statusMessages.add(Severity.ERROR,"Ocurrio un error al grabar el archivo de auditoría, por favor informar a Soporte");
+			statusMessages.add(Severity.ERROR,"Ocurrió un error al grabar el archivo de auditoría, por favor informar a Soporte");
 			System.out.println("aca toy");
 		}
 		return sdmLog;

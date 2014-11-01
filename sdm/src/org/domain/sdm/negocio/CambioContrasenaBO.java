@@ -105,7 +105,7 @@ public class CambioContrasenaBO  implements Serializable{
 			statusMessages.add("Contraseña cambiada");
 			return "/home.xhtml";
 		 }catch (Exception e){
-			 statusMessages.add("Ocurrio un error Cambiando la Contraseña");
+			 statusMessages.add("Ocurrió un error Cambiando la Contraseña");
 			 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
 						e.getMessage(),"Cambio contraseña", null);
 			 throw e ;

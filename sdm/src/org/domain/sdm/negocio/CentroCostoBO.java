@@ -85,7 +85,7 @@ public class CentroCostoBO implements Serializable {
 			statusMessages.add(Severity.INFO,"Se modificó el centro de costo ");
 			
 			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
-						"Se modifico el centro de costo " , this.modificarCentroCosto ,String.valueOf(this.sdmCentroCostoSelect.getCodigo() ));
+						"Se modificó el centro de costo " , this.modificarCentroCosto ,String.valueOf(this.sdmCentroCostoSelect.getCodigo() ));
 	
 			this.sdmCentroCostoSelect = new SdmCentroCosto();
 			return "/centroCosto.xhtml";
@@ -121,7 +121,7 @@ public class CentroCostoBO implements Serializable {
 			statusMessages.add(Severity.INFO,"Se eliminó el centro de costo " + this.sdmCentroCostoSelect.getNombre());
 	
 			 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
-						"Se elimino el centro de costo " , this.eliminarCentroCosto ,String.valueOf(this.sdmCentroCostoSelect.getCodigo() ));
+						"Se eliminó el centro de costo " , this.eliminarCentroCosto ,String.valueOf(this.sdmCentroCostoSelect.getCodigo() ));
 	
 			
 			this.sdmCentroCostoSelect = new SdmCentroCosto();

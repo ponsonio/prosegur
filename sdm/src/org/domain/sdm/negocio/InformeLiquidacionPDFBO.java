@@ -173,7 +173,7 @@ public class InformeLiquidacionPDFBO implements  Serializable{
 				try {
 					enviarEmail();
 				}catch (Exception e){
-					   statusMessages.add(Severity.ERROR ,"Ocurrio un error al enviar el correo : " + e.getMessage());
+					   statusMessages.add(Severity.ERROR ,"Ocurrió un error al enviar el correo : " + e.getMessage());
 					   log.error(e.getStackTrace());
 
 					   loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(),
@@ -211,10 +211,10 @@ public class InformeLiquidacionPDFBO implements  Serializable{
 							"Se envio email " , this.stringEnviarReporte ,String.valueOf(sdmInformeViaticos.getId()));
 				 
 		   } catch (Exception e) {
-			   statusMessages.add(Severity.ERROR ,"Ocurrio un error al enviar el correo: " + e.getMessage());
+			   statusMessages.add(Severity.ERROR ,"Ocurrió un error al enviar el correo: " + e.getMessage());
 			   
 				 loggerBO.ingresarRegistroError(this.getClass().getCanonicalName(), 
-							"Ocurrio un error al enviar email " + e.getMessage()  , this.stringEnviarReporte ,String.valueOf(sdmInformeViaticos.getId()));		
+							"Ocurrió un error al enviar email " + e.getMessage()  , this.stringEnviarReporte ,String.valueOf(sdmInformeViaticos.getId()));		
 
 			   log.error(e.getStackTrace());
 			   throw e;
