@@ -1,0 +1,20 @@
+select * from dbo.SDM_usuario
+
+alter table dbo.SDM_usuario 
+add  fecha_mod_contrasena  date not null
+DEFAULT '1977-08-13'
+
+alter table dbo.SDM_usuario
+add contrasena_bin varbinary(160)
+
+update dbo.SDM_usuario set contrasena_bin = CAST( 'prosegur' AS varbinary)
+
+ALTER TABLE dbo.SDM_usuario ALTER COLUMN contrasena_bin varbinary(160) NOT NULL
+
+ALTER TABLE dbo.SDM_usuario DROP COLUMN contrasena
+
+EXEC sp_rename 'dbo.SDM_usuario.contrasena_bin', 'contrasena', 'COLUMN'
+
+CREATE TABLE SDM_parametro (
+NOMBRE VARCHAR(50) CONSTRAINT SDM_parametro_pk PRIMARY KEY , 
+VALOR VARCHAR(100) NOT NULL )

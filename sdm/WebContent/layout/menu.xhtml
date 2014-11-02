@@ -125,6 +125,6 @@
     <rich:toolBarGroup location="right">
         <h:outputText id="menuWelcomeId" value="Usuario: #{credentials.username}" rendered="#{identity.loggedIn}"/>
         <s:link id="menuLoginId" view="/login.xhtml" value="#{messages['label.ingresar']}" rendered="#{not identity.loggedIn}" propagation="none"/>
-        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout}" value="#{messages['label.salir']}" rendered="#{identity.loggedIn}" propagation="none"/>
+        <s:link id="menuLogoutId" view="/home.xhtml" action="#{authenticator.logout()}" value="#{messages['label.salir']}" rendered="#{identity.loggedIn}" propagation="none"/>
     </rich:toolBarGroup>
 </rich:toolBar>

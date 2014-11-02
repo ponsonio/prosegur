@@ -104,7 +104,7 @@ public class Authenticator implements Serializable {
 
 		int diasExpira = parametroBO.obtenerNumeroDiasExpiraContrasena();
 		String password = new  String(usr.getContrasena(),"UTF-8");
-		System.out.print("password:"+password);
+		//System.out.print("password:"+password);
 		System.out.print("diasExpira:"+diasExpira);
 		System.out.print("intentos:"+this.intentos);
 		// Valido contraseña
@@ -207,12 +207,32 @@ public class Authenticator implements Serializable {
 		c.add(Calendar.DATE, 5);
 		Date fechaExpira = c.getTime();
 		Date hoy = new Date();
-		System.out.println("fechaModContrasena:" +fechaExpira.toLocaleString());
-		System.out.println("hoy:"+ hoy.toLocaleString());
+		//System.out.println("fechaModContrasena:" +fechaExpira.toLocaleString());
+		//System.out.println("hoy:"+ hoy.toLocaleString());
 		if (fechaExpira.before(hoy) ){
-			System.out.println(" contraseña expirada");
+			//System.out.println(" contraseña expirada");
 			return true;	
 		}
 		return false;
 	}
+	
+	
+	public void logout() throws Exception{
+		try{
+			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+				"Cierre de Sesión", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
+		
+			identity.logout();
+		}catch(Exception e){
+			// TODO: handle exception
+			loggerBO.ingresarLogUsr(this.getClass().getCanonicalName(), 
+					"Error en logout", this.Login, credentials.getUsername(), LoggerBO.EVENTO, credentials.getUsername());
+			throw e;
+		}
+	}
+	
+	
+	
+	
+	
 }

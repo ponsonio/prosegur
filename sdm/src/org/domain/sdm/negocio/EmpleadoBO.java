@@ -299,7 +299,12 @@ public class EmpleadoBO implements Serializable{
 			ArrayList<SdmRol> arraSdmRols = null;
 			if (this.validarEmpleadoModificar(this.sdmEmpleadoSelect)){
 				
+				
 				if (this.empleadoSelectUsuario) {
+					this.contrasena = this.contrasena.trim(); 
+					Charset UTF8_CHARSET = Charset.forName("UTF-8");
+					this.sdmUsuarioSelect.setContrasena(contrasena.getBytes(UTF8_CHARSET));
+					this.sdmUsuarioSelect.setFechaModContrasena(new Date());
 					
 					if (this.validarUsuario(this.sdmUsuarioSelect) == false) return  "/asignacionRoles.xhtml";
 					this.sdmUsuarioSelect.setActivo(true);
