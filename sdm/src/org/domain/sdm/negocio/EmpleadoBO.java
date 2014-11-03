@@ -3,6 +3,7 @@ package org.domain.sdm.negocio;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -212,9 +213,11 @@ public class EmpleadoBO implements Serializable{
 					
 					Charset UTF8_CHARSET = Charset.forName("UTF-8");
 					
+					Calendar cal = Calendar.getInstance();
+					cal.set(1977, Calendar.AUGUST, 13);
 					
 					sdmUsuarioNuevo.setContrasena(contrasena.getBytes(UTF8_CHARSET));
-					sdmUsuarioNuevo.setFechaModContrasena(new Date());
+					sdmUsuarioNuevo.setFechaModContrasena(cal.getTime());
 					
 					if (this.validarUsuario(this.sdmUsuarioNuevo) == false)  return "/asignacionRoles.xhtml";
 					this.sdmUsuarioNuevo.setActivo(true);
@@ -297,16 +300,24 @@ public class EmpleadoBO implements Serializable{
 		try {
 			String aux = "";
 			ArrayList<SdmRol> arraSdmRols = null;
+
 			if (this.validarEmpleadoModificar(this.sdmEmpleadoSelect)){
-				
+				System.out.println("modificar empleado - lo valido");
 				
 				if (this.empleadoSelectUsuario) {
 					this.contrasena = this.contrasena.trim(); 
 					Charset UTF8_CHARSET = Charset.forName("UTF-8");
 					this.sdmUsuarioSelect.setContrasena(contrasena.getBytes(UTF8_CHARSET));
-					this.sdmUsuarioSelect.setFechaModContrasena(new Date());
+					
+					Calendar cal = Calendar.getInstance();
+					cal.set(1977, Calendar.AUGUST, 13);
+					
+					this.sdmUsuarioSelect.setFechaModContrasena(cal.getTime());
 					
 					if (this.validarUsuario(this.sdmUsuarioSelect) == false) return  "/asignacionRoles.xhtml";
+					
+
+					
 					this.sdmUsuarioSelect.setActivo(true);
 					arraSdmRols = new ArrayList<SdmRol>();
 					for (int i = 0 ; i < longRolesUsuarioSelect.length ; i ++){

@@ -266,6 +266,7 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     		u2.setContrasena(u.getContrasena());
     		u2.setCorreo(u.getCorreo());
     		u2.setSdmEmpleado(empAux);
+    		u2.setFechaModContrasena(u.getFechaModContrasena());
     		entityManager.persist(u2);
     		u = u2;
     	}
