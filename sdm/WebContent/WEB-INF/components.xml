@@ -81,7 +81,7 @@
 	  <property name="maxRequestSize">1000000</property>
 	</component>
 
-	<factory name="remoteAddr" value="#{facesContext.externalContext.request.remoteAddr}" /> 
+
 	
    <mail:mail-session host="localhost" port="1024"/>
 

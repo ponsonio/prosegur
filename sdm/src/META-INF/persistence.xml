@@ -20,6 +20,8 @@
 	<class>org.domain.sdm.entity.SdmTipoServicio</class>
 	<class>org.domain.sdm.entity.SdmUsuario</class>
 	<class>org.domain.sdm.entity.SdmLog</class>
+	<class>org.domain.sdm.entity.SdmParametro</class>
+	
 		<properties>
 			<property name="jboss.entity.manager.factory.jndi.name" value="java:/sdmEntityManagerFactory"/>
 			<property name="hibernate.connection.username" value="sa"/>

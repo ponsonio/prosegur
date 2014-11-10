@@ -27,7 +27,7 @@ import org.jboss.seam.annotations.Scope;
 
 
 @Entity
-@Table(name = "SDM_log", schema = "dbo", catalog = "prosegur")
+@Table(name = "SDM_log")
 public class SdmLog implements java.io.Serializable {
 
 	private long id;
