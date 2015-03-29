@@ -40,6 +40,8 @@ public class Authenticator implements Serializable {
 	
 	int intentos = 0 ;
 	
+	int diasExpira = 0;
+	
 	String login_ant = null;
 	
 	@In(create= true)
@@ -102,11 +104,11 @@ public class Authenticator implements Serializable {
 			throw e;
 		}
 
-		int diasExpira = parametroBO.obtenerNumeroDiasExpiraContrasena();
+		diasExpira = parametroBO.obtenerNumeroDiasExpiraContrasena();
 		String password = new  String(usr.getContrasena(),"UTF-8");
 		//System.out.print("password:"+password);
-		System.out.print("diasExpira:"+diasExpira);
-		System.out.print("intentos:"+this.intentos);
+		System.out.print(" parametro diasExpira:"+diasExpira);
+		//System.out.print("intentos:"+this.intentos);
 		// Valido contraseña
 		if (password.equals(credentials.getPassword())) {
 
@@ -204,15 +206,16 @@ public class Authenticator implements Serializable {
 	public boolean validaExpira(){
 		Calendar c = Calendar.getInstance(); 
 		c.setTime(this.sdmUsuario.getFechaModContrasena()); 
-		c.add(Calendar.DATE, 5);
+		c.add(Calendar.DATE, diasExpira);
 		Date fechaExpira = c.getTime();
 		Date hoy = new Date();
-		//System.out.println("fechaModContrasena:" +fechaExpira.toLocaleString());
-		//System.out.println("hoy:"+ hoy.toLocaleString());
+		System.out.println("fechaExpira:" +fechaExpira.toLocaleString());
+		System.out.println("hoy:"+ hoy.toLocaleString());
 		if (fechaExpira.before(hoy) ){
-			//System.out.println(" contraseña expirada");
+			System.out.println(" contraseña expirada");
 			return true;	
 		}
+		System.out.println(" contraseña No expirada");
 		return false;
 	}
 	

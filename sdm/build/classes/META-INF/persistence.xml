@@ -24,13 +24,16 @@
 	
 		<properties>
 			<property name="jboss.entity.manager.factory.jndi.name" value="java:/sdmEntityManagerFactory"/>
+			<!--  
 			<property name="hibernate.connection.username" value="sa"/>
 			<property name="hibernate.connection.password" value="passw0rd"/>
 			<property name="hibernate.connection.url" value="jdbc:sqlserver://192.168.56.101:1433;databaseName=prosegur"/>
 			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+			<property name="hibernate.default_catalog" value="prosegur"/>
+			-->
+			
 			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
 			<property name="hibernate.default_schema" value="dbo"/>
-			<property name="hibernate.default_catalog" value="prosegur"/>
 	        <property name="hibernate.hbm2ddl.auto" value="validate"/>
 	        <!-- borrar en produccion -->
             <property name="hibernate.show_sql" value="true"/>

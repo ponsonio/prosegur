@@ -115,8 +115,8 @@
 						
 						</rich:panel>
 			        	<div style="clear:both"/>
-							<h:commandButton  rendered="#{( (empleadoBO.empleadoNuevoUsuario) and s:hasRole('Administrador') )}" id="mostrarUsuario" value="Sin Usuario" action="#{empleadoBO.incluirUsuarioNuevo()}"  />    
-							<h:commandButton rendered="#{( (!empleadoBO.empleadoNuevoUsuario) and s:hasRole('Administrador') )}"  id="ocultarUsuario" value="Con Usuario" action="#{empleadoBO.incluirUsuarioNuevo()}"  />  
+							<h:commandButton  rendered="#{( (empleadoBO.empleadoNuevoUsuario) and ( s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') ) )}" id="mostrarUsuario" value="Sin Usuario" action="#{empleadoBO.incluirUsuarioNuevo()}"  />    
+							<h:commandButton rendered="#{( (!empleadoBO.empleadoNuevoUsuario) and ( s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') ) )}"  id="ocultarUsuario" value="Con Usuario" action="#{empleadoBO.incluirUsuarioNuevo()}"  />  
 							<h:commandButton id="enviar" value="Crear" action="#{empleadoBO.crearEmpleado()}"  />    
 		           		 				            			            
 						</rich:tab>
@@ -242,7 +242,7 @@
 
 						<div style="clear:both"/>
 						<!-- Sección del Usuario del empleado Selecionado -->
-						<rich:panel rendered="#{( (empleadoBO.empleadoSelectUsuario) and (s:hasRole('Administrador')) )}">
+						<rich:panel rendered="#{( (empleadoBO.empleadoSelectUsuario) and ( s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') ) )}">
 
 					           <s:decorate id="correoE" template="layout/edit.xhtml">
 					                <ui:define name="label">#{messages['label.correo']}</ui:define>
@@ -269,8 +269,8 @@
 					            </s:decorate>							
 						</rich:panel>  
 							<div style="clear:both"/>
-								<h:commandButton  rendered="#{( (empleadoBO.empleadoSelectUsuario) and s:hasRole('Administrador') )}" id="mostrarUsuarioE" value="Sin Usuario" action="#{empleadoBO.incluirUsuarioSelect()}"  />    
-								<h:commandButton rendered="#{( (!empleadoBO.empleadoSelectUsuario) and s:hasRole('Administrador') )}"  id="ocultarUsuarioE" value="Con Usuario" action="#{empleadoBO.incluirUsuarioSelect()}"  />  
+								<h:commandButton  rendered="#{( (empleadoBO.empleadoSelectUsuario) and ( s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') ) )}" id="mostrarUsuarioE" value="Sin Usuario" action="#{empleadoBO.incluirUsuarioSelect()}"  />    
+								<h:commandButton rendered="#{( (!empleadoBO.empleadoSelectUsuario) and ( s:hasRole('Administrador') or s:hasRole('Gestor de Empleados') ) )}"  id="ocultarUsuarioE" value="Con Usuario" action="#{empleadoBO.incluirUsuarioSelect()}"  />  
 								<h:commandButton id="modificar" value="Modificar" action="#{empleadoBO.modificarEmpleado()}"  />    
 					</rich:panel>
 									

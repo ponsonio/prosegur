@@ -244,6 +244,7 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     public SdmEmpleado actualizarEmpleado(SdmEmpleado e , SdmUsuario u , ArrayList<SdmRol> arraSdmRols){
 
     	
+    	System.out.println("metodo actualizar empleado");
     	
     	SdmEmpleado empAux = this.buscarSdmEmpleadoXCodigo(e.getCodigo());
     	SdmUsuario usrAux = this.sdmUsuarioHome.obtenerSdmUsuarioXCodigo(empAux.getCodigo());
@@ -256,11 +257,37 @@ public class SdmEmpleadoHome extends EntityHome<SdmEmpleado> {
     	empAux.setSdmDelegacion(e.getSdmDelegacion());
     	empAux.setSdmDivicion(e.getSdmDivicion());
     	empAux.setSdmEmpresa(e.getSdmEmpresa());
+    	
+    	System.out.println("grabo el empleado ");
+    	
     	entityManager.persist(empAux);
     	
-    	//Si no tiene usuario y hay que crear uno
+    	//Si tiene un usuario  y hay que eliminarlo
+    	if ( usrAux != null && u == null){
+    		System.out.println("elimino el usuario");
+    		//elimino los roles 
+    		Iterator<SdmRolXUsuario> rxue = usrAux.getSdmRolXUsuarios().iterator();
+    		while (rxue.hasNext()){
+    			entityManager.remove(rxue.next());
+    		}
+    		entityManager.remove(usrAux);
+    	}
     	
+    	
+    	if ( usrAux != null && u != null){
+    		System.out.println("actualizo el usuario");
+    		usrAux.setActivo(u.isActivo());
+    		usrAux.setContrasena(u.getContrasena());
+    		usrAux.setCorreo(u.getCorreo());
+    		usrAux.setFechaModContrasena(u.getFechaModContrasena());
+    		usrAux.setId(u.getId());
+    		usrAux.setSdmEmpleado(empAux);
+    		entityManager.persist(usrAux);
+    	}
+    	
+    	//Si no tiene usuario y hay que crear uno
     	if(u != null && usrAux == null) {
+    		System.out.println("creo el usuario");
     		SdmUsuario u2 = new SdmUsuario();
     		u2.setActivo(u.isActivo());
     		u2.setContrasena(u.getContrasena());

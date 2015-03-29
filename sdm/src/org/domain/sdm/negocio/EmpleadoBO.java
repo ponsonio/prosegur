@@ -300,11 +300,13 @@ public class EmpleadoBO implements Serializable{
 		try {
 			String aux = "";
 			ArrayList<SdmRol> arraSdmRols = null;
-
+			System.out.println("1");
 			if (this.validarEmpleadoModificar(this.sdmEmpleadoSelect)){
-				System.out.println("modificar empleado - lo valido");
-				
+				//System.out.println("modificar empleado - lo valido");
+				System.out.println("2");
+				System.out.print("this.empleadoSelectUsuario-->"+this.empleadoSelectUsuario);
 				if (this.empleadoSelectUsuario) {
+					System.out.println("3");
 					this.contrasena = this.contrasena.trim(); 
 					Charset UTF8_CHARSET = Charset.forName("UTF-8");
 					this.sdmUsuarioSelect.setContrasena(contrasena.getBytes(UTF8_CHARSET));
@@ -312,14 +314,19 @@ public class EmpleadoBO implements Serializable{
 					Calendar cal = Calendar.getInstance();
 					cal.set(1977, Calendar.AUGUST, 13);
 					
+					System.out.println("4");
 					this.sdmUsuarioSelect.setFechaModContrasena(cal.getTime());
 					
+					System.out.println("5");
 					if (this.validarUsuario(this.sdmUsuarioSelect) == false) return  "/asignacionRoles.xhtml";
-					
+					System.out.println("6");
 
 					
 					this.sdmUsuarioSelect.setActivo(true);
+					
 					arraSdmRols = new ArrayList<SdmRol>();
+					
+					System.out.println("7");
 					for (int i = 0 ; i < longRolesUsuarioSelect.length ; i ++){
 						SdmRol sdmRol = new SdmRol();
 						aux = aux + " " + longRolesUsuarioSelect[i];
@@ -328,12 +335,14 @@ public class EmpleadoBO implements Serializable{
 					}
 					
 				}else{
+					System.out.println("8");
 					this.sdmUsuarioSelect = null;
 					this.longRolesUsuarioSelect = null;
 				}
+				System.out.println("9");
 				this.sdmEmpleadoHome.actualizarEmpleado(this.sdmEmpleadoSelect , this.sdmUsuarioSelect , arraSdmRols);
 				statusMessages.add(Severity.INFO,"Se modificó el empleado correctamente");
-
+				System.out.println("10");
 				 loggerBO.ingresarRegistroEvento(this.getClass().getCanonicalName(), 
 							"Se modificó empleado , roles:" +aux , this.modificarEmpleado , String.valueOf( sdmEmpleadoSelect.getCodigo()));
 	
@@ -358,9 +367,21 @@ public class EmpleadoBO implements Serializable{
 		this.arraylistSdmEmpleadoBusqueda = new  ArrayList<SdmEmpleado>();
 		try {
 			this.sdmEmpleadoSelect = sdmEmpleadoHome.buscarSdmEmpleadoXCodigo(this.codigoBuscar);
+			//Si no tiene empleados
+			if (this.sdmEmpleadoSelect == null) {
+				log.info("Usuario no encontrado: "+this.codigoBuscar);
+				statusMessages.add(Severity.ERROR,"No se encontró empleado, por favor comunicarse con el área de soporte");
+				return "/asignacionRoles.xhtml";
+			}
 			this.sdmUsuarioSelect = sdmUsuarioHome.obtenerSdmUsuarioXCodigo(sdmEmpleadoSelect.getCodigo()) ;
+			
+			
 			//Cargo los roles 
 			if (this.sdmUsuarioSelect != null){
+				
+				System.out.println("Tiene usuario");
+				System.out.println("sdmUsuarioSelect:"+ sdmUsuarioSelect.toString());
+				
 				this.empleadoSelectUsuario = true;
 				Iterator<SdmRolXUsuario> it = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
 				this.longRolesUsuarioSelect = new long[sdmUsuarioSelect.getSdmRolXUsuarios().size()];

@@ -303,7 +303,6 @@ public class AsignacionRolesBO implements Serializable {
 				return "/asignacionRoles.xhtml";
 			}
 			
-
 			
 			Iterator<SdmRolXUsuario> iterator  = sdmUsuarioSelect.getSdmRolXUsuarios().iterator();
 			//quito los que no estan selecionados
